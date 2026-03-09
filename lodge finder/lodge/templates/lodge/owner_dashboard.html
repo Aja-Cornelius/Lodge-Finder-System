@@ -1,0 +1,186 @@
+{% extends 'lodge/base.html' %}
+{% block title %}Owner Dashboard - AE-FUNAI Lodge Finder{% endblock %}
+
+{% block extra_css %}
+<style>
+.dash-header{background:var(--forest);padding:2.5rem 0 2rem;position:relative;overflow:hidden;}
+.dash-header::before{content:'';position:absolute;top:-60px;right:-60px;width:220px;height:220px;
+    border-radius:50%;background:rgba(194,113,79,.1);}
+.dash-header h1{color:var(--sand);font-size:clamp(1.4rem,3vw,2rem);}
+.dash-header p{color:rgba(245,237,224,.65);font-size:.9rem;}
+
+/* Off-canvas sidebar */
+.sidebar-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:200;}
+.sidebar-overlay.open{display:block;}
+.sidebar{position:fixed;top:0;left:-260px;width:230px;height:100vh;
+    background:var(--forest);z-index:300;transition:left .28s cubic-bezier(.4,0,.2,1);
+    overflow-y:auto;padding:1.5rem 0;}
+.sidebar.open{left:0;}
+.sidebar-brand{padding:1rem 1.4rem 1.8rem;font-family:'Playfair Display',serif;
+    font-size:1rem;color:var(--sand);display:flex;align-items:center;justify-content:space-between;}
+.sidebar-brand span{color:var(--clay);}
+.sidebar-close{background:none;border:none;color:rgba(245,237,224,.6);font-size:1.3rem;cursor:pointer;}
+.sidebar-section{padding:.7rem 1.4rem .3rem;font-size:.68rem;color:rgba(245,237,224,.4);
+    text-transform:uppercase;letter-spacing:.1em;font-weight:700;}
+.sidebar .nav-link{color:rgba(245,237,224,.82);border-radius:10px;padding:.8rem 1.3rem;
+    margin:.2rem .6rem;font-size:.9rem;font-weight:500;transition:all .2s;
+    display:flex;align-items:center;gap:.6rem;text-decoration:none;}
+.sidebar .nav-link:hover,.sidebar .nav-link.active{background:rgba(255,255,255,.13);color:#fff;}
+.sidebar-toggle{background:var(--clay);border:none;color:#fff;border-radius:8px;
+    padding:.4rem .8rem;font-size:.88rem;font-weight:600;cursor:pointer;display:inline-flex;
+    align-items:center;gap:.4rem;}
+
+@media(min-width:768px){
+    .sidebar{position:static;left:0;width:220px;height:auto;min-height:calc(100vh - 160px);
+        flex-shrink:0;transition:none;}
+    .sidebar-brand .sidebar-close{display:none;}
+    .sidebar-overlay{display:none!important;}
+    .sidebar-toggle{display:none!important;}
+    .dash-layout{display:flex;}
+}
+
+/* Stats */
+.stats-grid{display:grid;grid-template-columns:1fr;gap:1rem;margin-bottom:2rem;}
+@media(min-width:480px){.stats-grid{grid-template-columns:repeat(3,1fr);}}
+.stat-card{border-radius:16px;padding:1.6rem;color:#fff;position:relative;overflow:hidden;}
+.stat-card::after{content:'';position:absolute;bottom:-15px;right:-15px;
+    width:70px;height:70px;border-radius:50%;background:rgba(255,255,255,.1);}
+.stat-card h6{font-size:.7rem;text-transform:uppercase;letter-spacing:.08em;
+    opacity:.82;margin-bottom:.4rem;font-family:'DM Sans',sans-serif;}
+.stat-card h2{font-size:2.2rem;margin:0;font-family:'Playfair Display',serif;}
+
+.main-content{flex:1;background:var(--cream);padding:1.5rem;}
+@media(min-width:768px){.main-content{padding:2.5rem;}}
+
+.table-wrap{background:#fff;border-radius:18px;overflow:hidden;box-shadow:0 4px 20px rgba(0,0,0,.07);}
+.empty-card{background:#fff;border-radius:18px;padding:3rem 2rem;text-align:center;
+    box-shadow:0 4px 20px rgba(0,0,0,.07);}
+.empty-card i{font-size:2.8rem;color:var(--clay-lt);margin-bottom:1rem;display:block;}
+</style>
+{% endblock %}
+
+{% block content %}
+
+<div class="dash-header">
+    <div class="container">
+        <div class="d-flex justify-content-between align-items-start flex-wrap gap-3">
+            <div>
+                <span class="section-label" style="color:var(--clay-lt);">Dashboard</span>
+                <h1 class="serif mb-1">Welcome, {{ user.get_full_name|default:user.username }}!</h1>
+                <p class="mb-0">Manage your lodges and connect with students</p>
+            </div>
+            <div class="d-flex gap-2 flex-wrap">
+                <button class="sidebar-toggle" id="openSidebar"><i class="bi bi-list"></i> Menu</button>
+                <a href="{% url 'add_lodge' %}" class="btn btn-primary px-3 py-2">
+                    <i class="bi bi-plus-lg me-1"></i>Add Lodge
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Overlay -->
+<div class="sidebar-overlay" id="overlay"></div>
+
+<div class="dash-layout">
+    <!-- Sidebar -->
+    <nav class="sidebar" id="sidebar">
+        <div class="sidebar-brand">
+            <span>AE-FUNAI <span>Lodges</span></span>
+            <button class="sidebar-close" id="closeSidebar"><i class="bi bi-x-lg"></i></button>
+        </div>
+        <p class="sidebar-section">Main</p>
+        <a class="nav-link active" href="{% url 'owner_dashboard' %}"><i class="bi bi-grid-1x2"></i> Overview</a>
+        <a class="nav-link" href="{% url 'add_lodge' %}"><i class="bi bi-building-add"></i> Add Lodge</a>
+        <a class="nav-link" href="{% url 'my_lodges' %}"><i class="bi bi-list-ul"></i> My Lodges</a>
+        <a class="nav-link" href="{% url 'inquiries' %}"><i class="bi bi-chat-dots"></i> Inquiries</a>
+        <p class="sidebar-section" style="margin-top:1rem;">Account</p>
+        <a class="nav-link" href="{% url 'owner_profile' %}"><i class="bi bi-person"></i> Profile</a>
+        <a class="nav-link" href="{% url 'logout' %}"><i class="bi bi-box-arrow-left"></i> Logout</a>
+    </nav>
+
+    <!-- Content -->
+    <div class="main-content">
+        <div class="stats-grid">
+            <div class="stat-card" style="background:var(--clay);">
+                <h6>Total Lodges</h6>
+                <h2>{{ total_lodges }}</h2>
+            </div>
+            <div class="stat-card" style="background:#2D6A4F;">
+                <h6>Approved</h6>
+                <h2>{{ approved }}</h2>
+            </div>
+            <div class="stat-card" style="background:#B8860B;">
+                <h6>Pending</h6>
+                <h2>{{ pending }}</h2>
+            </div>
+        </div>
+
+        <div class="d-flex justify-content-between align-items-center mb-3 flex-wrap gap-2">
+            <h4 class="serif mb-0" style="font-size:1.3rem;">My Registered Lodges</h4>
+            <a href="{% url 'my_lodges' %}" style="font-size:.85rem;color:var(--clay);font-weight:600;text-decoration:none;">View all →</a>
+        </div>
+
+        {% if my_lodges %}
+        <div class="table-wrap" style="overflow-x:auto;">
+            <table class="table mb-0" style="min-width:560px;">
+                <thead>
+                    <tr>
+                        <th>Lodge Name</th>
+                        <th>Location</th>
+                        <th>Price/yr</th>
+                        <th>Type</th>
+                        <th>Status</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for lodge in my_lodges %}
+                    <tr>
+                        <td style="font-weight:600;">{{ lodge.name }}</td>
+                        <td style="color:var(--muted);">{{ lodge.location }}</td>
+                        <td style="color:var(--clay);font-weight:600;">₦{{ lodge.price_per_year|floatformat:0 }}</td>
+                        <td>{{ lodge.get_room_type_display }}</td>
+                        <td>
+                            {% if lodge.is_approved %}
+                            <span class="badge bg-success px-3 py-2">Approved</span>
+                            {% else %}
+                            <span class="badge bg-warning px-3 py-2">Pending</span>
+                            {% endif %}
+                        </td>
+                        <td>
+                            <a href="{% url 'lodge_detail' lodge.id %}" class="btn btn-sm btn-outline-primary me-1"><i class="bi bi-eye"></i></a>
+                            <a href="#" class="btn btn-sm btn-outline-secondary disabled"><i class="bi bi-pencil"></i></a>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        {% else %}
+        <div class="empty-card">
+            <i class="bi bi-house-slash"></i>
+            <h5 class="serif mb-2">No lodges yet</h5>
+            <p style="color:var(--muted);font-size:.9rem;">Register your first lodge to start reaching students.</p>
+            <a href="{% url 'add_lodge' %}" class="btn btn-primary mt-2 px-4">Register Your First Lodge</a>
+        </div>
+        {% endif %}
+
+        <div class="alert alert-info mt-4" style="font-size:.85rem;">
+            <i class="bi bi-info-circle me-2"></i>
+            New lodges require admin approval, usually within <strong>24–48 hours</strong>.
+        </div>
+    </div>
+</div>
+
+<script>
+    const sidebar = document.getElementById('sidebar');
+    const overlay = document.getElementById('overlay');
+    document.getElementById('openSidebar').addEventListener('click', () => {
+        sidebar.classList.add('open'); overlay.classList.add('open');
+    });
+    const close = () => { sidebar.classList.remove('open'); overlay.classList.remove('open'); };
+    document.getElementById('closeSidebar').addEventListener('click', close);
+    overlay.addEventListener('click', close);
+</script>
+{% endblock %}

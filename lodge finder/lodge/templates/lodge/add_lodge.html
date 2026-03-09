@@ -1,0 +1,112 @@
+{% extends 'lodge/base.html' %}
+{% load widget_tweaks %}
+{% block title %}Register New Lodge - AE-FUNAI Lodge Finder{% endblock %}
+
+{% block extra_css %}
+<style>
+.page-header{background:var(--forest);padding:3rem 0 2rem;}
+.page-header h2{color:var(--sand);}
+.page-header p{color:rgba(245,237,224,.65);}
+.form-card{background:#fff;border-radius:20px;padding:2.5rem;box-shadow:0 4px 24px rgba(0,0,0,.08);}
+.form-section-title{font-size:.8rem;font-weight:700;text-transform:uppercase;letter-spacing:.1em;
+    color:var(--forest);margin-bottom:1.2rem;padding-bottom:.6rem;border-bottom:2px solid var(--sand-dk);}
+.btn-submit{background:var(--clay);color:#fff;border:none;border-radius:12px;padding:1rem 2rem;
+    font-weight:700;font-size:1rem;transition:all .2s;}
+.btn-submit:hover{background:var(--clay-dk);transform:translateY(-2px);box-shadow:0 8px 24px rgba(194,113,79,.35);color:#fff;}
+.amenities-grid .form-check{background:var(--sand);border-radius:8px;padding:.6rem 1rem;
+    margin:.3rem;display:inline-flex;align-items:center;gap:.5rem;cursor:pointer;transition:background .15s;}
+.amenities-grid .form-check:hover{background:var(--sand-dk);}
+.amenities-grid .form-check-input:checked+.form-check-label{color:var(--clay);font-weight:600;}
+</style>
+{% endblock %}
+
+{% block content %}
+
+<div class="page-header">
+    <div class="container">
+        <a href="{% url 'owner_dashboard' %}" style="color:rgba(245,237,224,.6);font-size:.88rem;text-decoration:none;">
+            <i class="bi bi-arrow-left me-1"></i>Dashboard
+        </a>
+        <h2 class="serif mt-2 mb-1">Register New Lodge</h2>
+        <p class="mb-0">Fill in the details below to list your lodge for AE-FUNAI students.</p>
+    </div>
+</div>
+
+<div class="container py-5">
+    {% if messages %}
+        {% for message in messages %}
+        <div class="alert {% if message.tags == 'error' %}alert-danger{% else %}alert-success{% endif %} mb-4">
+            {{ message }}
+        </div>
+        {% endfor %}
+    {% endif %}
+
+    <form method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+        <div class="row g-4">
+            <div class="col-lg-8">
+                <div class="form-card mb-4">
+                    <p class="form-section-title"><i class="bi bi-info-circle me-2"></i>Basic Information</p>
+                    <div class="mb-4">
+                        <label class="form-label">Lodge Name</label>
+                        {{ form.name|add_class:"form-control" }}
+                    </div>
+                    <div class="mb-4">
+                        <label class="form-label">Location / Area</label>
+                        {{ form.location|add_class:"form-control" }}
+                    </div>
+                    <div class="row g-3 mb-4">
+                        <div class="col-md-6">
+                            <label class="form-label">Price per Year (₦)</label>
+                            {{ form.price_per_year|add_class:"form-control" }}
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">Room Type</label>
+                            {{ form.room_type|add_class:"form-select" }}
+                        </div>
+                    </div>
+                    <div class="mb-0">
+                        <label class="form-label">Description</label>
+                        {{ form.description|add_class:"form-control"|attr:"rows:5" }}
+                    </div>
+                </div>
+
+                <div class="form-card">
+                    <p class="form-section-title"><i class="bi bi-star me-2"></i>Amenities</p>
+                    <div class="amenities-grid">
+                        {{ form.amenities }}
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-lg-4">
+                <div class="form-card">
+                    <p class="form-section-title"><i class="bi bi-images me-2"></i>Lodge Photos</p>
+                    <p style="font-size:.83rem;color:var(--muted);margin-bottom:1.2rem;">Upload up to 3 photos. Good photos attract more students.</p>
+                    {{ image_formset.management_form }}
+                    {% for image_form in image_formset %}
+                    <div class="mb-3">
+                        <label class="form-label">Photo {{ forloop.counter }}</label>
+                        {{ image_form.image|add_class:"form-control" }}
+                    </div>
+                    {% endfor %}
+                </div>
+
+                <div class="mt-4">
+                    <button type="submit" class="btn-submit w-100 mb-3">
+                        <i class="bi bi-check-lg me-2"></i>Register Lodge
+                    </button>
+                    <a href="{% url 'owner_dashboard' %}" class="btn btn-outline-secondary w-100">
+                        Cancel
+                    </a>
+                </div>
+
+                <div class="alert alert-info mt-3" style="font-size:.82rem;">
+                    <i class="bi bi-shield-check me-2"></i>
+                    Your lodge will be reviewed within <strong>24–48 hours</strong> before going live.
+                </div>
+            </div>
+        </div>
+    </form>
+</div>
+{% endblock %}

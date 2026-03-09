@@ -1,0 +1,84 @@
+{% extends 'lodge/base.html' %}
+{% block title %}Student Login - AE-FUNAI Lodge Finder{% endblock %}
+
+{% block extra_css %}
+<style>
+.auth-page{min-height:calc(100vh - 80px);display:flex;align-items:center;
+    background:linear-gradient(135deg,var(--sand) 0%,var(--cream) 100%);padding:2rem 1rem;}
+.auth-card{background:#fff;border-radius:24px;box-shadow:0 20px 60px rgba(0,0,0,.1);
+    overflow:hidden;width:100%;max-width:440px;margin:0 auto;}
+.auth-top{background:var(--forest);padding:2.8rem 2.5rem 2.2rem;text-align:center;position:relative;}
+.auth-top::after{content:'';position:absolute;bottom:-1px;left:0;right:0;height:24px;
+    background:#fff;border-radius:24px 24px 0 0;}
+.auth-top .icon-ring{width:64px;height:64px;border-radius:50%;background:rgba(194,113,79,.2);
+    border:2px solid var(--clay-lt);display:flex;align-items:center;justify-content:center;
+    font-size:1.6rem;color:var(--clay-lt);margin:0 auto 1rem;}
+.auth-top h2{color:var(--sand);font-size:1.6rem;margin:0 0 .4rem;}
+.auth-top p{color:rgba(245,237,224,.65);font-size:.88rem;margin:0;}
+.auth-body{padding:2rem 2.5rem 2.5rem;}
+.input-group-custom{position:relative;}
+.input-group-custom .input-icon{position:absolute;left:1rem;top:50%;transform:translateY(-50%);
+    color:var(--muted);font-size:1rem;z-index:2;}
+.input-group-custom .form-control{padding-left:2.8rem;}
+.btn-auth{background:var(--clay);color:#fff;border:none;border-radius:12px;padding:1rem;
+    font-weight:700;font-size:.98rem;width:100%;transition:all .2s;letter-spacing:.02em;}
+.btn-auth:hover{background:var(--clay-dk);transform:translateY(-2px);
+    box-shadow:0 8px 24px rgba(194,113,79,.4);color:#fff;}
+.auth-divider{text-align:center;position:relative;margin:1.5rem 0;}
+.auth-divider::before{content:'';position:absolute;top:50%;left:0;right:0;height:1px;background:var(--sand-dk);}
+.auth-divider span{background:#fff;padding:0 1rem;font-size:.82rem;color:var(--muted);position:relative;}
+.auth-link{color:var(--clay);font-weight:600;text-decoration:none;}
+.auth-link:hover{color:var(--clay-dk);text-decoration:underline;}
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="auth-page">
+    <div class="auth-card">
+        <div class="auth-top">
+            <div class="icon-ring"><i class="bi bi-mortarboard-fill"></i></div>
+            <h2 class="serif">Student Login</h2>
+            <p>Welcome back — find your next lodge</p>
+        </div>
+        <div class="auth-body">
+            {% if messages %}
+                {% for message in messages %}
+                <div class="alert {% if message.tags == 'error' %}alert-danger{% else %}alert-success{% endif %} mb-4">
+                    {{ message }}
+                </div>
+                {% endfor %}
+            {% endif %}
+
+            <form method="post">
+                {% csrf_token %}
+                <div class="mb-4">
+                    <label class="form-label">Email or Matric Number</label>
+                    <div class="input-group-custom">
+                        <i class="bi bi-person input-icon"></i>
+                        <input type="text" class="form-control" name="identifier" placeholder="yourname@funai.edu.ng" required>
+                    </div>
+                </div>
+                <div class="mb-4">
+                    <label class="form-label">Password</label>
+                    <div class="input-group-custom">
+                        <i class="bi bi-lock input-icon"></i>
+                        <input type="password" class="form-control" name="password" placeholder="••••••••" required>
+                    </div>
+                </div>
+                <div class="d-flex justify-content-between align-items-center mb-4">
+                    <div class="form-check">
+                        <input class="form-check-input" type="checkbox" id="remember" name="remember">
+                        <label class="form-check-label" style="font-size:.88rem;color:var(--muted);" for="remember">Remember me</label>
+                    </div>
+                    <a href="#" class="auth-link" style="font-size:.85rem;">Forgot password?</a>
+                </div>
+                <button type="submit" class="btn-auth mb-4">Log In</button>
+            </form>
+            <div class="auth-divider"><span>Don't have an account?</span></div>
+            <p class="text-center mb-0" style="font-size:.9rem;">
+                <a href="{% url 'student_signup' %}" class="auth-link">Create a student account →</a>
+            </p>
+        </div>
+    </div>
+</div>
+{% endblock %}

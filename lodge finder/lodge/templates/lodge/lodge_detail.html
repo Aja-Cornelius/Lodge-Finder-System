@@ -1,0 +1,147 @@
+{% extends 'lodge/base.html' %}
+{% load phone_filters %}
+{% block title %}{{ lodge.name }} - AE-FUNAI Lodge Finder{% endblock %}
+
+{% block extra_css %}
+<style>
+.hero-carousel{border-radius:20px;overflow:hidden;box-shadow:0 12px 40px rgba(0,0,0,.12);}
+.hero-img{height:460px;object-fit:cover;width:100%;}
+.detail-sticky{position:sticky;top:100px;}
+.price-display{font-family:'Playfair Display',serif;font-size:2.4rem;color:var(--clay);font-weight:700;}
+.amenity-chip{background:var(--sand);border:1px solid var(--sand-dk);color:var(--forest);
+    font-size:.83rem;font-weight:600;padding:.4rem 1rem;border-radius:50px;}
+.section-head{font-size:1.05rem;font-weight:700;color:var(--forest);margin-bottom:1rem;
+    padding-bottom:.6rem;border-bottom:2px solid var(--sand-dk);}
+.map-wrap{height:360px;border-radius:16px;overflow:hidden;box-shadow:0 8px 28px rgba(0,0,0,.1);}
+.whatsapp-btn{background:#25D366;border:none;color:#fff;font-weight:700;border-radius:12px;
+    padding:1rem;font-size:1rem;width:100%;transition:all .2s;display:flex;align-items:center;justify-content:center;gap:.6rem;}
+.whatsapp-btn:hover{background:#1EB858;transform:translateY(-2px);box-shadow:0 8px 24px rgba(37,211,102,.35);color:#fff;}
+.contact-card{background:#fff;border-radius:20px;padding:1.8rem;box-shadow:0 8px 32px rgba(0,0,0,.09);}
+.info-chip{display:inline-flex;align-items:center;gap:.5rem;background:var(--sand);
+    border-radius:10px;padding:.6rem 1.1rem;font-size:.88rem;font-weight:500;color:var(--forest);}
+.info-chip i{color:var(--clay);}
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <!-- Carousel -->
+    {% if images %}
+    <div id="lodgeCarousel" class="carousel slide hero-carousel mb-5" data-bs-ride="carousel">
+        <div class="carousel-inner">
+            {% for image in images %}
+            <div class="carousel-item {% if forloop.first %}active{% endif %}">
+                <img src="{{ image.image.url }}" class="d-block hero-img" alt="{{ lodge.name }} - Photo {{ forloop.counter }}">
+            </div>
+            {% endfor %}
+        </div>
+        <button class="carousel-control-prev" type="button" data-bs-target="#lodgeCarousel" data-bs-slide="prev">
+            <span class="carousel-control-prev-icon"></span>
+        </button>
+        <button class="carousel-control-next" type="button" data-bs-target="#lodgeCarousel" data-bs-slide="next">
+            <span class="carousel-control-next-icon"></span>
+        </button>
+    </div>
+    {% else %}
+    <div class="hero-carousel mb-5">
+        <img src="https://images.unsplash.com/photo-1523217582562-09d0def993a6?w=1200&q=80" class="hero-img d-block w-100" alt="Lodge">
+    </div>
+    {% endif %}
+
+    <div class="row g-5">
+        <!-- Main Info -->
+        <div class="col-lg-8">
+            <span class="section-label">Lodge Details</span>
+            <h1 class="serif mb-3" style="font-size:2.2rem;">{{ lodge.name }}</h1>
+
+            <div class="d-flex flex-wrap gap-2 mb-4">
+                <span class="info-chip"><i class="bi bi-geo-alt-fill"></i>{{ lodge.location }}</span>
+                <span class="info-chip"><i class="bi bi-door-open"></i>{{ lodge.get_room_type_display }}</span>
+                <span class="info-chip"><i class="bi bi-check-circle-fill" style="color:#2D6A4F;"></i>Available</span>
+            </div>
+
+            <!-- Amenities -->
+            <div class="mb-5">
+                <p class="section-head"><i class="bi bi-star me-2" style="color:var(--clay)"></i>Amenities</p>
+                <div class="d-flex flex-wrap gap-2">
+                    {% for amenity in lodge.amenities.all %}
+                    <span class="amenity-chip">{{ amenity.name }}</span>
+                    {% empty %}
+                    <span style="color:var(--muted)">No amenities listed</span>
+                    {% endfor %}
+                </div>
+            </div>
+
+            <!-- Description -->
+            <div class="mb-5">
+                <p class="section-head"><i class="bi bi-file-text me-2" style="color:var(--clay)"></i>About This Lodge</p>
+                <div style="color:var(--muted);line-height:1.85;font-size:.95rem;">
+                    {{ lodge.description|linebreaks }}
+                </div>
+            </div>
+
+            <!-- Map -->
+            <div class="mb-5">
+                <p class="section-head"><i class="bi bi-map me-2" style="color:var(--clay)"></i>Location on Map</p>
+                <div class="map-wrap">
+                    {% if lodge.latitude and lodge.longitude %}
+                    <iframe src="https://www.google.com/maps/embed/v1/place?key=AIzaSyD-3wk7HihS7lTGWr1mkaXgG1vJP5oWTtE&q={{ lodge.latitude }},{{ lodge.longitude }}"
+                        width="100%" height="100%" style="border:0;" allowfullscreen="" loading="lazy"></iframe>
+                    {% else %}
+                    <iframe src="https://www.google.com/maps/embed/v1/place?key=AIzaSyD-3wk7HihS7lTGWr1mkaXgG1vJP5oWTtE&q={{ lodge.location|urlencode }},+Nigeria"
+                        width="100%" height="100%" style="border:0;" allowfullscreen="" loading="lazy"></iframe>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+
+        <!-- Sidebar -->
+        <div class="col-lg-4">
+            <div class="contact-card detail-sticky">
+                <div class="text-center mb-4">
+                    <p style="color:var(--muted);font-size:.8rem;text-transform:uppercase;letter-spacing:.08em;font-weight:600;">Annual Rent</p>
+                    <div class="price-display">₦{{ lodge.price_per_year|floatformat:0 }}</div>
+                    <p style="color:var(--muted);font-size:.85rem;">per year</p>
+                </div>
+
+                <hr style="border-color:var(--sand-dk);">
+
+                <p style="font-weight:600;font-size:.9rem;color:var(--forest);margin-bottom:1rem;">Contact the Owner</p>
+
+                <a href="https://wa.me/{{ lodge.owner.phone_number|phone_clean|default:'2348031234567' }}?text=Hello%2C%20I'm%20interested%20in%20{{ lodge.name|urlencode }}%20at%20{{ lodge.location|urlencode }}"
+                    class="whatsapp-btn mb-3 text-decoration-none" target="_blank" rel="noopener noreferrer">
+                    <i class="bi bi-whatsapp fs-5"></i> Chat on WhatsApp
+                </a>
+
+                <p style="color:var(--muted);font-size:.78rem;text-align:center;line-height:1.6;">
+                    <i class="bi bi-shield-check me-1" style="color:#2D6A4F;"></i>
+                    Direct owner contact — inspections &amp; payment arranged privately.
+                </p>
+
+                <hr style="border-color:var(--sand-dk);">
+
+                <div class="d-flex flex-column gap-2" style="font-size:.85rem;">
+                    <div class="d-flex justify-content-between">
+                        <span style="color:var(--muted);">Location</span>
+                        <span style="font-weight:600;color:var(--charcoal);">{{ lodge.location }}</span>
+                    </div>
+                    <div class="d-flex justify-content-between">
+                        <span style="color:var(--muted);">Room Type</span>
+                        <span style="font-weight:600;color:var(--charcoal);">{{ lodge.get_room_type_display }}</span>
+                    </div>
+                    <div class="d-flex justify-content-between">
+                        <span style="color:var(--muted);">Status</span>
+                        <span style="font-weight:600;color:#2D6A4F;"><i class="bi bi-check-circle me-1"></i>Available</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="mt-5 pt-2">
+        <a href="{% url 'search_results' %}" class="btn btn-outline-secondary px-4">
+            <i class="bi bi-arrow-left me-2"></i>Back to Search
+        </a>
+    </div>
+</div>
+{% endblock %}

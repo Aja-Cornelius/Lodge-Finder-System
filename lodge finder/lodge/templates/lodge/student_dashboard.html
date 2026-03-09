@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>Student Dashboard - AE-FUNAI Lodge Finder</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;600;700&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <style>
+        :root{
+            --clay:#C2714F;--clay-dk:#A05A38;--clay-lt:#E8C4A8;
+            --forest:#2D4A3E;--sand:#F5EDE0;--sand-dk:#EAD9C5;
+            --cream:#FBF7F2;--charcoal:#1E2422;--muted:#7A7268;
+        }
+        *{box-sizing:border-box;margin:0;padding:0;}
+        body{font-family:'DM Sans',sans-serif;background:var(--cream);color:var(--charcoal);}
+        h1,h2,h3,h4,h5,.serif{font-family:'Playfair Display',serif;}
+
+        /* ── Top navbar (mobile) ── */
+        .top-bar{
+            background:var(--forest);
+            padding:.9rem 1.2rem;
+            display:flex;
+            align-items:center;
+            justify-content:space-between;
+            position:sticky;top:0;z-index:100;
+            border-bottom:3px solid var(--clay);
+        }
+        .top-bar-brand{font-family:'Playfair Display',serif;font-size:1.1rem;color:var(--sand);}
+        .top-bar-brand span{color:var(--clay);}
+        .hamburger{background:none;border:none;color:var(--sand);font-size:1.4rem;cursor:pointer;padding:.3rem;}
+
+        /* ── Off-canvas sidebar ── */
+        .sidebar-overlay{
+            display:none;position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:200;
+        }
+        .sidebar-overlay.open{display:block;}
+        .sidebar{
+            position:fixed;top:0;left:-260px;width:240px;height:100vh;
+            background:var(--forest);z-index:300;
+            transition:left .28s cubic-bezier(.4,0,.2,1);
+            overflow-y:auto;padding:1.5rem 0;
+        }
+        .sidebar.open{left:0;}
+        .sidebar-brand{padding:1rem 1.6rem 1.8rem;font-family:'Playfair Display',serif;
+            font-size:1rem;color:var(--sand);display:flex;align-items:center;justify-content:space-between;}
+        .sidebar-brand span{color:var(--clay);}
+        .sidebar-close{background:none;border:none;color:rgba(245,237,224,.6);font-size:1.3rem;cursor:pointer;}
+        .sidebar-section{padding:.7rem 1.6rem .3rem;font-size:.68rem;color:rgba(245,237,224,.4);
+            text-transform:uppercase;letter-spacing:.1em;font-weight:700;}
+        .sidebar .nav-link{
+            color:rgba(245,237,224,.82);border-radius:10px;padding:.8rem 1.4rem;
+            margin:.2rem .7rem;font-size:.92rem;font-weight:500;
+            transition:all .2s;display:flex;align-items:center;gap:.6rem;text-decoration:none;
+        }
+        .sidebar .nav-link:hover,.sidebar .nav-link.active{background:rgba(255,255,255,.13);color:#fff;}
+        .sidebar .nav-link i{font-size:1.05rem;}
+
+        /* ── Desktop layout ── */
+        @media(min-width:768px){
+            .top-bar{display:none;}
+            .sidebar{
+                position:static;left:0;width:220px;height:100%;
+                min-height:100vh;transition:none;
+                flex-shrink:0;
+            }
+            .sidebar-brand .sidebar-close{display:none;}
+            .sidebar-overlay{display:none!important;}
+            .layout{display:flex;}
+        }
+
+        /* ── Main content ── */
+        .main-content{flex:1;padding:2rem 1.5rem;min-height:100vh;}
+        @media(min-width:768px){.main-content{padding:2.5rem;}}
+
+        .page-intro{margin-bottom:2rem;}
+        .section-label{font-size:.72rem;font-weight:700;letter-spacing:.12em;
+            text-transform:uppercase;color:var(--clay);display:block;margin-bottom:.35rem;}
+
+        /* ── Stat cards ── */
+        .stats-grid{display:grid;grid-template-columns:1fr;gap:1rem;margin-bottom:2rem;}
+        @media(min-width:480px){.stats-grid{grid-template-columns:repeat(3,1fr);}}
+        .stat-card{border-radius:16px;padding:1.5rem 1.4rem;color:#fff;position:relative;overflow:hidden;}
+        .stat-card::after{content:'';position:absolute;bottom:-18px;right:-18px;
+            width:80px;height:80px;border-radius:50%;background:rgba(255,255,255,.1);}
+        .stat-card h6{font-size:.7rem;text-transform:uppercase;letter-spacing:.08em;
+            opacity:.82;margin-bottom:.5rem;font-family:'DM Sans',sans-serif;}
+        .stat-card h2{font-size:2.4rem;margin:0;font-family:'Playfair Display',serif;}
+
+        /* ── Lodge cards ── */
+        .section-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:1rem;}
+        .see-all{font-size:.85rem;color:var(--clay);font-weight:600;text-decoration:none;}
+        .see-all:hover{color:var(--clay-dk);}
+        .lodges-grid{display:grid;grid-template-columns:1fr;gap:1rem;}
+        @media(min-width:540px){.lodges-grid{grid-template-columns:repeat(2,1fr);}}
+        @media(min-width:900px){.lodges-grid{grid-template-columns:repeat(3,1fr);}}
+        .lodge-card{background:#fff;border-radius:16px;overflow:hidden;
+            box-shadow:0 4px 18px rgba(0,0,0,.07);transition:transform .25s,box-shadow .25s;}
+        .lodge-card:hover{transform:translateY(-5px);box-shadow:0 14px 32px rgba(0,0,0,.12);}
+        .lodge-card img{height:170px;object-fit:cover;width:100%;}
+        .lodge-card-body{padding:1rem 1.1rem 1.2rem;}
+        .lodge-name{font-family:'Playfair Display',serif;font-size:1rem;margin-bottom:.25rem;}
+        .lodge-meta{font-size:.8rem;color:var(--muted);margin-bottom:.8rem;}
+        .lodge-price{font-family:'Playfair Display',serif;color:var(--clay);font-weight:700;font-size:1.2rem;}
+        .lodge-price small{font-family:'DM Sans',sans-serif;font-size:.72rem;font-weight:400;color:var(--muted);}
+        .btn-view{border:2px solid var(--clay);color:var(--clay);border-radius:8px;
+            font-weight:600;font-size:.82rem;padding:.35rem .9rem;text-decoration:none;transition:all .2s;}
+        .btn-view:hover{background:var(--clay);color:#fff;}
+
+        /* ── Footer ── */
+        footer{background:var(--forest);color:var(--sand);padding:3rem 1.5rem;}
+        footer h5{font-family:'Playfair Display',serif;color:var(--clay-lt);font-size:1rem;margin-bottom:.9rem;}
+        footer a{color:rgba(245,237,224,.65);text-decoration:none;font-size:.88rem;}
+        footer a:hover{color:var(--clay-lt);}
+        footer p{font-size:.85rem;color:rgba(245,237,224,.6);line-height:1.7;}
+        .footer-hr{border-color:rgba(245,237,224,.12);margin:1.5rem 0;}
+    </style>
+</head>
+<body>
+
+<!-- Mobile top bar -->
+<div class="top-bar">
+    <div class="top-bar-brand">AE-FUNAI <span>Lodges</span></div>
+    <button class="hamburger" id="openSidebar"><i class="bi bi-list"></i></button>
+</div>
+
+<!-- Overlay -->
+<div class="sidebar-overlay" id="overlay"></div>
+
+<div class="layout">
+    <!-- Sidebar -->
+    <nav class="sidebar" id="sidebar">
+        <div class="sidebar-brand">
+            <span style="color:var(--sand);">AE-FUNAI <span>Lodges</span></span>
+            <button class="sidebar-close" id="closeSidebar"><i class="bi bi-x-lg"></i></button>
+        </div>
+        <p class="sidebar-section">Main</p>
+        <a class="nav-link active" href="#"><i class="bi bi-grid-1x2"></i> Overview</a>
+        <a class="nav-link" href="{% url 'search_results' %}"><i class="bi bi-search"></i> Find Lodges</a>
+        <a class="nav-link" href="#"><i class="bi bi-bookmark-heart"></i> Saved Lodges</a>
+        <p class="sidebar-section" style="margin-top:1rem;">Account</p>
+        <a class="nav-link" href="#"><i class="bi bi-person"></i> Profile</a>
+        <a class="nav-link" href="{% url 'logout' %}"><i class="bi bi-box-arrow-left"></i> Logout</a>
+    </nav>
+
+    <!-- Main Content -->
+    <div class="main-content">
+        <div class="page-intro">
+            <span class="section-label">Student Dashboard</span>
+            <h2 class="serif" style="font-size:clamp(1.5rem,4vw,2rem);margin-bottom:.3rem;">
+                Welcome back, {{ user.get_full_name|default:user.username }}!
+            </h2>
+            <p style="color:var(--muted);font-size:.9rem;">Here's what's happening with your lodge search.</p>
+        </div>
+
+        <!-- Stats -->
+        <div class="stats-grid">
+            <div class="stat-card" style="background:var(--clay);">
+                <h6>Active Bookings</h6>
+                <h2>2</h2>
+            </div>
+            <div class="stat-card" style="background:#2D6A4F;">
+                <h6>Saved Lodges</h6>
+                <h2>7</h2>
+            </div>
+            <div class="stat-card" style="background:var(--forest);">
+                <h6>Pending Inspections</h6>
+                <h2>1</h2>
+            </div>
+        </div>
+
+        <!-- Recommended Lodges -->
+        <div class="section-header">
+            <h4 class="serif" style="font-size:1.3rem;margin:0;">Recommended Near Campus</h4>
+            <a class="see-all" href="{% url 'search_results' %}">Browse all →</a>
+        </div>
+        <div class="lodges-grid">
+            <div class="lodge-card">
+                <img src="https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=600&q=80" alt="Lodge">
+                <div class="lodge-card-body">
+                    <div class="lodge-name">Prime Lodge – Akanu</div>
+                    <div class="lodge-meta">Self-Contain · Water &amp; Light</div>
+                    <div class="d-flex justify-content-between align-items-center">
+                        <span class="lodge-price">₦130,000<small>/yr</small></span>
+                        <a href="{% url 'search_results' %}" class="btn-view">View</a>
+                    </div>
+                </div>
+            </div>
+            <div class="lodge-card">
+                <img src="https://images.unsplash.com/photo-1568605114967-8130f3a36994?w=600&q=80" alt="Lodge">
+                <div class="lodge-card-body">
+                    <div class="lodge-name">Sunrise Hostel – Ozizza</div>
+                    <div class="lodge-meta">Single Room · Borehole Water</div>
+                    <div class="d-flex justify-content-between align-items-center">
+                        <span class="lodge-price">₦80,000<small>/yr</small></span>
+                        <a href="{% url 'search_results' %}" class="btn-view">View</a>
+                    </div>
+                </div>
+            </div>
+            <div class="lodge-card">
+                <img src="https://images.unsplash.com/photo-1502672260266-1c1ef2d93688?w=600&q=80" alt="Lodge">
+                <div class="lodge-card-body">
+                    <div class="lodge-name">Greenview Flat – Amuzu</div>
+                    <div class="lodge-meta">Flat · Quiet area</div>
+                    <div class="d-flex justify-content-between align-items-center">
+                        <span class="lodge-price">₦200,000<small>/yr</small></span>
+                        <a href="{% url 'search_results' %}" class="btn-view">View</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Footer -->
+<footer>
+    <div style="max-width:1200px;margin:0 auto;">
+        <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:2rem;">
+            <div>
+                <h5>AE-FUNAI Lodge Finder</h5>
+                <p>Making off-campus housing safe and easy for AE-FUNAI students.</p>
+            </div>
+            <div>
+                <h5>Quick Links</h5>
+                <ul style="list-style:none;padding:0;">
+                    <li style="margin-bottom:.5rem;"><a href="{% url 'home' %}">Home</a></li>
+                    <li style="margin-bottom:.5rem;"><a href="{% url 'search_results' %}">Find Lodges</a></li>
+                </ul>
+            </div>
+            <div>
+                <h5>Contact</h5>
+                <p>support@aefunailodge.com<br>+234 803 XXX XXXX</p>
+            </div>
+        </div>
+        <hr class="footer-hr">
+        <p style="text-align:center;color:rgba(245,237,224,.35);font-size:.78rem;">© 2026 AE-FUNAI Lodge Finder</p>
+    </div>
+</footer>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+    const sidebar = document.getElementById('sidebar');
+    const overlay = document.getElementById('overlay');
+    document.getElementById('openSidebar').addEventListener('click', () => {
+        sidebar.classList.add('open');
+        overlay.classList.add('open');
+    });
+    const close = () => { sidebar.classList.remove('open'); overlay.classList.remove('open'); };
+    document.getElementById('closeSidebar').addEventListener('click', close);
+    overlay.addEventListener('click', close);
+</script>
+</body>
+</html>
