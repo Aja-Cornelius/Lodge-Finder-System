@@ -167,7 +167,6 @@ MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 # WhiteNoise storage for static files
 STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 
-# Vercel SQLite workaround: Session storage in cookies instead of database
-# Re-enabled this temporarily so you can log in while fixing the Supabase URL
-SESSION_ENGINE = 'django.contrib.sessions.backends.signed_cookies'
+# Standard database-backed sessions
+SESSION_ENGINE = 'django.contrib.sessions.backends.db'
 
