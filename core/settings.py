@@ -98,11 +98,11 @@ try:
         )
     }
 except Exception:
-    # Fallback to SQLite if DATABASE_URL is malformed or missing
+    # Fallback to unique name so we know the URL is missing/malformed
     DATABASES = {
         'default': {
             'ENGINE': 'django.db.backends.sqlite3',
-            'NAME': BASE_DIR / 'db.sqlite3',
+            'NAME': BASE_DIR / 'CHECK_VERCEL_DATABASE_URL_ENV_VAR.sqlite3',
         }
     }
 
@@ -164,5 +164,6 @@ MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 
 # Vercel SQLite workaround: Session storage in cookies instead of database
-# SESSION_ENGINE = 'django.contrib.sessions.backends.signed_cookies'
+# Re-enabled this temporarily so you can log in while fixing the Supabase URL
+SESSION_ENGINE = 'django.contrib.sessions.backends.signed_cookies'
 
