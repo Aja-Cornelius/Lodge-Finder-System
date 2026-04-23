@@ -98,11 +98,15 @@ try:
         )
     }
 except Exception:
-    # Fallback to unique name so we know the URL is missing/malformed
+    # Fallback logic: Use a debug name on Vercel, but keep db.sqlite3 locally
+    db_name = 'db.sqlite3'
+    if os.environ.get('VERCEL'):
+        db_name = 'CHECK_VERCEL_DATABASE_URL_ENV_VAR.sqlite3'
+    
     DATABASES = {
         'default': {
             'ENGINE': 'django.db.backends.sqlite3',
-            'NAME': BASE_DIR / 'CHECK_VERCEL_DATABASE_URL_ENV_VAR.sqlite3',
+            'NAME': BASE_DIR / db_name,
         }
     }
 
