@@ -151,3 +151,7 @@ MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 # WhiteNoise storage for static files
 STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 
+# Vercel SQLite workaround: Session storage in cookies instead of database
+# This allows logging in, but other database writes (e.g. creating lodges) will still fail.
+SESSION_ENGINE = 'django.contrib.sessions.backends.signed_cookies'
+
