@@ -11,6 +11,8 @@ https://docs.djangoproject.com/en/6.0/ref/settings/
 """
 
 from pathlib import Path
+import os
+import dj_database_url
 
 
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -88,10 +90,11 @@ WSGI_APPLICATION = 'core.wsgi.application'
 # https://docs.djangoproject.com/en/6.0/ref/settings/#databases
 
 DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
-    }
+    'default': dj_database_url.config(
+        default=f"sqlite:///{BASE_DIR / 'db.sqlite3'}",
+        conn_max_age=600,
+        conn_health_checks=True,
+    )
 }
 
 
@@ -152,6 +155,5 @@ MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 
 # Vercel SQLite workaround: Session storage in cookies instead of database
-# This allows logging in, but other database writes (e.g. creating lodges) will still fail.
-SESSION_ENGINE = 'django.contrib.sessions.backends.signed_cookies'
+# SESSION_ENGINE = 'django.contrib.sessions.backends.signed_cookies'
 
