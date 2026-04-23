@@ -1,0 +1,749 @@
+{% extends 'lodge/base.html' %}
+{% block title %}{{ lodge.name }} - LodgeFinder{% endblock %}
+
+{% block extra_css %}
+<style>
+/* Hero Gallery Section */
+.lodge-gallery-hero {
+    position: relative;
+    height: 500px;
+    background: var(--gray-900);
+    overflow: hidden;
+}
+
+.gallery-main {
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.gallery-main img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.gallery-thumbnails {
+    position: absolute;
+    bottom: 1.5rem;
+    left: 1.5rem;
+    right: 1.5rem;
+    display: flex;
+    gap: 0.75rem;
+    overflow-x: auto;
+    padding: 0.5rem;
+    background: rgba(0, 0, 0, 0.5);
+    backdrop-filter: blur(10px);
+    border-radius: var(--radius-md);
+}
+
+.thumbnail-item {
+    width: 100px;
+    height: 70px;
+    border-radius: var(--radius-sm);
+    overflow: hidden;
+    cursor: pointer;
+    border: 2px solid transparent;
+    transition: all 0.2s ease;
+    flex-shrink: 0;
+}
+
+.thumbnail-item:hover {
+    border-color: var(--white);
+    transform: scale(1.05);
+}
+
+.thumbnail-item.active {
+    border-color: var(--accent);
+}
+
+.thumbnail-item img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.btn-view-all-photos {
+    position: absolute;
+    top: 1.5rem;
+    right: 1.5rem;
+    background: var(--white);
+    color: var(--gray-900);
+    padding: 0.75rem 1.25rem;
+    border-radius: var(--radius-md);
+    font-weight: 600;
+    font-size: 0.938rem;
+    border: none;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    box-shadow: var(--shadow-lg);
+    transition: all 0.2s ease;
+}
+
+.btn-view-all-photos:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-xl);
+}
+
+/* Content Layout */
+.lodge-content {
+    padding: 3rem 0;
+}
+
+.lodge-main-content {
+    flex: 1;
+}
+
+.lodge-sidebar {
+    width: 400px;
+    position: sticky;
+    top: 100px;
+}
+
+/* Breadcrumb */
+.breadcrumb-modern {
+    background: none;
+    padding: 0;
+    margin-bottom: 1.5rem;
+    font-size: 0.875rem;
+}
+
+.breadcrumb-modern a {
+    color: var(--gray-600);
+    text-decoration: none;
+    transition: color 0.2s ease;
+}
+
+.breadcrumb-modern a:hover {
+    color: var(--primary);
+}
+
+.breadcrumb-modern .active {
+    color: var(--gray-900);
+}
+
+/* Header Section */
+.lodge-header {
+    margin-bottom: 2rem;
+}
+
+.lodge-title-main {
+    font-size: clamp(2rem, 4vw, 2.75rem);
+    font-weight: 800;
+    color: var(--gray-900);
+    margin-bottom: 1rem;
+    line-height: 1.2;
+}
+
+.lodge-meta-main {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1.5rem;
+    align-items: center;
+    margin-bottom: 1rem;
+}
+
+.meta-item-main {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    color: var(--gray-700);
+    font-size: 1rem;
+}
+
+.meta-item-main i {
+    color: var(--primary);
+    font-size: 1.125rem;
+}
+
+.verified-badge-large {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    background: rgba(16, 185, 129, 0.1);
+    color: var(--success);
+    padding: 0.5rem 1rem;
+    border-radius: var(--radius-sm);
+    font-weight: 700;
+    font-size: 0.875rem;
+}
+
+/* Pricing Card */
+.pricing-card {
+    background: var(--white);
+    border: 1px solid var(--gray-200);
+    border-radius: var(--radius-lg);
+    padding: 2rem;
+    box-shadow: var(--shadow-lg);
+    position: sticky;
+    top: 100px;
+}
+
+.price-main {
+    font-family: 'Sora', sans-serif;
+    font-size: 2.5rem;
+    font-weight: 800;
+    color: var(--primary);
+    margin-bottom: 0.5rem;
+    line-height: 1;
+}
+
+.price-period {
+    font-size: 1rem;
+    color: var(--gray-600);
+    font-weight: 500;
+    margin-bottom: 1.5rem;
+}
+
+.btn-contact-owner {
+    background: var(--accent);
+    color: var(--white);
+    border: none;
+    padding: 1rem 1.5rem;
+    border-radius: var(--radius-md);
+    font-weight: 700;
+    font-size: 1rem;
+    width: 100%;
+    transition: all 0.2s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    text-decoration: none;
+    margin-bottom: 1rem;
+}
+
+.btn-contact-owner:hover {
+    background: var(--accent-dark);
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-md);
+    color: var(--white);
+}
+
+.btn-contact-whatsapp {
+    background: #25D366;
+    color: var(--white);
+    border: none;
+    padding: 1rem 1.5rem;
+    border-radius: var(--radius-md);
+    font-weight: 700;
+    font-size: 1rem;
+    width: 100%;
+    transition: all 0.2s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    text-decoration: none;
+}
+
+.btn-contact-whatsapp:hover {
+    background: #20BA5A;
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-md);
+    color: var(--white);
+}
+
+.owner-info {
+    border-top: 1px solid var(--gray-200);
+    margin-top: 1.5rem;
+    padding-top: 1.5rem;
+}
+
+.owner-label {
+    font-size: 0.875rem;
+    color: var(--gray-600);
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+}
+
+.owner-name {
+    font-size: 1rem;
+    color: var(--gray-900);
+    font-weight: 700;
+    margin-bottom: 0.25rem;
+}
+
+.owner-phone {
+    font-size: 0.938rem;
+    color: var(--gray-700);
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+/* Content Sections */
+.content-section {
+    background: var(--white);
+    border: 1px solid var(--gray-200);
+    border-radius: var(--radius-lg);
+    padding: 2rem;
+    margin-bottom: 1.5rem;
+    box-shadow: var(--shadow-sm);
+}
+
+.section-title {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: var(--gray-900);
+    margin-bottom: 1.5rem;
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+}
+
+.section-title i {
+    color: var(--primary);
+    font-size: 1.75rem;
+}
+
+.description-text {
+    color: var(--gray-700);
+    font-size: 1rem;
+    line-height: 1.8;
+}
+
+/* Amenities Grid */
+.amenities-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 1rem;
+}
+
+.amenity-item {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 0.875rem 1rem;
+    background: var(--gray-50);
+    border-radius: var(--radius-sm);
+    border: 1px solid var(--gray-200);
+    transition: all 0.2s ease;
+}
+
+.amenity-item:hover {
+    background: rgba(15, 76, 129, 0.05);
+    border-color: var(--primary);
+}
+
+.amenity-icon {
+    width: 40px;
+    height: 40px;
+    background: var(--white);
+    border-radius: var(--radius-sm);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+}
+
+.amenity-icon i {
+    color: var(--primary);
+    font-size: 1.25rem;
+}
+
+.amenity-name {
+    font-weight: 600;
+    color: var(--gray-900);
+    font-size: 0.938rem;
+}
+
+/* Location Map */
+.map-placeholder {
+    width: 100%;
+    height: 350px;
+    background: var(--gray-100);
+    border-radius: var(--radius-md);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--gray-500);
+    font-size: 1rem;
+    border: 1px solid var(--gray-200);
+}
+
+/* Related Lodges */
+.related-lodges {
+    padding: 3rem 0;
+    background: var(--gray-50);
+    margin-top: 3rem;
+}
+
+.related-lodges-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 1.5rem;
+    margin-top: 2rem;
+}
+
+.related-lodge-card {
+    background: var(--white);
+    border: 1px solid var(--gray-200);
+    border-radius: var(--radius-lg);
+    overflow: hidden;
+    box-shadow: var(--shadow-sm);
+    transition: all 0.3s ease;
+    text-decoration: none;
+    display: block;
+}
+
+.related-lodge-card:hover {
+    box-shadow: var(--shadow-lg);
+    transform: translateY(-4px);
+}
+
+.related-lodge-image {
+    height: 200px;
+    overflow: hidden;
+}
+
+.related-lodge-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.4s ease;
+}
+
+.related-lodge-card:hover .related-lodge-image img {
+    transform: scale(1.05);
+}
+
+.related-lodge-body {
+    padding: 1.25rem;
+}
+
+.related-lodge-name {
+    font-weight: 700;
+    font-size: 1.063rem;
+    color: var(--gray-900);
+    margin-bottom: 0.5rem;
+}
+
+.related-lodge-meta {
+    font-size: 0.875rem;
+    color: var(--gray-600);
+    margin-bottom: 1rem;
+}
+
+.related-lodge-price {
+    font-family: 'Sora', sans-serif;
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: var(--primary);
+}
+
+/* Responsive */
+@media (max-width: 992px) {
+    .lodge-gallery-hero {
+        height: 400px;
+    }
+    
+    .lodge-content {
+        padding: 2rem 0;
+    }
+    
+    .lodge-sidebar {
+        width: 100%;
+        position: static;
+        margin-top: 2rem;
+    }
+    
+    .pricing-card {
+        position: static;
+    }
+    
+    .content-section {
+        padding: 1.5rem;
+    }
+}
+
+@media (max-width: 768px) {
+    .lodge-gallery-hero {
+        height: 300px;
+    }
+    
+    .gallery-thumbnails {
+        display: none;
+    }
+    
+    .lodge-meta-main {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 0.75rem;
+    }
+    
+    .amenities-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .related-lodges-grid {
+        grid-template-columns: 1fr;
+    }
+}
+</style>
+{% endblock %}
+
+{% block content %}
+<!-- Gallery Hero -->
+<section class="lodge-gallery-hero">
+    <div class="gallery-main" id="galleryMain">
+        {% if images %}
+            <img src="{{ images.0.image.url }}" alt="{{ lodge.name }}" id="mainImage">
+        {% else %}
+            <img src="https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=1920&q=80&auto=format&fit=crop" 
+                 alt="{{ lodge.name }}" id="mainImage">
+        {% endif %}
+    </div>
+    
+    {% if images %}
+    <div class="gallery-thumbnails">
+        {% for image in images %}
+        <div class="thumbnail-item {% if forloop.first %}active{% endif %}" data-index="{{ forloop.counter0 }}">
+            <img src="{{ image.image.url }}" alt="{{ lodge.name }}">
+        </div>
+        {% endfor %}
+    </div>
+    
+    <button class="btn-view-all-photos">
+        <i class="bi bi-grid-3x3-gap"></i>
+        View All {{ images|length }} Photos
+    </button>
+    {% endif %}
+</section>
+
+<!-- Main Content -->
+<div class="lodge-content">
+    <div class="container">
+        <div class="row">
+            <!-- Main Content -->
+            <div class="col-lg-8">
+                <!-- Breadcrumb -->
+                <nav aria-label="breadcrumb">
+                    <ol class="breadcrumb breadcrumb-modern">
+                        <li class="breadcrumb-item"><a href="{% url 'home' %}">Home</a></li>
+                        <li class="breadcrumb-item"><a href="{% url 'search_results' %}">Search</a></li>
+                        <li class="breadcrumb-item"><a href="{% url 'search_results' %}?location={{ lodge.location }}">{{ lodge.location }}</a></li>
+                        <li class="breadcrumb-item active">{{ lodge.name }}</li>
+                    </ol>
+                </nav>
+                
+                <!-- Header -->
+                <div class="lodge-header">
+                    <h1 class="lodge-title-main">{{ lodge.name }}</h1>
+                    
+                    <div class="lodge-meta-main">
+                        <div class="meta-item-main">
+                            <i class="bi bi-geo-alt-fill"></i>
+                            <span>{{ lodge.location }}</span>
+                        </div>
+                        <div class="meta-item-main">
+                            <i class="bi bi-house-door-fill"></i>
+                            <span>{{ lodge.get_room_type_display }}</span>
+                        </div>
+                        {% if lodge.is_approved %}
+                        <div class="verified-badge-large">
+                            <i class="bi bi-patch-check-fill"></i>
+                            <span>Verified Property</span>
+                        </div>
+                        {% endif %}
+                    </div>
+                </div>
+                
+                <!-- Description -->
+                {% if lodge.description %}
+                <div class="content-section">
+                    <h2 class="section-title">
+                        <i class="bi bi-file-text"></i>
+                        Description
+                    </h2>
+                    <p class="description-text">{{ lodge.description }}</p>
+                </div>
+                {% endif %}
+                
+                <!-- Amenities -->
+                {% if lodge.amenities.all %}
+                <div class="content-section">
+                    <h2 class="section-title">
+                        <i class="bi bi-check-circle"></i>
+                        Amenities
+                    </h2>
+                    <div class="amenities-grid">
+                        {% for amenity in lodge.amenities.all %}
+                        <div class="amenity-item">
+                            <div class="amenity-icon">
+                                <i class="bi bi-check-lg"></i>
+                            </div>
+                            <div class="amenity-name">{{ amenity.name }}</div>
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
+                {% endif %}
+                
+                <!-- Location -->
+                <div class="content-section">
+                    <h2 class="section-title">
+                        <i class="bi bi-map"></i>
+                        Location
+                    </h2>
+                    <p class="description-text mb-3">
+                        <i class="bi bi-geo-alt-fill me-2" style="color: var(--primary);"></i>
+                        <strong>{{ lodge.location }}</strong>, Afikpo, Ebonyi State
+                    </p>
+                    {% if lodge.latitude and lodge.longitude %}
+                    <div id="map" style="width: 100%; height: 350px; border-radius: var(--radius-md); border: 1px solid var(--gray-200); margin-bottom: 1rem;"></div>
+                    {% else %}
+                    <div class="map-placeholder">
+                        <div class="text-center">
+                            <i class="bi bi-geo-alt" style="font-size: 3rem; margin-bottom: 1rem;"></i>
+                            <p>Location coordinates not yet available</p>
+                        </div>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+            
+            <!-- Sidebar -->
+            <div class="col-lg-4">
+                <div class="pricing-card">
+                    <div class="price-main">₦{{ lodge.price_per_year|floatformat:0 }}</div>
+                    <div class="price-period">per year</div>
+                    
+                    {% if lodge.owner.phone_number %}
+                    <a href="tel:{{ lodge.owner.phone_number }}" class="btn-contact-owner">
+                        <i class="bi bi-telephone-fill"></i>
+                        Call Owner
+                    </a>
+                    
+                    <a href="https://wa.me/{{ lodge.owner.phone_number }}" 
+                       target="_blank" 
+                       class="btn-contact-whatsapp">
+                        <i class="bi bi-whatsapp"></i>
+                        WhatsApp
+                    </a>
+                    {% else %}
+                    <button class="btn-contact-owner" disabled>
+                        <i class="bi bi-telephone-fill"></i>
+                        Contact Information Unavailable
+                    </button>
+                    {% endif %}
+                    
+                    <div class="owner-info">
+                        <div class="owner-label">Listed by</div>
+                        <div class="owner-name">{{ lodge.owner.get_full_name|default:lodge.owner.username }}</div>
+                        {% if lodge.owner.phone_number %}
+                        <div class="owner-phone">
+                            <i class="bi bi-telephone"></i>
+                            {{ lodge.owner.phone_number }}
+                        </div>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Related Lodges -->
+{% if related_lodges %}
+<section class="related-lodges">
+    <div class="container">
+        <h2 class="section-title" style="border: none; padding: 0;">
+            <i class="bi bi-building"></i>
+            Similar Lodges in {{ lodge.location }}
+        </h2>
+        
+        <div class="related-lodges-grid">
+            {% for related in related_lodges %}
+            <a href="{% url 'lodge_detail' related.id %}" class="related-lodge-card">
+                <div class="related-lodge-image">
+                    {% if related.images.all %}
+                        <img src="{{ related.images.first.image.url }}" 
+                             alt="{{ related.name }}"
+                             loading="lazy">
+                    {% else %}
+                        <img src="https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=600&q=80&auto=format&fit=crop" 
+                             alt="{{ related.name }}"
+                             loading="lazy">
+                    {% endif %}
+                </div>
+                <div class="related-lodge-body">
+                    <div class="related-lodge-name">{{ related.name }}</div>
+                    <div class="related-lodge-meta">
+                        {{ related.get_room_type_display }} · {{ related.location }}
+                    </div>
+                    <div class="related-lodge-price">₦{{ related.price_per_year|floatformat:0 }}/yr</div>
+                </div>
+            </a>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+{% endif %}
+{% endblock %}
+
+{% block extra_js %}
+<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAxRlGAcWYpqRCiWg2KC3FD4TIYjIZY_Fs&callback=initMap" async defer></script>
+<script>
+function initMap() {
+    {% if lodge.latitude and lodge.longitude %}
+    const lodgeLocation = { lat: {{ lodge.latitude }}, lng: {{ lodge.longitude }} };
+    const map = new google.maps.Map(document.getElementById("map"), {
+        zoom: 16,
+        center: lodgeLocation,
+        mapTypeControl: false,
+        streetViewControl: false,
+        fullscreenControl: true,
+    });
+    const marker = new google.maps.Marker({
+        position: lodgeLocation,
+        map: map,
+        title: "{{ lodge.name }}",
+        animation: google.maps.Animation.DROP
+    });
+    
+    // Add info window
+    const infowindow = new google.maps.InfoWindow({
+        content: '<div style="padding: 10px;"><strong>{{ lodge.name }}</strong><br>{{ lodge.location }}</div>'
+    });
+    
+    marker.addListener("click", () => {
+        infowindow.open(map, marker);
+    });
+    {% endif %}
+}
+
+// Gallery thumbnail navigation
+document.addEventListener('DOMContentLoaded', function() {
+    const thumbnails = document.querySelectorAll('.thumbnail-item');
+    const mainImage = document.getElementById('mainImage');
+    
+    thumbnails.forEach(thumbnail => {
+        thumbnail.addEventListener('click', function() {
+            // Remove active class from all
+            thumbnails.forEach(t => t.classList.remove('active'));
+            
+            // Add active class to clicked
+            this.classList.add('active');
+            
+            // Update main image
+            const imgSrc = this.querySelector('img').src;
+            mainImage.src = imgSrc;
+        });
+    });
+    
+    // Lazy load images
+    const images = document.querySelectorAll('img[loading="lazy"]');
+    images.forEach(img => {
+        img.style.opacity = '0';
+        img.style.transition = 'opacity 0.4s ease';
+        img.addEventListener('load', function() {
+            this.style.opacity = '1';
+        });
+        if (img.complete) img.style.opacity = '1';
+    });
+});
+</script>
+{% endblock %}

@@ -1,0 +1,76 @@
+{% extends 'lodge/base.html' %}
+{% block title %}My Profile - AE-FUNAI Lodge Finder{% endblock %}
+
+{% block extra_css %}
+<style>
+.page-header{background:var(--forest);padding:3rem 0 2rem;}
+.page-header h2{color:var(--sand);}
+.profile-avatar{width:96px;height:96px;border-radius:50%;background:var(--clay);
+    display:flex;align-items:center;justify-content:center;font-size:2.5rem;color:#fff;
+    font-family:'Playfair Display',serif;margin:0 auto 1rem;}
+.profile-card{background:#fff;border-radius:20px;padding:2.5rem;box-shadow:0 4px 20px rgba(0,0,0,.08);}
+.detail-row{padding:.9rem 0;border-bottom:1px solid var(--sand-dk);display:flex;align-items:center;}
+.detail-row:last-child{border-bottom:none;}
+.detail-label{font-size:.78rem;text-transform:uppercase;letter-spacing:.06em;font-weight:700;
+    color:var(--muted);width:140px;flex-shrink:0;}
+.detail-value{font-weight:500;color:var(--charcoal);}
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="page-header">
+    <div class="container">
+        <a href="{% url 'owner_dashboard' %}" style="color:rgba(245,237,224,.6);font-size:.88rem;text-decoration:none;">
+            <i class="bi bi-arrow-left me-1"></i>Dashboard
+        </a>
+        <h2 class="serif mt-2 mb-0">My Profile</h2>
+    </div>
+</div>
+
+<div class="container py-5">
+    <div class="row g-4">
+        <div class="col-lg-3">
+            <div class="profile-card text-center">
+                <div class="profile-avatar">
+                    {{ user.get_full_name|default:user.username|slice:":1"|upper }}
+                </div>
+                <h5 class="serif mb-1">{{ user.get_full_name|default:user.username }}</h5>
+                <span class="badge" style="background:var(--clay);font-size:.78rem;">Lodge Owner</span>
+                <hr style="border-color:var(--sand-dk);margin:1.2rem 0;">
+                <a href="#" class="btn btn-primary w-100">Edit Profile</a>
+            </div>
+        </div>
+        <div class="col-lg-9">
+            <div class="profile-card">
+                <h5 class="serif mb-4">Account Details</h5>
+                <div class="detail-row">
+                    <span class="detail-label">Username</span>
+                    <span class="detail-value">{{ user.username }}</span>
+                </div>
+                <div class="detail-row">
+                    <span class="detail-label">Full Name</span>
+                    <span class="detail-value">{{ user.get_full_name|default:'Not set' }}</span>
+                </div>
+                <div class="detail-row">
+                    <span class="detail-label">Phone Number</span>
+                    <span class="detail-value">{{ user.phone_number|default:'Not set' }}</span>
+                </div>
+                <div class="detail-row">
+                    <span class="detail-label">Email</span>
+                    <span class="detail-value">{{ user.email }}</span>
+                </div>
+                <div class="detail-row">
+                    <span class="detail-label">Member Since</span>
+                    <span class="detail-value">{{ user.date_joined|date:"F d, Y" }}</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="text-center mt-5">
+        <a href="{% url 'owner_dashboard' %}" class="btn btn-outline-secondary px-4">
+            <i class="bi bi-arrow-left me-2"></i>Back to Dashboard
+        </a>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,110 @@
+{% extends 'lodge/base.html' %}
+{% load widget_tweaks %}
+{% block title %}Lodge Owner Sign Up - AE-FUNAI Lodge Finder{% endblock %}
+
+{% block extra_css %}
+<style>
+.auth-page{background:linear-gradient(135deg,var(--sand) 0%,var(--cream) 100%);padding:3rem 1rem;}
+.auth-card{background:#fff;border-radius:24px;box-shadow:0 20px 60px rgba(0,0,0,.1);
+    overflow:hidden;width:100%;max-width:560px;margin:0 auto;}
+.auth-top{background:var(--forest);padding:2.8rem 2.5rem 2.2rem;text-align:center;position:relative;}
+.auth-top::after{content:'';position:absolute;bottom:-1px;left:0;right:0;height:24px;
+    background:#fff;border-radius:24px 24px 0 0;}
+.auth-top .icon-ring{width:64px;height:64px;border-radius:50%;background:rgba(194,113,79,.2);
+    border:2px solid var(--clay-lt);display:flex;align-items:center;justify-content:center;
+    font-size:1.6rem;color:var(--clay-lt);margin:0 auto 1rem;}
+.auth-top h2{color:var(--sand);font-size:1.5rem;margin:0 0 .4rem;}
+.auth-top p{color:rgba(245,237,224,.65);font-size:.85rem;margin:0;}
+.auth-body{padding:2rem 2.5rem 2.5rem;}
+.btn-auth{background:var(--clay);color:#fff;border:none;border-radius:12px;padding:1rem;
+    font-weight:700;font-size:.98rem;width:100%;transition:all .2s;}
+.btn-auth:hover{background:var(--clay-dk);transform:translateY(-2px);
+    box-shadow:0 8px 24px rgba(194,113,79,.4);color:#fff;}
+.field-error{color:var(--clay-dk);font-size:.8rem;margin-top:.3rem;}
+.docs-section{background:var(--sand);border-radius:14px;padding:1.4rem;margin-bottom:1.5rem;}
+.docs-section h6{color:var(--forest);font-weight:700;font-size:.85rem;margin-bottom:.3rem;}
+.auth-link{color:var(--clay);font-weight:600;text-decoration:none;}
+.auth-link:hover{color:var(--clay-dk);}
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="auth-page pt-5">
+    <div class="auth-card">
+        <div class="auth-top">
+            <div class="icon-ring"><i class="bi bi-building-add"></i></div>
+            <h2 class="serif">Become a Lodge Owner</h2>
+            <p>List your lodge &amp; connect with AE-FUNAI students</p>
+        </div>
+        <div class="auth-body">
+            {% if form.non_field_errors %}
+            <div class="alert alert-danger mb-4">
+                {% for error in form.non_field_errors %}{{ error }}{% endfor %}
+            </div>
+            {% endif %}
+            <form method="post" novalidate>
+                {% csrf_token %}
+                <div class="mb-3">
+                    <label class="form-label">Username</label>
+                    {{ form.username|add_class:"form-control" }}
+                    {% if form.username.errors %}<div class="field-error">{{ form.username.errors }}</div>{% endif %}
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">Email Address</label>
+                    {{ form.email|add_class:"form-control" }}
+                    {% if form.email.errors %}<div class="field-error">{{ form.email.errors }}</div>{% endif %}
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">WhatsApp Phone Number</label>
+                    {{ form.phone_number|add_class:"form-control" }}
+                    {% if form.phone_number.errors %}<div class="field-error">{{ form.phone_number.errors }}</div>{% endif %}
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">Business / Lodge Name <span style="color:var(--muted);font-weight:400">(optional)</span></label>
+                    <input type="text" class="form-control" name="business_name" placeholder="e.g. Okoro Heights Lodge">
+                </div>
+                <div class="row g-3 mb-4">
+                    <div class="col-md-6">
+                        <label class="form-label">Password</label>
+                        {{ form.password1|add_class:"form-control" }}
+                        {% if form.password1.errors %}<div class="field-error">{{ form.password1.errors }}</div>{% endif %}
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label">Confirm Password</label>
+                        {{ form.password2|add_class:"form-control" }}
+                        {% if form.password2.errors %}<div class="field-error">{{ form.password2.errors }}</div>{% endif %}
+                    </div>
+                </div>
+
+                <div class="docs-section">
+                    <h6><i class="bi bi-shield-check me-2" style="color:var(--clay)"></i>Verification Documents</h6>
+                    <p style="font-size:.8rem;color:var(--muted);margin-bottom:1rem;">Upload at least one to verify ownership and build trust with students.</p>
+                    <div class="mb-3">
+                        <label class="form-label">Photo of Lodge / Property (front view) *</label>
+                        <input type="file" class="form-control" name="property_photo" accept="image/*" required>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Government ID <span style="color:var(--muted);font-weight:400">(optional)</span></label>
+                        <input type="file" class="form-control" name="id_proof" accept="image/*">
+                    </div>
+                    <div class="mb-0">
+                        <label class="form-label">CAC Certificate <span style="color:var(--muted);font-weight:400">(if registered business)</span></label>
+                        <input type="file" class="form-control" name="cac_cert" accept="image/*,.pdf">
+                    </div>
+                </div>
+
+                <div class="form-check mb-4">
+                    <input class="form-check-input" type="checkbox" id="terms" name="terms" required>
+                    <label class="form-check-label" for="terms" style="font-size:.85rem;color:var(--muted);">
+                        I agree to the <a href="#" class="auth-link">Terms of Service</a>, <a href="#" class="auth-link">Listing Rules</a> and <a href="#" class="auth-link">Privacy Policy</a>
+                    </label>
+                </div>
+                <button type="submit" class="btn-auth mb-3">Sign Up as Lodge Owner</button>
+                <p class="text-center mb-0" style="font-size:.88rem;color:var(--muted);">
+                    Already have an account? <a href="{% url 'owner_login' %}" class="auth-link">Log in →</a>
+                </p>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}

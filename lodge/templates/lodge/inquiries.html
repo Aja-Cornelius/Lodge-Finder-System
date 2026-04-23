@@ -1,0 +1,45 @@
+{% extends 'lodge/base.html' %}
+{% block title %}Inquiries - AE-FUNAI Lodge Finder{% endblock %}
+
+{% block extra_css %}
+<style>
+.page-header{background:var(--forest);padding:3rem 0 2rem;}
+.page-header h2{color:var(--sand);}
+.coming-soon{background:#fff;border-radius:20px;padding:5rem 2rem;text-align:center;
+    box-shadow:0 4px 20px rgba(0,0,0,.07);}
+.coming-soon .icon{width:90px;height:90px;border-radius:50%;background:rgba(194,113,79,.1);
+    border:2px solid var(--clay-lt);display:flex;align-items:center;justify-content:center;
+    font-size:2.2rem;color:var(--clay);margin:0 auto 1.5rem;}
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="page-header">
+    <div class="container">
+        <a href="{% url 'owner_dashboard' %}" style="color:rgba(245,237,224,.6);font-size:.88rem;text-decoration:none;">
+            <i class="bi bi-arrow-left me-1"></i>Dashboard
+        </a>
+        <h2 class="serif mt-2 mb-1">Inquiries &amp; Messages</h2>
+        <p class="mb-0" style="color:rgba(245,237,224,.65);">Student requests and viewing inquiries</p>
+    </div>
+</div>
+
+<div class="container py-5">
+    <div class="coming-soon">
+        <div class="icon"><i class="bi bi-chat-square-dots"></i></div>
+        <h4 class="serif mb-2">Coming Soon</h4>
+        <p style="color:var(--muted);max-width:420px;margin:0 auto 2rem;font-size:.93rem;">
+            This section will show messages, viewing requests, and booking inquiries from students directly in your dashboard.
+        </p>
+        <span style="background:var(--sand);color:var(--forest);font-size:.78rem;font-weight:700;
+            text-transform:uppercase;letter-spacing:.08em;padding:.4rem 1.2rem;border-radius:50px;">
+            <i class="bi bi-wrench me-1"></i>In development
+        </span>
+        <div class="mt-4">
+            <a href="{% url 'owner_dashboard' %}" class="btn btn-outline-primary px-4">
+                <i class="bi bi-arrow-left me-2"></i>Back to Dashboard
+            </a>
+        </div>
+    </div>
+</div>
+{% endblock %}

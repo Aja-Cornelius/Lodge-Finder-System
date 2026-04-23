@@ -1,0 +1,82 @@
+{% extends 'lodge/base.html' %}
+{% block title %}My Lodges - AE-FUNAI Lodge Finder{% endblock %}
+
+{% block extra_css %}
+<style>
+.page-header{background:var(--forest);padding:3rem 0 2rem;}
+.page-header h2{color:var(--sand);}
+.page-header p{color:rgba(245,237,224,.65);}
+.table-wrap{background:#fff;border-radius:18px;overflow:hidden;box-shadow:0 4px 20px rgba(0,0,0,.07);}
+.empty-card{background:#fff;border-radius:18px;padding:4rem;text-align:center;box-shadow:0 4px 20px rgba(0,0,0,.07);}
+.empty-card i{font-size:3rem;color:var(--clay-lt);margin-bottom:1rem;display:block;}
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="page-header">
+    <div class="container">
+        <a href="{% url 'owner_dashboard' %}" style="color:rgba(245,237,224,.6);font-size:.88rem;text-decoration:none;">
+            <i class="bi bi-arrow-left me-1"></i>Dashboard
+        </a>
+        <h2 class="serif mt-2 mb-1">My Registered Lodges</h2>
+        <p class="mb-0">All lodges associated with your account</p>
+    </div>
+</div>
+
+<div class="container py-5">
+    {% if lodges %}
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <p style="color:var(--muted);font-size:.88rem;">{{ lodges|length }} lodge{{ lodges|length|pluralize }} registered</p>
+        <a href="{% url 'add_lodge' %}" class="btn btn-primary px-4"><i class="bi bi-plus-lg me-2"></i>Add New</a>
+    </div>
+    <div class="table-wrap">
+        <table class="table mb-0">
+            <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>Location</th>
+                    <th>Price (₦/yr)</th>
+                    <th>Type</th>
+                    <th>Status</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for lodge in lodges %}
+                <tr>
+                    <td style="font-weight:600;">{{ lodge.name }}</td>
+                    <td style="color:var(--muted);">{{ lodge.location }}</td>
+                    <td style="color:var(--clay);font-weight:600;">₦{{ lodge.price_per_year|floatformat:0 }}</td>
+                    <td>{{ lodge.get_room_type_display }}</td>
+                    <td>
+                        {% if lodge.is_approved %}
+                        <span class="badge bg-success px-3 py-2">Approved</span>
+                        {% else %}
+                        <span class="badge bg-warning px-3 py-2">Pending</span>
+                        {% endif %}
+                    </td>
+                    <td>
+                        <a href="{% url 'lodge_detail' lodge.id %}" class="btn btn-sm btn-outline-primary me-1"><i class="bi bi-eye"></i> View</a>
+                        <a href="#" class="btn btn-sm btn-outline-secondary disabled"><i class="bi bi-pencil"></i> Edit</a>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    {% else %}
+    <div class="empty-card">
+        <i class="bi bi-house-slash"></i>
+        <h4 class="serif mb-2">No lodges registered yet</h4>
+        <p style="color:var(--muted);">Register your first lodge and start reaching AE-FUNAI students.</p>
+        <a href="{% url 'add_lodge' %}" class="btn btn-primary mt-2 px-4">Register Your First Lodge</a>
+    </div>
+    {% endif %}
+
+    <div class="text-center mt-5">
+        <a href="{% url 'owner_dashboard' %}" class="btn btn-outline-secondary px-4">
+            <i class="bi bi-arrow-left me-2"></i>Back to Dashboard
+        </a>
+    </div>
+</div>
+{% endblock %}

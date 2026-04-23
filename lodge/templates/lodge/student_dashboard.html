@@ -1,0 +1,637 @@
+<!DOCTYPE html>
+{% load static %}
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Student Dashboard - LodgeFinder</title>
+    
+    <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
+    <link rel="preconnect" href="https://fonts.googleapis.com" crossorigin>
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Sora:wght@600;700;800&display=swap" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    
+    <style>
+        :root {
+            --primary: #0F4C81;
+            --primary-dark: #0A3A61;
+            --primary-light: #1A5F9B;
+            --accent: #FF6B35;
+            --white: #FFFFFF;
+            --gray-50: #F9FAFB;
+            --gray-100: #F3F4F6;
+            --gray-200: #E5E7EB;
+            --gray-300: #D1D5DB;
+            --gray-600: #4B5563;
+            --gray-700: #374151;
+            --gray-800: #1F2937;
+            --gray-900: #111827;
+            --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+            --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+            --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+            --radius-sm: 8px;
+            --radius-md: 12px;
+            --radius-lg: 16px;
+        }
+        
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        
+        body {
+            font-family: 'Inter', sans-serif;
+            background: var(--gray-50);
+            color: var(--gray-900);
+        }
+        
+        h1, h2, h3, h4, h5, h6 {
+            font-family: 'Sora', sans-serif;
+        }
+        
+        /* Dashboard Layout */
+        .dashboard-container {
+            display: flex;
+            min-height: 100vh;
+        }
+        
+        /* Sidebar */
+        .sidebar-dashboard {
+            width: 280px;
+            background: var(--white);
+            border-right: 1px solid var(--gray-200);
+            position: fixed;
+            height: 100vh;
+            overflow-y: auto;
+            z-index: 100;
+            transition: transform 0.3s ease;
+        }
+        
+        .sidebar-header {
+            padding: 1.5rem;
+            border-bottom: 1px solid var(--gray-200);
+        }
+        
+        .brand-dashboard {
+            font-family: 'Sora', sans-serif;
+            font-size: 1.5rem;
+            font-weight: 800;
+            color: var(--primary);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .brand-dot {
+            width: 8px;
+            height: 8px;
+            background: var(--accent);
+            border-radius: 50%;
+        }
+        
+        .sidebar-nav {
+            padding: 1rem;
+        }
+        
+        .nav-section-title {
+            font-size: 0.75rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            color: var(--gray-600);
+            padding: 0 0.75rem;
+            margin: 1.5rem 0 0.5rem;
+        }
+        
+        .nav-section-title:first-child {
+            margin-top: 0;
+        }
+        
+        .nav-link-dashboard {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            padding: 0.75rem;
+            border-radius: var(--radius-sm);
+            color: var(--gray-700);
+            text-decoration: none;
+            font-weight: 500;
+            font-size: 0.938rem;
+            transition: all 0.2s ease;
+            margin-bottom: 0.25rem;
+        }
+        
+        .nav-link-dashboard:hover {
+            background: var(--gray-100);
+            color: var(--primary);
+        }
+        
+        .nav-link-dashboard.active {
+            background: rgba(15, 76, 129, 0.1);
+            color: var(--primary);
+            font-weight: 600;
+        }
+        
+        .nav-link-dashboard i {
+            font-size: 1.125rem;
+        }
+        
+        /* Main Content */
+        .main-content-dashboard {
+            flex: 1;
+            margin-left: 280px;
+            padding: 2rem;
+            max-width: 1400px;
+        }
+        
+        /* Mobile Sidebar */
+        .mobile-header {
+            display: none;
+            background: var(--white);
+            border-bottom: 1px solid var(--gray-200);
+            padding: 1rem;
+            position: sticky;
+            top: 0;
+            z-index: 99;
+        }
+        
+        .mobile-toggle {
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            color: var(--gray-700);
+            cursor: pointer;
+        }
+        
+        .sidebar-overlay {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 98;
+        }
+        
+        /* Page Header */
+        .page-header-dashboard {
+            margin-bottom: 2rem;
+        }
+        
+        .page-subtitle {
+            font-size: 0.75rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            color: var(--primary);
+            margin-bottom: 0.5rem;
+        }
+        
+        .page-title {
+            font-size: clamp(1.75rem, 4vw, 2.25rem);
+            font-weight: 800;
+            color: var(--gray-900);
+            margin-bottom: 0.5rem;
+        }
+        
+        .page-description {
+            color: var(--gray-600);
+            font-size: 1rem;
+        }
+        
+        /* Stats Grid */
+        .stats-grid-dashboard {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2.5rem;
+        }
+        
+        .stat-card-dashboard {
+            background: var(--white);
+            border: 1px solid var(--gray-200);
+            border-radius: var(--radius-lg);
+            padding: 1.5rem;
+            box-shadow: var(--shadow-sm);
+            transition: all 0.2s ease;
+        }
+        
+        .stat-card-dashboard:hover {
+            box-shadow: var(--shadow-md);
+            transform: translateY(-2px);
+        }
+        
+        .stat-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 1rem;
+        }
+        
+        .stat-label {
+            font-size: 0.875rem;
+            font-weight: 600;
+            color: var(--gray-600);
+        }
+        
+        .stat-icon {
+            width: 48px;
+            height: 48px;
+            border-radius: var(--radius-md);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+        }
+        
+        .stat-icon.primary { background: rgba(15, 76, 129, 0.1); color: var(--primary); }
+        .stat-icon.success { background: rgba(16, 185, 129, 0.1); color: #10B981; }
+        .stat-icon.warning { background: rgba(245, 158, 11, 0.1); color: #F59E0B; }
+        
+        .stat-value {
+            font-family: 'Sora', sans-serif;
+            font-size: 2.5rem;
+            font-weight: 800;
+            color: var(--gray-900);
+        }
+        
+        /* Section Header */
+        .section-header-dashboard {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+        }
+        
+        .section-title-dashboard {
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: var(--gray-900);
+        }
+        
+        .link-view-all {
+            color: var(--primary);
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 0.938rem;
+            transition: color 0.2s ease;
+        }
+        
+        .link-view-all:hover {
+            color: var(--primary-dark);
+        }
+        
+        /* Lodge Grid */
+        .lodges-grid-dashboard {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 1.5rem;
+        }
+        
+        .lodge-card-dashboard {
+            background: var(--white);
+            border: 1px solid var(--gray-200);
+            border-radius: var(--radius-lg);
+            overflow: hidden;
+            box-shadow: var(--shadow-sm);
+            transition: all 0.3s ease;
+        }
+        
+        .lodge-card-dashboard:hover {
+            box-shadow: var(--shadow-lg);
+            transform: translateY(-4px);
+        }
+        
+        .lodge-image {
+            height: 200px;
+            overflow: hidden;
+        }
+        
+        .lodge-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.4s ease;
+        }
+        
+        .lodge-card-dashboard:hover .lodge-image img {
+            transform: scale(1.05);
+        }
+        
+        .lodge-body {
+            padding: 1.25rem;
+        }
+        
+        .lodge-name {
+            font-weight: 700;
+            font-size: 1.063rem;
+            color: var(--gray-900);
+            margin-bottom: 0.5rem;
+        }
+        
+        .lodge-meta {
+            font-size: 0.875rem;
+            color: var(--gray-600);
+            margin-bottom: 1rem;
+        }
+        
+        .lodge-price {
+            font-family: 'Sora', sans-serif;
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: var(--primary);
+        }
+        
+        .btn-view-small {
+            background: var(--primary);
+            color: var(--white);
+            border: none;
+            padding: 0.5rem 1rem;
+            border-radius: var(--radius-sm);
+            font-weight: 600;
+            font-size: 0.875rem;
+            text-decoration: none;
+            display: inline-block;
+            transition: all 0.2s ease;
+        }
+        
+        .btn-view-small:hover {
+            background: var(--primary-dark);
+            color: var(--white);
+        }
+        
+        /* Responsive */
+        @media (max-width: 992px) {
+            .mobile-header {
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+            }
+            
+            .sidebar-dashboard {
+                transform: translateX(-100%);
+            }
+            
+            .sidebar-dashboard.open {
+                transform: translateX(0);
+            }
+            
+            .sidebar-overlay.open {
+                display: block;
+            }
+            
+            .main-content-dashboard {
+                margin-left: 0;
+                padding: 1.5rem;
+            }
+            
+            .lodges-grid-dashboard {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Mobile Header -->
+    <div class="mobile-header">
+        <div class="brand-dashboard">
+            <span class="brand-dot"></span>
+            LodgeFinder
+        </div>
+        <button class="mobile-toggle" id="toggleSidebar">
+            <i class="bi bi-list"></i>
+        </button>
+    </div>
+    
+    <!-- Sidebar Overlay -->
+    <div class="sidebar-overlay" id="sidebarOverlay"></div>
+    
+    <div class="dashboard-container">
+        <!-- Sidebar -->
+        <aside class="sidebar-dashboard" id="sidebar">
+            <div class="sidebar-header">
+                <div class="brand-dashboard">
+                    <span class="brand-dot"></span>
+                    LodgeFinder
+                </div>
+            </div>
+            
+            <nav class="sidebar-nav">
+                <div class="nav-section-title">Main</div>
+                <a href="{% url 'student_dashboard' %}" class="nav-link-dashboard active">
+                    <i class="bi bi-grid-1x2"></i>
+                    <span>Overview</span>
+                </a>
+                <a href="{% url 'search_results' %}" class="nav-link-dashboard">
+                    <i class="bi bi-search"></i>
+                    <span>Find Lodges</span>
+                </a>
+                <a href="#" class="nav-link-dashboard">
+                    <i class="bi bi-bookmark-heart"></i>
+                    <span>Saved Lodges</span>
+                </a>
+                <a href="#" class="nav-link-dashboard">
+                    <i class="bi bi-clock-history"></i>
+                    <span>Recent Views</span>
+                </a>
+                
+                <div class="nav-section-title">Account</div>
+                <a href="#" class="nav-link-dashboard">
+                    <i class="bi bi-person-circle"></i>
+                    <span>Profile</span>
+                </a>
+                <a href="#" class="nav-link-dashboard">
+                    <i class="bi bi-gear"></i>
+                    <span>Settings</span>
+                </a>
+                <a href="{% url 'logout' %}" class="nav-link-dashboard">
+                    <i class="bi bi-box-arrow-left"></i>
+                    <span>Logout</span>
+                </a>
+            </nav>
+        </aside>
+        
+        <!-- Main Content -->
+        <main class="main-content-dashboard">
+            <!-- Page Header -->
+            <div class="page-header-dashboard">
+                <div class="page-subtitle">Student Dashboard</div>
+                <h1 class="page-title">Welcome back, {{ user.get_full_name|default:user.username }}!</h1>
+                <p class="page-description">Here's an overview of your lodge search activity</p>
+            </div>
+            
+            <!-- Stats Grid -->
+            <div class="stats-grid-dashboard">
+                <div class="stat-card-dashboard">
+                    <div class="stat-header">
+                        <div>
+                            <div class="stat-label">Active Bookings</div>
+                        </div>
+                        <div class="stat-icon primary">
+                            <i class="bi bi-calendar-check"></i>
+                        </div>
+                    </div>
+                    <div class="stat-value">2</div>
+                </div>
+                
+                <div class="stat-card-dashboard">
+                    <div class="stat-header">
+                        <div>
+                            <div class="stat-label">Saved Lodges</div>
+                        </div>
+                        <div class="stat-icon success">
+                            <i class="bi bi-bookmark-heart-fill"></i>
+                        </div>
+                    </div>
+                    <div class="stat-value">7</div>
+                </div>
+                
+                <div class="stat-card-dashboard">
+                    <div class="stat-header">
+                        <div>
+                            <div class="stat-label">Pending Inspections</div>
+                        </div>
+                        <div class="stat-icon warning">
+                            <i class="bi bi-clock-fill"></i>
+                        </div>
+                    </div>
+                    <div class="stat-value">1</div>
+                </div>
+            </div>
+            
+            <!-- Featured Lodges (from Landing Page) -->
+            <div class="section-header-dashboard">
+                <h2 class="section-title-dashboard">Featured Lodges</h2>
+                <a href="{% url 'search_results' %}" class="link-view-all">
+                    View All <i class="bi bi-arrow-right ms-1"></i>
+                </a>
+            </div>
+            
+            <div class="lodges-grid-dashboard" style="margin-bottom: 2.5rem;">
+                {% for lodge in featured_lodges %}
+                <div class="lodge-card-dashboard">
+                    <div class="lodge-image">
+                        <img src="{% static lodge.image %}" 
+                             alt="{{ lodge.name }}" loading="lazy" width="400" height="250">
+                    </div>
+                    <div class="lodge-body">
+                        <div class="lodge-name">{{ lodge.name }}</div>
+                        <div class="lodge-meta">
+                            <i class="bi {{ lodge.icon }} me-1"></i> {{ lodge.description }}
+                        </div>
+                        <div class="d-flex justify-content-between align-items-center">
+                            <span class="badge" style="background: rgba(15, 76, 129, 0.1); color: var(--primary); font-size: 0.8rem; padding: 0.4rem 0.75rem; border-radius: 6px;">
+                                <i class="bi bi-geo-alt me-1"></i>{{ lodge.location }}
+                            </span>
+                            {% if lodge.lodge_id %}
+                                <a href="{% url 'lodge_detail' lodge.lodge_id %}" class="btn-view-small">View</a>
+                            {% else %}
+                                <a href="{% url 'search_results' %}?location={{ lodge.search_area }}" class="btn-view-small">Explore</a>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+            
+            <!-- Owner-Uploaded Lodges (New Listings) -->
+            <div class="section-header-dashboard">
+                <h2 class="section-title-dashboard">New Listings</h2>
+                <a href="{% url 'search_results' %}" class="link-view-all">
+                    Browse All <i class="bi bi-arrow-right ms-1"></i>
+                </a>
+            </div>
+            
+            <div class="lodges-grid-dashboard">
+                {% if owner_lodges %}
+                    {% for lodge in owner_lodges %}
+                    <div class="lodge-card-dashboard">
+                        <div class="lodge-image" style="position: relative;">
+                            {% if lodge.images.all %}
+                                <img src="{{ lodge.images.first.image.url }}" 
+                                     alt="{{ lodge.name }}" loading="lazy" width="400" height="250">
+                            {% else %}
+                                <img src="https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=400&h=250&q=80&auto=format&fit=crop" 
+                                     alt="{{ lodge.name }}" loading="lazy" width="400" height="250">
+                            {% endif %}
+                            {% if lodge.is_approved %}
+                                <span style="position: absolute; top: 12px; right: 12px; background: #10B981; color: #fff; font-size: 0.75rem; font-weight: 700; padding: 0.3rem 0.7rem; border-radius: 6px;">
+                                    <i class="bi bi-check-circle me-1"></i>Approved
+                                </span>
+                            {% else %}
+                                <span style="position: absolute; top: 12px; right: 12px; background: #F59E0B; color: #fff; font-size: 0.75rem; font-weight: 700; padding: 0.3rem 0.7rem; border-radius: 6px;">
+                                    <i class="bi bi-clock me-1"></i>Pending
+                                </span>
+                            {% endif %}
+                        </div>
+                        <div class="lodge-body">
+                            <div class="lodge-name">{{ lodge.name }}</div>
+                            <div class="lodge-meta">
+                                {{ lodge.get_room_type_display }} · {{ lodge.location }}
+                            </div>
+                            <div class="d-flex justify-content-between align-items-center">
+                                <div class="lodge-price">₦{{ lodge.price_per_year|floatformat:0 }}/yr</div>
+                                <a href="{% url 'lodge_detail' lodge.id %}" class="btn-view-small">View</a>
+                            </div>
+                        </div>
+                    </div>
+                    {% endfor %}
+                {% else %}
+                    <div class="col-12 text-center py-5">
+                        <div class="empty-icon mx-auto mb-3" style="width: 120px; height: 120px; background: var(--gray-100); border-radius: 50%; display: flex; align-items: center; justify-content: center;">
+                            <i class="bi bi-building" style="font-size: 3rem; color: var(--gray-400);"></i>
+                        </div>
+                        <h3 style="font-family: 'Sora', sans-serif; font-size: 1.5rem; font-weight: 700; color: var(--gray-900); margin-bottom: 0.75rem;">No New Listings Yet</h3>
+                        <p style="color: var(--gray-600); font-size: 1rem; max-width: 400px; margin: 0 auto 2rem;">
+                            Lodge owners haven't uploaded any listings yet. Check back soon!
+                        </p>
+                        <a href="{% url 'search_results' %}" class="btn-view-small" style="padding: 0.75rem 1.5rem;">
+                            <i class="bi bi-search me-2"></i>Browse All Lodges
+                        </a>
+                    </div>
+                {% endif %}
+            </div>
+        </main>
+    </div>
+    
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" defer></script>
+    <script>
+    // Sidebar toggle
+    (function() {
+        const sidebar = document.getElementById('sidebar');
+        const overlay = document.getElementById('sidebarOverlay');
+        const toggle = document.getElementById('toggleSidebar');
+        
+        function openSidebar() {
+            sidebar.classList.add('open');
+            overlay.classList.add('open');
+            document.body.style.overflow = 'hidden';
+        }
+        
+        function closeSidebar() {
+            sidebar.classList.remove('open');
+            overlay.classList.remove('open');
+            document.body.style.overflow = '';
+        }
+        
+        toggle?.addEventListener('click', openSidebar);
+        overlay?.addEventListener('click', closeSidebar);
+        
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape' && sidebar.classList.contains('open')) {
+                closeSidebar();
+            }
+        });
+    })();
+    
+    // Lazy load images
+    document.addEventListener('DOMContentLoaded', function() {
+        const images = document.querySelectorAll('img[loading="lazy"]');
+        images.forEach(img => {
+            img.style.opacity = '0';
+            img.style.transition = 'opacity 0.4s ease';
+            img.addEventListener('load', () => img.style.opacity = '1');
+            if (img.complete) img.style.opacity = '1';
+        });
+    });
+    </script>
+</body>
+</html>

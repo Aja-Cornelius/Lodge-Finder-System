@@ -1,0 +1,16 @@
+{% extends 'lodge/base.html' %}
+{% block title %}AE-FUNAI Lodge Finder{% endblock %}
+{% block content %}
+<div style="min-height:60vh;display:flex;align-items:center;justify-content:center;text-align:center;padding:3rem;">
+    <div>
+        <span class="section-label">Welcome</span>
+        <h1 class="serif" style="font-size:2.8rem;">AE-FUNAI Lodge Finder</h1>
+        <p style="color:var(--muted);font-size:1.1rem;max-width:480px;margin:.8rem auto 2rem;">
+            Find your perfect off-campus lodge easily!
+        </p>
+        <a href="{% url 'home' %}" class="btn btn-primary px-5 py-3">
+            Browse Lodges <i class="bi bi-arrow-right ms-2"></i>
+        </a>
+    </div>
+</div>
+{% endblock %}

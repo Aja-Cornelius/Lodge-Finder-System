@@ -1,0 +1,13 @@
+venv/
+*.pyc
+__pycache__/
+db.sqlite3
+.DS_Store
+media/
+.gemini/
+brain/
+.agents/
+.agent/
+_agents/
+_agent/
+*.log
