@@ -497,97 +497,51 @@
                 </div>
             </div>
             
-            <!-- Featured Lodges (from Landing Page) -->
+            <!-- Recommended Lodges (Dynamic) -->
             <div class="section-header-dashboard">
-                <h2 class="section-title-dashboard">Featured Lodges</h2>
+                <h2 class="section-title-dashboard">Recommended for You</h2>
                 <a href="{% url 'search_results' %}" class="link-view-all">
                     View All <i class="bi bi-arrow-right ms-1"></i>
                 </a>
             </div>
             
-            <div class="lodges-grid-dashboard" style="margin-bottom: 2.5rem;">
-                {% for lodge in featured_lodges %}
+            <div class="lodges-grid-dashboard">
+                {% for lodge in recommended_lodges %}
                 <div class="lodge-card-dashboard">
-                    <div class="lodge-image">
-                        <img src="{% static lodge.image %}" 
-                             alt="{{ lodge.name }}" loading="lazy" width="400" height="250">
+                    <div class="lodge-image" style="position: relative;">
+                        {% if lodge.images.all %}
+                            <img src="{{ lodge.images.first.image.url }}" 
+                                 alt="{{ lodge.name }}" loading="lazy" width="400" height="250">
+                        {% else %}
+                            <img src="https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=400&h=250&q=80&auto=format&fit=crop" 
+                                 alt="{{ lodge.name }}" loading="lazy" width="400" height="250">
+                        {% endif %}
+                        <span style="position: absolute; top: 12px; right: 12px; background: #0F4C81; color: #fff; font-size: 0.75rem; font-weight: 700; padding: 0.3rem 0.7rem; border-radius: 6px;">
+                            ₦{{ lodge.price_per_year|floatformat:0 }}
+                        </span>
                     </div>
                     <div class="lodge-body">
                         <div class="lodge-name">{{ lodge.name }}</div>
                         <div class="lodge-meta">
-                            <i class="bi {{ lodge.icon }} me-1"></i> {{ lodge.description }}
+                            <i class="bi bi-geo-alt me-1"></i> {{ lodge.location }} · {{ lodge.get_room_type_display }}
                         </div>
                         <div class="d-flex justify-content-between align-items-center">
-                            <span class="badge" style="background: rgba(15, 76, 129, 0.1); color: var(--primary); font-size: 0.8rem; padding: 0.4rem 0.75rem; border-radius: 6px;">
-                                <i class="bi bi-geo-alt me-1"></i>{{ lodge.location }}
-                            </span>
-                            {% if lodge.lodge_id %}
-                                <a href="{% url 'lodge_detail' lodge.lodge_id %}" class="btn-view-small">View</a>
-                            {% else %}
-                                <a href="{% url 'search_results' %}?location={{ lodge.search_area }}" class="btn-view-small">Explore</a>
-                            {% endif %}
+                             <div class="text-muted small">
+                                <i class="bi bi-star-fill text-warning"></i> Recommended
+                            </div>
+                            <a href="{% url 'lodge_detail' lodge.id %}" class="btn-view-small">View Details</a>
                         </div>
                     </div>
                 </div>
+                {% empty %}
+                <div class="col-12 text-center py-5">
+                    <div class="empty-icon mx-auto mb-3" style="width: 120px; height: 120px; background: var(--gray-100); border-radius: 50%; display: flex; align-items: center; justify-content: center;">
+                        <i class="bi bi-house-add" style="font-size: 3rem; color: var(--gray-400);"></i>
+                    </div>
+                    <h5 class="fw-bold">No Lodges Listed Yet</h5>
+                    <p class="text-muted">New lodges will appear here once they are approved by the admin.</p>
+                </div>
                 {% endfor %}
-            </div>
-            
-            <!-- Owner-Uploaded Lodges (New Listings) -->
-            <div class="section-header-dashboard">
-                <h2 class="section-title-dashboard">New Listings</h2>
-                <a href="{% url 'search_results' %}" class="link-view-all">
-                    Browse All <i class="bi bi-arrow-right ms-1"></i>
-                </a>
-            </div>
-            
-            <div class="lodges-grid-dashboard">
-                {% if owner_lodges %}
-                    {% for lodge in owner_lodges %}
-                    <div class="lodge-card-dashboard">
-                        <div class="lodge-image" style="position: relative;">
-                            {% if lodge.images.all %}
-                                <img src="{{ lodge.images.first.image.url }}" 
-                                     alt="{{ lodge.name }}" loading="lazy" width="400" height="250">
-                            {% else %}
-                                <img src="https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=400&h=250&q=80&auto=format&fit=crop" 
-                                     alt="{{ lodge.name }}" loading="lazy" width="400" height="250">
-                            {% endif %}
-                            {% if lodge.is_approved %}
-                                <span style="position: absolute; top: 12px; right: 12px; background: #10B981; color: #fff; font-size: 0.75rem; font-weight: 700; padding: 0.3rem 0.7rem; border-radius: 6px;">
-                                    <i class="bi bi-check-circle me-1"></i>Approved
-                                </span>
-                            {% else %}
-                                <span style="position: absolute; top: 12px; right: 12px; background: #F59E0B; color: #fff; font-size: 0.75rem; font-weight: 700; padding: 0.3rem 0.7rem; border-radius: 6px;">
-                                    <i class="bi bi-clock me-1"></i>Pending
-                                </span>
-                            {% endif %}
-                        </div>
-                        <div class="lodge-body">
-                            <div class="lodge-name">{{ lodge.name }}</div>
-                            <div class="lodge-meta">
-                                {{ lodge.get_room_type_display }} · {{ lodge.location }}
-                            </div>
-                            <div class="d-flex justify-content-between align-items-center">
-                                <div class="lodge-price">₦{{ lodge.price_per_year|floatformat:0 }}/yr</div>
-                                <a href="{% url 'lodge_detail' lodge.id %}" class="btn-view-small">View</a>
-                            </div>
-                        </div>
-                    </div>
-                    {% endfor %}
-                {% else %}
-                    <div class="col-12 text-center py-5">
-                        <div class="empty-icon mx-auto mb-3" style="width: 120px; height: 120px; background: var(--gray-100); border-radius: 50%; display: flex; align-items: center; justify-content: center;">
-                            <i class="bi bi-building" style="font-size: 3rem; color: var(--gray-400);"></i>
-                        </div>
-                        <h3 style="font-family: 'Sora', sans-serif; font-size: 1.5rem; font-weight: 700; color: var(--gray-900); margin-bottom: 0.75rem;">No New Listings Yet</h3>
-                        <p style="color: var(--gray-600); font-size: 1rem; max-width: 400px; margin: 0 auto 2rem;">
-                            Lodge owners haven't uploaded any listings yet. Check back soon!
-                        </p>
-                        <a href="{% url 'search_results' %}" class="btn-view-small" style="padding: 0.75rem 1.5rem;">
-                            <i class="bi bi-search me-2"></i>Browse All Lodges
-                        </a>
-                    </div>
-                {% endif %}
             </div>
         </main>
     </div>

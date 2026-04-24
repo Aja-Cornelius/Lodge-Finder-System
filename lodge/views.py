@@ -17,16 +17,14 @@ from django.db.models import Q
 
 
 def home(request):
-    # Fetch specific featured lodges from the DB for the landing page
-    featured_db_lodges = Lodge.objects.filter(
-        name__in=['Excellent Lodge']
-    ).prefetch_related('images', 'amenities').select_related('owner')
-
-    # Build a lookup by name for easy template access
-    featured_lodge_map = {l.name: l for l in featured_db_lodges}
+    # Fetch the 3 most recent approved lodges for the landing page
+    recent_lodges = Lodge.objects.filter(is_approved=True)\
+                         .prefetch_related('images', 'amenities')\
+                         .select_related('owner')\
+                         .order_by('-created_at')[:3]
 
     return render(request, 'lodge/landing.html', {
-        'excellent_lodge': featured_lodge_map.get('Excellent Lodge'),
+        'recent_lodges': recent_lodges,
     })
 
 def student_signup(request):
@@ -102,52 +100,14 @@ def student_dashboard(request):
         messages.error(request, 'You do not have access to this page.')
         return redirect('home')
 
-    # 3 featured lodges matching the landing page (static/hardcoded)
-    featured_lodge_names = ['Nazareth Lodge', 'Amazing Grace Lodge', 'Let Love Lead']
-    featured_lodges = [
-        {
-            'name': 'Nazareth Lodge',
-            'location': 'Frontgate',
-            'description': 'Very Close to the school front gate',
-            'image': 'landing_pg_lodge-img/nazareth-lodge.jpeg',
-            'icon': 'bi-geo-alt-fill',
-            'search_area': 'Frontgate',
-            'lodge_id': None,
-        },
-        {
-            'name': 'Amazing Grace Lodge',
-            'location': 'Frontgate',
-            'description': 'Very Close to the market at front gate',
-            'image': 'landing_pg_lodge-img/amazing-grace-lodge.jpeg',
-            'icon': 'bi-shop',
-            'search_area': 'Frontgate',
-            'lodge_id': None,
-        },
-        {
-            'name': 'Let Love Lead',
-            'location': 'Backgate',
-            'description': 'Very close to the school Temporary site',
-            'image': 'landing_pg_lodge-img/let-love-lead.jpeg',
-            'icon': 'bi-building',
-            'search_area': 'Backgate',
-            'lodge_id': None,
-        },
-    ]
-
-    # Try to match featured lodges to DB records by name so we can link to lodge_detail
-    db_matches = Lodge.objects.filter(name__in=featured_lodge_names).values('id', 'name')
-    db_id_by_name = {entry['name'].lower(): entry['id'] for entry in db_matches}
-    for fl in featured_lodges:
-        fl['lodge_id'] = db_id_by_name.get(fl['name'].lower())
-
-    # Up to 3 owner-uploaded lodges (approved OR pending), newest first
-    owner_lodges = Lodge.objects.select_related('owner')\
-                                .prefetch_related('images', 'amenities')\
-                                .order_by('-created_at')[:3]
+    # Fetch the 6 most recent approved lodges for the student dashboard
+    recommended_lodges = Lodge.objects.filter(is_approved=True)\
+                              .prefetch_related('images', 'amenities')\
+                              .select_related('owner')\
+                              .order_by('-created_at')[:6]
 
     return render(request, 'lodge/student_dashboard.html', {
-        'featured_lodges': featured_lodges,
-        'owner_lodges': owner_lodges,
+        'recommended_lodges': recommended_lodges,
     })
 
 @login_required

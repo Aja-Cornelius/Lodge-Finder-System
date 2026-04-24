@@ -4,435 +4,245 @@
 
 {% block extra_css %}
 <style>
-/* Hero Section - Lighter overlay for better image visibility */
-.hero-modern {
-   background: linear-gradient(135deg, rgba(15, 76, 129, 0.5) 0%, rgba(26, 95, 155, 0.4) 100%),
-                url('{% static "landing_pg_lodge-img/nazareth-lodge.jpeg" %}') center/cover;
-    min-height: 85vh;
+/* --- Premium Typography & Colors --- */
+:root {
+    --glass: rgba(255, 255, 255, 0.85);
+    --glass-border: rgba(255, 255, 255, 0.4);
+    --mesh-gradient: linear-gradient(135deg, #0f4c81 0%, #1a5f9b 50%, #0a3a61 100%);
+}
+
+/* --- Hero Section: Mesh Gradient & Animated Mesh --- */
+.hero-premium {
+    background: var(--mesh-gradient);
+    min-height: 90vh;
     display: flex;
     align-items: center;
     position: relative;
-    padding: 6rem 0 4rem;
-}
-
-
-
-.hero-content {
-    max-width: 680px;
-}
-
-.hero-badge {
-    display: inline-flex;
-    align-items: center;
-    gap: 0.5rem;
-    background: rgba(255, 255, 255, 0.2);
-    backdrop-filter: blur(10px);
-    border: 1px solid rgba(255, 255, 255, 0.3);
-    padding: 0.5rem 1rem;
-    border-radius: 50px;
-    color: var(--white);
-    font-size: 0.875rem;
-    font-weight: 600;
-    margin-bottom: 2rem;
-}
-
-.hero-title {
-    font-family: 'Sora', sans-serif;
-    font-size: clamp(2.5rem, 5vw, 4rem);
-    font-weight: 800;
-    color: var(--white);
-    line-height: 1.1;
-    margin-bottom: 1.5rem;
-    letter-spacing: -0.02em;
-    text-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
-}
-
-.hero-subtitle {
-    font-size: 1.125rem;
-    color: rgba(255, 255, 255, 0.95);
-    line-height: 1.7;
-    margin-bottom: 3rem;
-    text-shadow: 0 1px 4px rgba(0, 0, 0, 0.2);
-}
-
-/* Search Box - Elevated Card Style */
-.search-card {
-    background: var(--white);
-    border-radius: var(--radius-xl);
-    padding: 2rem;
-    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
-    margin-top: 3rem;
-}
-
-.search-card .form-label-modern {
-    font-size: 0.813rem;
-    text-transform: uppercase;
-    letter-spacing: 0.05em;
-    color: var(--gray-600);
-}
-
-.btn-search {
-    background: var(--accent);
-    color: var(--white);
-    border: none;
-    padding: 0.875rem 2rem;
-    border-radius: var(--radius-md);
-    font-weight: 700;
-    font-size: 1rem;
-    width: 100%;
-    transition: all 0.2s ease;
-    text-transform: uppercase;
-    letter-spacing: 0.02em;
-}
-
-.btn-search:hover {
-    background: var(--accent-dark);
-    transform: translateY(-2px);
-    box-shadow: var(--shadow-lg);
-    color: var(--white);
-}
-
-/* Stats Section */
-.stats-section {
-    background: var(--white);
-    padding: 3rem 0;
-    border-bottom: 1px solid var(--gray-200);
-}
-
-.stat-item {
-    text-align: center;
-}
-
-.stat-number {
-    font-family: 'Sora', sans-serif;
-    font-size: 3rem;
-    font-weight: 800;
-    color: var(--primary);
-    line-height: 1;
-    margin-bottom: 0.5rem;
-}
-
-.stat-label {
-    color: var(--gray-600);
-    font-size: 0.938rem;
-    font-weight: 500;
-}
-
-/* Popular Areas - Card Grid */
-.areas-section {
-    padding: 5rem 0;
-    background: var(--gray-50);
-}
-
-.section-header {
-    text-align: center;
-    max-width: 640px;
-    margin: 0 auto 3rem;
-}
-
-.section-badge {
-    display: inline-block;
-    background: rgba(15, 76, 129, 0.1);
-    color: var(--primary);
-    padding: 0.5rem 1rem;
-    border-radius: var(--radius-sm);
-    font-size: 0.813rem;
-    font-weight: 700;
-    text-transform: uppercase;
-    letter-spacing: 0.05em;
-    margin-bottom: 1rem;
-}
-
-.section-title {
-    font-family: 'Sora', sans-serif;
-    font-size: clamp(2rem, 4vw, 2.5rem);
-    font-weight: 800;
-    color: var(--gray-900);
-    margin-bottom: 1rem;
-}
-
-.section-description {
-    color: var(--gray-600);
-    font-size: 1.063rem;
-    line-height: 1.6;
-}
-
-.area-card-modern {
-    position: relative;
-    height: 320px;
-    border-radius: var(--radius-lg);
+    padding: 8rem 0 6rem;
     overflow: hidden;
-    box-shadow: var(--shadow-md);
-    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-    cursor: pointer;
 }
 
-.area-card-modern::before {
+/* Suble pulse animation for background depth */
+.hero-premium::after {
     content: '';
     position: absolute;
-    inset: 0;
-    background: linear-gradient(to top, rgba(0, 0, 0, 0.7) 0%, transparent 60%);
-    z-index: 1;
-    transition: all 0.4s ease;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background: radial-gradient(circle at center, rgba(255,107,53, 0.1) 0%, transparent 40%);
+    animation: pulse-bg 15s infinite alternate ease-in-out;
+    pointer-events: none;
 }
 
-.area-card-modern:hover {
-    transform: translateY(-8px);
-    box-shadow: var(--shadow-xl);
+@keyframes pulse-bg {
+    0% { transform: translate(0, 0); }
+    100% { transform: translate(10%, 10%); }
 }
 
-.area-card-modern:hover::before {
-    background: linear-gradient(to top, rgba(15, 76, 129, 0.8) 0%, rgba(15, 76, 129, 0.2) 60%);
+.hero-content {
+    max-width: 720px;
+    position: relative;
+    z-index: 5;
 }
 
-.area-card-modern img {
+.hero-badge-premium {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.6rem;
+    background: rgba(255, 255, 255, 0.15);
+    backdrop-filter: blur(12px);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    padding: 0.6rem 1.2rem;
+    border-radius: 100px;
+    color: var(--white);
+    font-size: 0.9rem;
+    font-weight: 600;
+    margin-bottom: 2.5rem;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+}
+
+.hero-title-premium {
+    font-family: 'Sora', sans-serif;
+    font-size: clamp(2.8rem, 6vw, 4.5rem);
+    font-weight: 800;
+    color: var(--white);
+    line-height: 1.05;
+    margin-bottom: 1.8rem;
+    letter-spacing: -0.03em;
+}
+
+.hero-subtitle-premium {
+    font-size: 1.2rem;
+    color: rgba(255, 255, 255, 0.9);
+    line-height: 1.8;
+    margin-bottom: 3.5rem;
+    max-width: 600px;
+}
+
+/* --- Floating Search Box --- */
+.search-floating {
+    background: var(--white);
+    border-radius: 30px;
+    padding: 1.5rem;
+    box-shadow: 0 30px 60px -12px rgba(0, 0, 0, 0.3);
+    margin-top: 2rem;
+    border: 1px solid var(--gray-100);
+}
+
+/* --- Dynamic Lodges Section --- */
+.lodges-dynamic-section {
+    padding: 7rem 0;
+    background: var(--white);
+}
+
+.section-head-modern {
+    text-align: center;
+    max-width: 700px;
+    margin: 0 auto 5rem;
+}
+
+.section-tag {
+    font-size: 0.85rem;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 0.15em;
+    color: var(--accent);
+    margin-bottom: 1rem;
+    display: inline-block;
+}
+
+.lodge-card-premium {
+    background: var(--white);
+    border-radius: 24px;
+    overflow: hidden;
+    border: 1px solid var(--gray-100);
+    transition: all 0.5s cubic-bezier(0.165, 0.84, 0.44, 1);
+    height: 100%;
+}
+
+.lodge-card-premium:hover {
+    transform: translateY(-12px);
+    box-shadow: 0 40px 80px -15px rgba(15, 76, 129, 0.15);
+}
+
+.lodge-img-container {
+    height: 280px;
+    position: relative;
+    overflow: hidden;
+}
+
+.lodge-img-premium {
     width: 100%;
     height: 100%;
     object-fit: cover;
-    transition: transform 0.4s ease;
+    transition: transform 0.8s ease;
 }
 
-.area-card-modern:hover img {
+.lodge-card-premium:hover .lodge-img-premium {
     transform: scale(1.1);
 }
 
-.area-info {
+.lodge-price-badge {
     position: absolute;
-    bottom: 0;
-    left: 0;
-    right: 0;
-    padding: 2rem 1.5rem;
+    top: 20px;
+    right: 20px;
+    background: var(--white);
+    padding: 0.6rem 1rem;
+    border-radius: 12px;
+    font-weight: 800;
+    color: var(--primary);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
     z-index: 2;
-    color: var(--white);
 }
 
-.area-name {
+.lodge-card-body {
+    padding: 2rem;
+}
+
+.lodge-name-premium {
     font-family: 'Sora', sans-serif;
-    font-size: 1.5rem;
+    font-size: 1.4rem;
     font-weight: 700;
-    margin-bottom: 0.5rem;
-}
-
-.area-description {
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-    font-size: 0.938rem;
-    opacity: 0.9;
-}
-
-/* How It Works */
-.how-section {
-    padding: 5rem 0;
-    background: var(--white);
-}
-
-.step-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-    gap: 2rem;
-    margin-top: 3rem;
-}
-
-.step-card {
-    text-align: center;
-    padding: 2rem 1.5rem;
-    border-radius: var(--radius-lg);
-    background: var(--gray-50);
-    border: 1px solid var(--gray-200);
-    transition: all 0.3s ease;
-}
-
-.step-card:hover {
-    background: var(--white);
-    box-shadow: var(--shadow-lg);
-    transform: translateY(-4px);
-}
-
-.step-icon-wrapper {
-    position: relative;
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    width: 80px;
-    height: 80px;
-    background: linear-gradient(135deg, var(--primary) 0%, var(--primary-light) 100%);
-    border-radius: var(--radius-md);
-    margin-bottom: 1.5rem;
-    box-shadow: var(--shadow-md);
-}
-
-.step-icon-wrapper i {
-    font-size: 2rem;
-    color: var(--white);
-}
-
-.step-number {
-    position: absolute;
-    top: -10px;
-    right: -10px;
-    width: 32px;
-    height: 32px;
-    background: var(--accent);
-    color: var(--white);
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-weight: 700;
-    font-size: 0.875rem;
-    box-shadow: var(--shadow-md);
-}
-
-.step-title {
-    font-family: 'Sora', sans-serif;
-    font-size: 1.25rem;
-    font-weight: 700;
+    margin-bottom: 0.8rem;
     color: var(--gray-900);
-    margin-bottom: 0.75rem;
 }
 
-.step-description {
-    color: var(--gray-600);
-    font-size: 0.938rem;
-    line-height: 1.6;
+/* Glassmorphism overlays for empty states */
+.empty-placeholder {
+    padding: 6rem;
+    background: var(--gray-50);
+    border-radius: 30px;
+    border: 2px dashed var(--gray-300);
+    text-align: center;
 }
 
-/* CTA Section */
-.cta-section {
-    background: linear-gradient(135deg, var(--primary) 0%, var(--primary-light) 100%);
-    padding: 4rem 0;
-    position: relative;
-    overflow: hidden;
+/* --- Responsive & Polish --- */
+.scroll-reveal {
+    opacity: 0;
+    transform: translateY(30px);
+    transition: all 0.8s ease-out;
 }
 
-.cta-section::before {
-    content: '';
-    position: absolute;
-    width: 500px;
-    height: 500px;
-    background: radial-gradient(circle, rgba(255, 255, 255, 0.1) 0%, transparent 70%);
-    top: -250px;
-    right: -250px;
-}
-
-.cta-buttons {
-    display: flex;
-    gap: 1rem;
-    flex-wrap: wrap;
-    justify-content: center;
-}
-
-.btn-cta-white {
-    background: var(--white);
-    color: var(--primary);
-    border: none;
-    padding: 0.875rem 2rem;
-    border-radius: var(--radius-md);
-    font-weight: 700;
-    font-size: 1rem;
-    transition: all 0.2s ease;
-}
-
-.btn-cta-white:hover {
-    transform: translateY(-2px);
-    box-shadow: var(--shadow-lg);
-    color: var(--primary-dark);
-}
-
-.btn-cta-outline {
-    background: transparent;
-    color: var(--white);
-    border: 2px solid var(--white);
-    padding: 0.875rem 2rem;
-    border-radius: var(--radius-md);
-    font-weight: 700;
-    font-size: 1rem;
-    transition: all 0.2s ease;
-}
-
-.btn-cta-outline:hover {
-    background: var(--white);
-    color: var(--primary);
-    transform: translateY(-2px);
-}
-
-/* Responsive */
-@media (max-width: 768px) {
-    .hero-modern {
-        padding: 4rem 0 3rem;
-    }
-    
-    .search-card {
-        padding: 1.5rem;
-    }
-    
-    .stat-number {
-        font-size: 2rem;
-    }
-    
-    .area-card-modern {
-        height: 280px;
-    }
+.scroll-reveal.active {
+    opacity: 1;
+    transform: translateY(0);
 }
 </style>
 {% endblock %}
 
 {% block content %}
 <!-- Hero Section -->
-<section class="hero-modern">
+<section class="hero-premium">
     <div class="container">
         <div class="hero-content">
-            <div class="hero-badge">
-                <i class="bi bi-geo-alt-fill"></i>
-                <span>Ikwo, Ebonyi State</span>
+            <div class="hero-badge-premium fadeInDown">
+                <i class="bi bi-stars"></i>
+                <span>Premium Student Housing</span>
             </div>
             
-            <h1 class="hero-title">
-                Find Your Perfect Student Lodge
+            <h1 class="hero-title-premium fadeInUp">
+                Elevate Your <br>Living Experience
             </h1>
             
-            <p class="hero-subtitle">
-                Discover verified, affordable off-campus accommodation near AE-FUNAI. Browse trusted lodges in Backgate, Frontgate, Nwakpu and beyond.
+            <p class="hero-subtitle-premium fadeInUp" style="animation-delay: 0.2s;">
+                Discover hand-picked, verified lodges near AE-FUNAI. We simplify your search for comfort, safety, and modern student life.
             </p>
         </div>
         
-        <!-- Search Card -->
-        <div class="search-card">
+        <!-- Search Floating -->
+        <div class="search-floating fadeInUp" style="animation-delay: 0.4s;">
             <form action="{% url 'search_results' %}" method="get">
-                <div class="row g-3">
-                    <div class="col-lg-3 col-md-6">
-                        <label class="form-label-modern">Location</label>
-                        <input type="text" class="form-control form-control-modern" name="location" 
-                               placeholder="e.g. Frontgate, Backgate..." value="{{ request.GET.location }}">
+                <div class="row g-4 align-items-center">
+                    <div class="col-lg-4 col-md-6">
+                        <label class="form-label-modern mb-2">WHERE TO LOOK?</label>
+                        <div class="input-group">
+                            <span class="input-group-text bg-transparent border-0 ps-0"><i class="bi bi-geo-alt text-primary"></i></span>
+                            <input type="text" class="form-control border-0 p-0 fs-5 fw-bold" name="location" 
+                                   placeholder="Frontgate, Backgate..." value="{{ request.GET.location }}" style="box-shadow: none;">
+                        </div>
                     </div>
                     
                     <div class="col-lg-3 col-md-6">
-                        <label class="form-label-modern">Room Type</label>
-                        <select class="form-control form-control-modern" name="room_type">
-                            <option value="">All Types</option>
-                            <option value="single" {% if request.GET.room_type == 'single' %}selected{% endif %}>Single Room</option>
-                            <option value="self_contain" {% if request.GET.room_type == 'self_contain' %}selected{% endif %}>Self-Contain</option>
-                            <option value="flat" {% if request.GET.room_type == 'flat' %}selected{% endif %}>Flat</option>
+                        <label class="form-label-modern mb-2">ROOM STYLE</label>
+                        <select class="form-select border-0 p-0 fs-6 fw-bold text-muted-modern" name="room_type" style="box-shadow: none; cursor: pointer;">
+                            <option value="">Any Style</option>
+                            <option value="single">Single Room</option>
+                            <option value="self_contain">Self-Contain</option>
+                            <option value="flat">Full Flat</option>
                         </select>
                     </div>
                     
-                    <div class="col-lg-2 col-md-6">
-                        <label class="form-label-modern">Min Price (₦)</label>
-                        <input type="number" class="form-control form-control-modern" name="min_price" 
-                               placeholder="50,000" value="{{ request.GET.min_price }}" min="0" step="5000">
-                    </div>
-                    
-                    <div class="col-lg-2 col-md-6">
-                        <label class="form-label-modern">Max Price (₦)</label>
-                        <input type="number" class="form-control form-control-modern" name="max_price" 
-                               placeholder="200,000" value="{{ request.GET.max_price }}" min="0" step="5000">
+                    <div class="col-lg-3 col-md-12">
+                        <label class="form-label-modern mb-2">BUDGET RANGE</label>
+                        <div class="d-flex align-items-center gap-2">
+                           <input type="number" class="form-control border-0 p-0 fs-6 fw-bold" name="max_price" placeholder="Max Price" style="box-shadow: none;">
+                        </div>
                     </div>
                     
                     <div class="col-lg-2 col-md-12">
-                        <label class="form-label-modern d-none d-lg-block">&nbsp;</label>
-                        <button type="submit" class="btn-search">
-                            <i class="bi bi-search me-2"></i>Search
+                        <button type="submit" class="btn btn-primary-modern py-3 w-100 fs-6" style="border-radius: 18px;">
+                            Find Now
                         </button>
                     </div>
                 </div>
@@ -441,228 +251,145 @@
     </div>
 </section>
 
-<!-- Stats Section -->
-<section class="stats-section">
+<!-- Latest Lodges Section -->
+<section class="lodges-dynamic-section">
     <div class="container">
-        <div class="row g-4">
-            <div class="col-6 col-md-3">
-                <div class="stat-item">
-                    <div class="stat-number">200+</div>
-                    <div class="stat-label">Verified Lodges</div>
-                </div>
-            </div>
-            <div class="col-6 col-md-3">
-                <div class="stat-item">
-                    <div class="stat-number">1,500+</div>
-                    <div class="stat-label">Students Housed</div>
-                </div>
-            </div>
-            <div class="col-6 col-md-3">
-                <div class="stat-item">
-                    <div class="stat-number">4</div>
-                    <div class="stat-label">Areas Covered</div>
-                </div>
-            </div>
-            <div class="col-6 col-md-3">
-                <div class="stat-item">
-                    <div class="stat-number">98%</div>
-                    <div class="stat-label">Satisfaction Rate</div>
-                </div>
-            </div>
-        </div>
-    </div>
-</section>
-
-<!-- Popular Areas / Featured Lodges -->
-<section class="areas-section py-5">
-    <div class="container">
-        <div class="section-header text-center mb-5">
-            <div class="section-badge">POPULAR LOCATIONS</div>
-            <h2 class="section-title">Explore Neighborhoods</h2>
-            <p class="section-description">
-                Find the perfect area that matches your lifestyle and budget around AE-FUNAI campus
-            </p>
+        <div class="section-head-modern scroll-reveal">
+            <span class="section-tag">New Listings</span>
+            <h2 class="section-title h1">Freshly Added Lodges</h2>
+            <p class="text-muted fs-5">Browse the latest verified accommodations approved by our team.</p>
         </div>
         
         <div class="row g-4">
-            <!-- Nazareth Lodge -->
-            <div class="col-lg-3 col-md-6">
-                <a href="{% url 'search_results' %}?location=Frontgate" class="text-decoration-none">
-                    <div class="area-card-modern">
-                        <img src="{% static 'landing_pg_lodge-img/nazareth-lodge.jpeg' %}" 
-                             alt="Nazareth Lodge" class="img-fluid" style="height: 220px; object-fit: cover; border-radius: 12px;">
-                        <div class="area-info">
-                            <div class="area-name">Nazareth Lodge</div>
-                            <div class="area-description">
-                                <i class="bi bi-geo-alt-fill"></i>
-                                Very Close to the school front gate
-                            </div>
-                        </div>
-                    </div>
-                </a>
-            </div>
-
-            <!-- Amazing Grace Lodge -->
-            <div class="col-lg-3 col-md-6">
-                <a href="{% url 'search_results' %}?location=Frontgate" class="text-decoration-none">
-                    <div class="area-card-modern">
-                        <img src="{% static 'landing_pg_lodge-img/amazing-grace-lodge.jpeg' %}" 
-                             alt="Amazing Grace Lodge" class="img-fluid" style="height: 220px; object-fit: cover; border-radius: 12px;">
-                        <div class="area-info">
-                            <div class="area-name">Amazing Grace Lodge</div>
-                            <div class="area-description">
-                                <i class="bi bi-shop"></i>
-                                Very Close to the market at front gate
-                            </div>
-                        </div>
-                    </div>
-                </a>
-            </div>
-
-            <!-- Let Love Lead -->
-            <div class="col-lg-3 col-md-6">
-                <a href="{% url 'search_results' %}?location=Backgate" class="text-decoration-none">
-                    <div class="area-card-modern">
-                        <img src="{% static 'landing_pg_lodge-img/let-love-lead.jpeg' %}" 
-                             alt="Let Love Lead" class="img-fluid" style="height: 220px; object-fit: cover; border-radius: 12px;">
-                        <div class="area-info">
-                            <div class="area-name">Let Love Lead</div>
-                            <div class="area-description">
-                                <i class="bi bi-building"></i>
-                                Very close to the school Temporary site
-                            </div>
-                        </div>
-                    </div>
-                </a>
-            </div>
-
-
-            <!-- Excellent Lodge (from DB) -->
-            <div class="col-lg-3 col-md-6">
-                {% if excellent_lodge %}
-                <a href="{% url 'lodge_detail' excellent_lodge.id %}" class="text-decoration-none">
-                    <div class="area-card-modern">
-                        {% if excellent_lodge.images.all %}
-                            <img src="{{ excellent_lodge.images.first.image.url }}"
-                                 alt="{{ excellent_lodge.name }}" class="img-fluid" style="height: 220px; object-fit: cover; border-radius: 12px;">
+            {% for lodge in recent_lodges %}
+            <div class="col-lg-4 col-md-6 scroll-reveal" style="animation-delay: {{ forloop.counter0|add:1|multiply:0.1 }}s">
+                <div class="lodge-card-premium">
+                    <div class="lodge-img-container">
+                        {% if lodge.images.all %}
+                            <img src="{{ lodge.images.first.image.url }}" alt="{{ lodge.name }}" class="lodge-img-premium">
                         {% else %}
-                            <img src="https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=400&h=220&q=80&auto=format&fit=crop"
-                                 alt="{{ excellent_lodge.name }}" class="img-fluid" style="height: 220px; object-fit: cover; border-radius: 12px;">
+                            <img src="https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?w=800&auto=format&fit=crop" alt="Lodge" class="lodge-img-premium">
                         {% endif %}
-                        <div class="area-info">
-                            <div class="area-name">{{ excellent_lodge.name }}</div>
-                            <div class="area-description">
-                                <i class="bi bi-geo-alt-fill"></i>
-                                {{ excellent_lodge.location }}
-                            </div>
+                        <div class="lodge-price-badge">
+                            ₦{{ lodge.price_per_year|floatformat:0 }}<small class="fw-normal text-muted">/yr</small>
                         </div>
                     </div>
-                </a>
-                {% else %}
-                <a href="{% url 'search_results' %}?location=Backgate" class="text-decoration-none">
-                    <div class="area-card-modern">
-                        <img src="{% static 'landing_pg_lodge-img/emmanuel-god-with-us.jpeg' %}" 
-                             alt="Emmanuel God with us" class="img-fluid" style="height: 220px; object-fit: cover; border-radius: 12px;">
-                        <div class="area-info">
-                            <div class="area-name">Emmanuel God with us</div>
-                            <div class="area-description">
-                                <i class="bi bi-shop"></i>
-                                Near market
+                    
+                    <div class="lodge-card-body">
+                        <div class="d-flex justify-content-between align-items-start mb-2">
+                            <span class="badge-modern badge-primary">{{ lodge.get_room_type_display }}</span>
+                            <div class="text-warning small">
+                                <i class="bi bi-star-fill"></i> New
                             </div>
                         </div>
+                        <h3 class="lodge-name-premium">{{ lodge.name }}</h3>
+                        <p class="text-muted-modern mb-3">
+                            <i class="bi bi-geo-alt me-1"></i> {{ lodge.location }}
+                        </p>
+                        
+                        <div class="d-flex gap-3 mb-4">
+                            {% for amenity in lodge.amenities.all|slice:":3" %}
+                            <div class="small text-muted-modern bg-light-modern px-2 py-1 rounded">
+                                <i class="bi bi-check2"></i> {{ amenity.name }}
+                            </div>
+                            {% endfor %}
+                        </div>
+                        
+                        <a href="{% url 'lodge_detail' lodge.id %}" class="btn btn-outline-modern w-100 py-2">
+                            View Details <i class="bi bi-arrow-right ms-2"></i>
+                        </a>
                     </div>
-                </a>
-                {% endif %}
+                </div>
             </div>
+            {% empty %}
+            <!-- Placeholder for Empty State -->
+            <div class="col-12 text-center py-5">
+                <div class="empty-placeholder">
+                    <i class="bi bi-building-add display-1 text-gray-300 mb-4"></i>
+                    <h3 class="h2 fw-bold text-gray-900">Starting Fresh!</h3>
+                    <p class="text-muted fs-5 mb-4">We are currently verifying new lodges. Check back in a few minutes!</p>
+                    <a href="{% url 'owner_signup' %}" class="btn btn-primary-modern btn-lg px-5">Be the First to List</a>
+                </div>
+            </div>
+            {% endfor %}
         </div>
     </div>
 </section>
-<!-- How It Works -->
-<section class="how-section">
+
+<!-- Stats / Feature Grid -->
+<section class="py-5 bg-light-modern">
     <div class="container">
-        <div class="section-header">
-            <div class="section-badge">Simple Process</div>
-            <h2 class="section-title">How It Works</h2>
-            <p class="section-description">
-                Find your perfect lodge in three easy steps
-            </p>
-        </div>
-        
-        <div class="step-grid">
-            <div class="step-card">
-                <div class="step-icon-wrapper">
-                    <i class="bi bi-search"></i>
-                    <div class="step-number">1</div>
+        <div class="row g-5 align-items-center">
+            <div class="col-lg-5">
+                <h2 class="h1 fw-bold mb-4" style="line-height: 1.2;">Built for AE-FUNAI Students</h2>
+                <p class="fs-5 text-muted mb-5">We understand the struggle of finding a good home. Our platform ensures you get what you see, with verified owners and transparent pricing.</p>
+                
+                <div class="d-flex gap-4 mb-4">
+                    <div class="p-3 bg-white rounded-4 shadow-sm">
+                        <i class="bi bi-shield-check text-primary fs-2"></i>
+                        <h5 class="mt-2 fw-bold">Verified</h5>
+                    </div>
+                    <div class="p-3 bg-white rounded-4 shadow-sm">
+                        <i class="bi bi-lightning-charge text-primary fs-2"></i>
+                        <h5 class="mt-2 fw-bold">Fast Search</h5>
+                    </div>
+                    <div class="p-3 bg-white rounded-4 shadow-sm">
+                        <i class="bi bi-cash-stack text-primary fs-2"></i>
+                        <h5 class="mt-2 fw-bold">No Hidden Fees</h5>
+                    </div>
                 </div>
-                <h3 class="step-title">Search & Filter</h3>
-                <p class="step-description">
-                    Browse lodges by location, price, and room type to find exactly what fits your needs and budget.
-                </p>
             </div>
-            
-            <div class="step-card">
-                <div class="step-icon-wrapper">
-                    <i class="bi bi-eye"></i>
-                    <div class="step-number">2</div>
+            <div class="col-lg-7">
+                <div class="row g-4">
+                    <div class="col-6">
+                        <img src="https://images.unsplash.com/photo-1590274853856-f22d5ee3d228?w=500&auto=format&fit=crop" class="img-fluid rounded-5 shadow" alt="Interior">
+                    </div>
+                    <div class="col-6">
+                        <img src="https://images.unsplash.com/photo-1484154218962-a197022b5858?w=500&auto=format&fit=crop" class="img-fluid rounded-5 shadow mt-5" alt="Kitchen">
+                    </div>
                 </div>
-                <h3 class="step-title">View Details</h3>
-                <p class="step-description">
-                    See photos, amenities, map location, and full pricing. No surprises when you arrive for inspection.
-                </p>
-            </div>
-            
-            <div class="step-card">
-                <div class="step-icon-wrapper">
-                    <i class="bi bi-chat-dots"></i>
-                    <div class="step-number">3</div>
-                </div>
-                <h3 class="step-title">Contact Owner</h3>
-                <p class="step-description">
-                    Reach the lodge owner directly via phone or WhatsApp to schedule inspection and arrange payment.
-                </p>
             </div>
         </div>
     </div>
 </section>
 
-<!-- CTA Section -->
-<section class="cta-section text-center text-white">
-    <div class="container" style="position: relative; z-index: 1;">
-        <h2 class="section-title mb-3" style="color: var(--white);">Ready to Find Your Lodge?</h2>
-        <p class="section-description mb-4" style="color: rgba(255, 255, 255, 0.9); max-width: 600px; margin-left: auto; margin-right: auto;">
-            Join thousands of students who have found their perfect accommodation through LodgeFinder
-        </p>
-        <div class="cta-buttons">
-            <a href="{% url 'student_signup' %}" class="btn btn-cta-white">
-                <i class="bi bi-mortarboard me-2"></i>Sign Up as Student
-            </a>
-            <a href="{% url 'owner_signup' %}" class="btn btn-cta-outline">
-                <i class="bi bi-building me-2"></i>List Your Property
-            </a>
+<!-- Final CTA -->
+<section class="py-5 mb-5">
+    <div class="container">
+        <div class="bg-primary p-5 rounded-5 shadow-lg text-center text-white position-relative overflow-hidden">
+            <div style="position: relative; z-index: 2;">
+                <h2 class="display-5 fw-bold mb-3">Ready to Move In?</h2>
+                <p class="fs-5 mb-5 opacity-75">Join our community today and secure your spot.</p>
+                <div class="d-flex justify-content-center gap-3 flex-wrap">
+                    <a href="{% url 'student_signup' %}" class="btn btn-light btn-lg px-5 py-3 fw-bold text-primary">Get Started</a>
+                    <a href="{% url 'owner_signup' %}" class="btn btn-outline-light btn-lg px-5 py-3 fw-bold">Owner Dashboard</a>
+                </div>
+            </div>
+            <div style="position: absolute; top: -50%; left: -20%; width: 500px; height: 500px; background: rgba(255,255,255,0.05); border-radius: 50%;"></div>
         </div>
     </div>
 </section>
+
 {% endblock %}
 
 {% block extra_js %}
 <script>
-// Smooth scroll to search on page load with hash
-if (window.location.hash === '#search') {
-    setTimeout(() => {
-        document.querySelector('.search-card')?.scrollIntoView({ behavior: 'smooth', block: 'center' });
-    }, 100);
-}
-
-// Image lazy load with fade
+// Scroll Reveal Logic
 document.addEventListener('DOMContentLoaded', function() {
-    const images = document.querySelectorAll('img[loading="lazy"]');
-    images.forEach(img => {
-        img.style.opacity = '0';
-        img.style.transition = 'opacity 0.4s ease';
-        img.addEventListener('load', function() {
-            this.style.opacity = '1';
+    const observerOptions = {
+        threshold: 0.1
+    };
+
+    const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                entry.target.classList.add('active');
+            }
         });
-        if (img.complete) img.style.opacity = '1';
+    }, observerOptions);
+
+    document.querySelectorAll('.scroll-reveal').forEach(el => {
+        observer.observe(el);
     });
 });
 </script>
