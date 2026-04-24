@@ -13,7 +13,7 @@
         justify-content: center;
         padding: 4rem 1rem;
         position: relative;
-        background: linear-gradient(rgba(15, 76, 129, 0.75), rgba(15, 76, 129, 0.95)),
+        background: linear-gradient(rgba(17, 24, 39, 0.6), rgba(17, 24, 39, 0.8)),
                     url('{% static "landing_pg_lodge-img/nazareth-lodge.jpeg" %}') center/cover fixed no-repeat;
     }
 
@@ -32,8 +32,15 @@
     }
 
     @keyframes slideUp {
-        from { opacity: 0; transform: translateY(30px); }
-        to { opacity: 1; transform: translateY(0); }
+        from {
+            opacity: 0;
+            transform: translateY(30px);
+        }
+
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
     }
 
     .auth-header {
@@ -151,7 +158,7 @@
         transition: all 0.3s ease;
     }
 
-    .input-premium:focus + .input-icon {
+    .input-premium:focus+.input-icon {
         color: var(--primary);
     }
 
@@ -234,13 +241,14 @@
             </div>
 
             {% if messages %}
-                {% for message in messages %}
-                <div class="alert {% if message.tags == 'error' %}alert-danger{% else %}alert-success{% endif %} mb-4" 
-                     style="border-radius: var(--radius-md); font-weight: 500; font-size: 0.9rem; border: none; box-shadow: var(--shadow-sm);">
-                    <i class="bi {% if message.tags == 'error' %}bi-exclamation-triangle-fill{% else %}bi-check-circle-fill{% endif %} me-2"></i>
-                    {{ message }}
-                </div>
-                {% endfor %}
+            {% for message in messages %}
+            <div class="alert {% if message.tags == 'error' %}alert-danger{% else %}alert-success{% endif %} mb-4"
+                style="border-radius: var(--radius-md); font-weight: 500; font-size: 0.9rem; border: none; box-shadow: var(--shadow-sm);">
+                <i
+                    class="bi {% if message.tags == 'error' %}bi-exclamation-triangle-fill{% else %}bi-check-circle-fill{% endif %} me-2"></i>
+                {{ message }}
+            </div>
+            {% endfor %}
             {% endif %}
 
             <form method="post">
@@ -248,8 +256,8 @@
                 <div class="form-group-premium">
                     <label class="label-premium">Email or Matric Number</label>
                     <div class="input-wrapper">
-                        <input type="text" class="input-premium" name="identifier" 
-                               placeholder="yourname@funai.edu.ng" required autofocus>
+                        <input type="text" class="input-premium" name="identifier" placeholder="yourname@funai.edu.ng"
+                            required autofocus>
                         <i class="bi bi-person-fill input-icon"></i>
                     </div>
                 </div>
@@ -260,8 +268,7 @@
                         <a href="#" class="footer-link" style="font-size: 0.8rem;">Forgot Password?</a>
                     </div>
                     <div class="input-wrapper">
-                        <input type="password" class="input-premium" name="password" 
-                               placeholder="••••••••" required>
+                        <input type="password" class="input-premium" name="password" placeholder="••••••••" required>
                         <i class="bi bi-shield-lock-fill input-icon"></i>
                     </div>
                 </div>
@@ -282,7 +289,8 @@
 
             <div class="auth-footer">
                 <p class="footer-text mb-0">
-                    Don't have an account? <a href="{% url 'student_signup' %}" class="footer-link">Create Student Account</a>
+                    Don't have an account? <a href="{% url 'student_signup' %}" class="footer-link">Create Student
+                        Account</a>
                 </p>
             </div>
         </div>
