@@ -243,10 +243,17 @@ def my_lodges(request):
         return redirect('home')
 
     # Get only lodges belonging to this owner
-    lodges = Lodge.objects.filter(owner=request.user).order_by('-created_at')
+    lodges = Lodge.objects.filter(owner=request.user)\
+                          .prefetch_related('images')\
+                          .order_by('-created_at')
+
+    approved_count = lodges.filter(is_approved=True).count()
+    pending_count = lodges.filter(is_approved=False).count()
 
     return render(request, 'lodge/my_lodges.html', {
         'lodges': lodges,
+        'approved_count': approved_count,
+        'pending_count': pending_count,
     })
 
 @login_required
