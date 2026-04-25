@@ -486,37 +486,37 @@
                 <div class="stat-card-dashboard">
                     <div class="stat-header">
                         <div>
-                            <div class="stat-label">Active Bookings</div>
+                            <div class="stat-label">Available Lodges</div>
                         </div>
                         <div class="stat-icon primary">
-                            <i class="bi bi-calendar-check"></i>
+                            <i class="bi bi-houses-fill"></i>
                         </div>
                     </div>
-                    <div class="stat-value">2</div>
+                    <div class="stat-value">{{ total_lodges }}</div>
                 </div>
                 
                 <div class="stat-card-dashboard">
                     <div class="stat-header">
                         <div>
-                            <div class="stat-label">Saved Lodges</div>
+                            <div class="stat-label">Locations Covered</div>
                         </div>
                         <div class="stat-icon success">
-                            <i class="bi bi-bookmark-heart-fill"></i>
+                            <i class="bi bi-geo-alt-fill"></i>
                         </div>
                     </div>
-                    <div class="stat-value">7</div>
+                    <div class="stat-value">{{ total_locations }}</div>
                 </div>
                 
                 <div class="stat-card-dashboard">
                     <div class="stat-header">
                         <div>
-                            <div class="stat-label">Pending Inspections</div>
+                            <div class="stat-label">Room Types</div>
                         </div>
                         <div class="stat-icon warning">
-                            <i class="bi bi-clock-fill"></i>
+                            <i class="bi bi-door-open-fill"></i>
                         </div>
                     </div>
-                    <div class="stat-value">1</div>
+                    <div class="stat-value">{{ total_room_types }}</div>
                 </div>
             </div>
             

@@ -100,14 +100,24 @@ def student_dashboard(request):
         messages.error(request, 'You do not have access to this page.')
         return redirect('home')
 
+    approved_lodges = Lodge.objects.filter(is_approved=True)
+
+    # Real stats from the database
+    total_lodges = approved_lodges.count()
+    total_locations = approved_lodges.values('location').distinct().count()
+    total_room_types = approved_lodges.values('room_type').distinct().count()
+
     # Fetch the 6 most recent approved lodges for the student dashboard
-    recommended_lodges = Lodge.objects.filter(is_approved=True)\
+    recommended_lodges = approved_lodges\
                               .prefetch_related('images', 'amenities')\
                               .select_related('owner')\
                               .order_by('-created_at')[:6]
 
     return render(request, 'lodge/student_dashboard.html', {
         'recommended_lodges': recommended_lodges,
+        'total_lodges': total_lodges,
+        'total_locations': total_locations,
+        'total_room_types': total_room_types,
     })
 
 @login_required
