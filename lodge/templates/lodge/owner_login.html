@@ -219,18 +219,8 @@
                 <a href="{% url 'owner_login' %}" class="toggle-btn active">Lodge Owner</a>
             </div>
 
-            {% if messages %}
-                {% for message in messages %}
-                <div class="alert {% if message.tags == 'error' %}alert-danger{% else %}alert-success{% endif %} mb-4" 
-                     style="border-radius: var(--radius-md); font-weight: 500; font-size: 0.9rem; border: none; box-shadow: var(--shadow-sm);">
-                    <i class="bi {% if message.tags == 'error' %}bi-exclamation-triangle-fill{% else %}bi-check-circle-fill{% endif %} me-2"></i>
-                    {{ message }}
-                </div>
-                {% endfor %}
-            {% endif %}
-
             <form method="post" novalidate>
-                {% csrf_token %}
+{% csrf_token %}
                 <div class="form-group-premium">
                     <label class="label-premium">Email or WhatsApp Number</label>
                     <div class="input-wrapper">

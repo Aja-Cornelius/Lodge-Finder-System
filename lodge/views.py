@@ -224,7 +224,6 @@ def lodge_detail(request, lodge_id):
 
 def logout_view(request):
     logout(request)
-    messages.success(request, "You have been successfully logged out.")
     return redirect('home')  # or 'login' or wherever you want to send users
 
 @login_required
