@@ -38,7 +38,16 @@ class Lodge(models.Model):
     amenities = models.ManyToManyField('Amenity', blank=True)
     is_approved = models.BooleanField(default=False)
 
+    total_rooms = models.PositiveIntegerField(default=1, help_text="Total number of rooms in the lodge")
+    rooms_available = models.PositiveIntegerField(default=1, help_text="Number of rooms currently available")
+
     created_at = models.DateTimeField(auto_now_add=True)
+
+    @property
+    def available_percentage(self):
+        if self.total_rooms > 0:
+            return min(100, int((self.rooms_available / self.total_rooms) * 100))
+        return 0
 
     def __str__(self):
         return f"{self.name} - {self.location}"

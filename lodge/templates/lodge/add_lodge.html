@@ -540,6 +540,16 @@
                                 {{ form.room_type|add_class:"form-select" }}
                             </div>
                         </div>
+                        <div class="row g-3 mb-4">
+                            <div class="col-md-6">
+                                <label class="field-label">Total Rooms</label>
+                                {{ form.total_rooms|add_class:"form-control"|attr:"placeholder:e.g. 8"|attr:"min:1" }}
+                            </div>
+                            <div class="col-md-6">
+                                <label class="field-label">Rooms Available</label>
+                                {{ form.rooms_available|add_class:"form-control"|attr:"placeholder:e.g. 2"|attr:"min:0" }}
+                            </div>
+                        </div>
                         <div>
                             <label class="field-label">Description</label>
                             {{ form.description|add_class:"form-control"|attr:"rows:5"|attr:"placeholder:Describe the lodge, facilities, nearby landmarks, rules, etc." }}
@@ -559,7 +569,14 @@
                         </div>
 
                         <div class="amenities-grid">
-                            {{ form.amenities }}
+                            {% for checkbox in form.amenities %}
+                                <div class="form-check">
+                                    {{ checkbox|add_class:"form-check-input" }}
+                                    <label class="form-check-label" for="{{ checkbox.id_for_label }}">
+                                        {{ checkbox.choice_label }}
+                                    </label>
+                                </div>
+                            {% endfor %}
                         </div>
                     </div>
                 </div>

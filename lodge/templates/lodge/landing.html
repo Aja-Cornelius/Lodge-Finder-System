@@ -289,6 +289,17 @@
                             <i class="bi bi-geo-alt me-1"></i> {{ lodge.location }}
                         </p>
                         
+                        <!-- Room Availability Progress Bar -->
+                        <div class="mb-3">
+                            <div class="progress" style="height: 6px; background-color: #E5E7EB; border-radius: 3px; overflow: hidden; margin-bottom: 4px;">
+                                <div class="progress-bar" role="progressbar" style="width: {{ lodge.available_percentage }}%; background-color: #10B981;" aria-valuenow="{{ lodge.rooms_available }}" aria-valuemin="0" aria-valuemax="{{ lodge.total_rooms }}"></div>
+                            </div>
+                            <div class="d-flex justify-content-between text-muted-modern" style="font-size: 0.8rem; font-weight: 500;">
+                                <span>{{ lodge.total_rooms }} rooms</span>
+                                <span>{{ lodge.rooms_available }} still available</span>
+                            </div>
+                        </div>
+                        
                         <div class="d-flex gap-3 mb-4">
                             {% for amenity in lodge.amenities.all|slice:":3" %}
                             <div class="small text-muted-modern bg-light-modern px-2 py-1 rounded">
