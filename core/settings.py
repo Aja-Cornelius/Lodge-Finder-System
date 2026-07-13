@@ -91,24 +91,25 @@ WSGI_APPLICATION = 'core.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/6.0/ref/settings/#databases
 
-try:
+# Use DATABASE_URL env var (set in Vercel → PostgreSQL/Neon)
+# Falls back to local SQLite for development
+DATABASE_URL = os.environ.get('DATABASE_URL')
+
+if DATABASE_URL:
     DATABASES = {
         'default': dj_database_url.config(
-            default=f"sqlite:///{BASE_DIR / 'db.sqlite3'}",
+            default=DATABASE_URL,
             conn_max_age=600,
             conn_health_checks=True,
+            ssl_require=True,
         )
     }
-except Exception:
-    # Fallback logic: Use a debug name on Vercel, but keep db.sqlite3 locally
-    db_name = 'db.sqlite3'
-    if os.environ.get('VERCEL'):
-        db_name = 'CHECK_VERCEL_DATABASE_URL_ENV_VAR.sqlite3'
-    
+else:
+    # Local development — use SQLite
     DATABASES = {
         'default': {
             'ENGINE': 'django.db.backends.sqlite3',
-            'NAME': BASE_DIR / db_name,
+            'NAME': BASE_DIR / 'db.sqlite3',
         }
     }
 
