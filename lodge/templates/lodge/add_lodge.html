@@ -1,646 +1,146 @@
+{% extends 'lodge/base.html' %}
+{% load static %}
 {% load widget_tweaks %}
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Register New Lodge - LodgeFinder</title>
-    
-    <link rel="preconnect" href="https://fonts.googleapis.com" crossorigin>
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Sora:wght@600;700;800&display=swap" rel="stylesheet">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
-    
-    <style>
-        :root {
-            --primary: #0F4C81;
-            --primary-dark: #0A3A61;
-            --primary-light: #1A5F9B;
-            --accent: #FF6B35;
-            --accent-dark: #E5522A;
-            --success: #10B981;
-            --warning: #F59E0B;
-            --danger: #EF4444;
-            --white: #FFFFFF;
-            --gray-50: #F9FAFB;
-            --gray-100: #F3F4F6;
-            --gray-200: #E5E7EB;
-            --gray-300: #D1D5DB;
-            --gray-400: #9CA3AF;
-            --gray-600: #4B5563;
-            --gray-700: #374151;
-            --gray-800: #1F2937;
-            --gray-900: #111827;
-            --shadow-sm: 0 1px 2px 0 rgba(0,0,0,0.05);
-            --shadow-md: 0 4px 6px -1px rgba(0,0,0,0.1);
-            --shadow-lg: 0 10px 15px -3px rgba(0,0,0,0.1);
-            --radius-sm: 8px;
-            --radius-md: 12px;
-            --radius-lg: 16px;
-            --radius-xl: 20px;
-        }
-
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-
-        body {
-            font-family: 'Inter', sans-serif;
-            background: var(--gray-50);
-            color: var(--gray-900);
-            min-height: 100vh;
-        }
-
-        h1, h2, h3, h4, h5, h6 {
-            font-family: 'Sora', sans-serif;
-        }
-
-        /* ─── Top Navigation ─── */
-        .top-bar {
-            background: var(--white);
-            border-bottom: 1px solid var(--gray-200);
-            padding: 0.875rem 2rem;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            position: sticky;
-            top: 0;
-            z-index: 100;
-        }
-
-        .top-bar-left {
-            display: flex;
-            align-items: center;
-            gap: 1.5rem;
-        }
-
-        .brand-add {
-            font-family: 'Sora', sans-serif;
-            font-size: 1.35rem;
-            font-weight: 800;
-            color: var(--primary);
-            text-decoration: none;
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-        }
-
-        .brand-add:hover { color: var(--primary-dark); }
-
-        .brand-dot-add {
-            width: 8px;
-            height: 8px;
-            background: var(--accent);
-            border-radius: 50%;
-        }
-
-        .breadcrumb-nav {
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-            font-size: 0.875rem;
-            color: var(--gray-400);
-        }
-
-        .breadcrumb-nav a {
-            color: var(--gray-600);
-            text-decoration: none;
-            font-weight: 500;
-            transition: color 0.2s;
-        }
-
-        .breadcrumb-nav a:hover { color: var(--primary); }
-
-        .breadcrumb-nav .current {
-            color: var(--gray-900);
-            font-weight: 600;
-        }
-
-        .top-bar-right a {
-            background: var(--gray-100);
-            color: var(--gray-700);
-            border: none;
-            padding: 0.5rem 1rem;
-            border-radius: var(--radius-sm);
-            font-size: 0.875rem;
-            font-weight: 600;
-            text-decoration: none;
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-            transition: all 0.2s;
-        }
-
-        .top-bar-right a:hover {
-            background: var(--gray-200);
-            color: var(--gray-900);
-        }
-
-        /* ─── Page Content ─── */
-        .page-wrapper {
-            max-width: 1100px;
-            margin: 0 auto;
-            padding: 2.5rem 1.5rem 4rem;
-        }
-
-        .page-intro {
-            margin-bottom: 2rem;
-        }
-
-        .page-intro h1 {
-            font-size: 1.75rem;
-            font-weight: 800;
-            color: var(--gray-900);
-            margin-bottom: 0.5rem;
-        }
-
-        .page-intro p {
-            font-size: 0.95rem;
-            color: var(--gray-600);
-            max-width: 600px;
-        }
-
-        /* ─── Step Indicator ─── */
-        .steps-bar {
-            display: flex;
-            gap: 0.5rem;
-            margin-bottom: 2.5rem;
-        }
-
-        .step-pill {
-            flex: 1;
-            height: 4px;
-            border-radius: 4px;
-            background: var(--gray-200);
-        }
-
-        .step-pill.active {
-            background: linear-gradient(90deg, var(--primary), var(--accent));
-        }
-
-        /* ─── Form Sections ─── */
-        .form-section {
-            background: var(--white);
-            border-radius: var(--radius-xl);
-            border: 1px solid var(--gray-200);
-            padding: 2rem;
-            margin-bottom: 1.5rem;
-            transition: box-shadow 0.3s;
-        }
-
-        .form-section:hover {
-            box-shadow: var(--shadow-md);
-        }
-
-        .section-header {
-            display: flex;
-            align-items: center;
-            gap: 0.75rem;
-            margin-bottom: 1.75rem;
-        }
-
-        .section-icon {
-            width: 40px;
-            height: 40px;
-            border-radius: var(--radius-sm);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 1.1rem;
-        }
-
-        .section-icon.info { background: rgba(15,76,129,0.1); color: var(--primary); }
-        .section-icon.amenity { background: rgba(16,185,129,0.1); color: var(--success); }
-        .section-icon.photo { background: rgba(255,107,53,0.1); color: var(--accent); }
-
-        .section-title {
-            font-size: 1rem;
-            font-weight: 700;
-            color: var(--gray-900);
-        }
-
-        .section-subtitle {
-            font-size: 0.8rem;
-            color: var(--gray-400);
-            font-weight: 400;
-        }
-
-        /* ─── Form Controls ─── */
-        .field-label {
-            font-size: 0.8rem;
-            font-weight: 600;
-            text-transform: uppercase;
-            letter-spacing: 0.04em;
-            color: var(--gray-600);
-            margin-bottom: 0.5rem;
-            display: block;
-        }
-
-        .form-control, .form-select {
-            border: 1.5px solid var(--gray-200);
-            border-radius: var(--radius-md);
-            padding: 0.75rem 1rem;
-            font-size: 0.938rem;
-            font-family: 'Inter', sans-serif;
-            color: var(--gray-900);
-            transition: all 0.25s;
-            background: var(--white);
-        }
-
-        .form-control:focus, .form-select:focus {
-            border-color: var(--primary);
-            box-shadow: 0 0 0 4px rgba(15,76,129,0.1);
-            outline: none;
-        }
-
-        .form-control::placeholder {
-            color: var(--gray-400);
-        }
-
-        textarea.form-control {
-            resize: vertical;
-            min-height: 120px;
-        }
-
-        /* ─── Amenities Chips ─── */
-        .amenities-grid {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 0.5rem;
-        }
-
-        .amenities-grid .form-check {
-            background: var(--gray-50);
-            border: 1.5px solid var(--gray-200);
-            border-radius: 100px;
-            padding: 0.5rem 1rem 0.5rem 0.5rem;
-            display: inline-flex;
-            align-items: center;
-            gap: 0.5rem;
-            cursor: pointer;
-            transition: all 0.2s;
-            margin: 0;
-        }
-
-        .amenities-grid .form-check:hover {
-            border-color: var(--primary);
-            background: rgba(15,76,129,0.04);
-        }
-
-        .amenities-grid .form-check-input {
-            margin: 0;
-            width: 18px;
-            height: 18px;
-            border-radius: 50%;
-            border: 2px solid var(--gray-300);
-            cursor: pointer;
-        }
-
-        .amenities-grid .form-check-input:checked {
-            background-color: var(--primary);
-            border-color: var(--primary);
-        }
-
-        .amenities-grid .form-check-input:checked + .form-check-label {
-            color: var(--primary);
-            font-weight: 600;
-        }
-
-        .amenities-grid .form-check-label {
-            font-size: 0.875rem;
-            font-weight: 500;
-            color: var(--gray-700);
-            cursor: pointer;
-        }
-
-        /* ─── Photo Upload ─── */
-        .photo-upload-card {
-            border: 2px dashed var(--gray-200);
-            border-radius: var(--radius-lg);
-            padding: 1.25rem;
-            text-align: center;
-            transition: all 0.25s;
-            background: var(--gray-50);
-        }
-
-        .photo-upload-card:hover {
-            border-color: var(--accent);
-            background: rgba(255,107,53,0.03);
-        }
-
-        .photo-upload-card .upload-icon {
-            font-size: 1.5rem;
-            color: var(--gray-400);
-            margin-bottom: 0.5rem;
-        }
-
-        .photo-upload-card .upload-text {
-            font-size: 0.8rem;
-            font-weight: 600;
-            color: var(--gray-600);
-            margin-bottom: 0.25rem;
-        }
-
-        .photo-upload-card .upload-hint {
-            font-size: 0.72rem;
-            color: var(--gray-400);
-        }
-
-        .photo-upload-card input[type="file"] {
-            display: block;
-            margin-top: 0.75rem;
-            font-size: 0.82rem;
-        }
-
-        /* ─── Action Footer ─── */
-        .action-footer {
-            background: var(--white);
-            border-radius: var(--radius-xl);
-            border: 1px solid var(--gray-200);
-            padding: 1.5rem 2rem;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            gap: 1rem;
-            flex-wrap: wrap;
-        }
-
-        .action-info {
-            display: flex;
-            align-items: center;
-            gap: 0.75rem;
-            font-size: 0.85rem;
-            color: var(--gray-600);
-        }
-
-        .action-info i { 
-            font-size: 1.2rem; 
-            color: var(--primary);
-        }
-
-        .action-buttons {
-            display: flex;
-            gap: 0.75rem;
-        }
-
-        .btn-cancel {
-            background: var(--gray-100);
-            color: var(--gray-700);
-            border: none;
-            padding: 0.75rem 1.5rem;
-            border-radius: var(--radius-md);
-            font-weight: 600;
-            font-size: 0.938rem;
-            font-family: 'Inter', sans-serif;
-            text-decoration: none;
-            transition: all 0.2s;
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-        }
-
-        .btn-cancel:hover {
-            background: var(--gray-200);
-            color: var(--gray-900);
-        }
-
-        .btn-submit-lodge {
-            background: linear-gradient(135deg, var(--accent), var(--accent-dark));
-            color: var(--white);
-            border: none;
-            padding: 0.75rem 2rem;
-            border-radius: var(--radius-md);
-            font-weight: 700;
-            font-size: 0.938rem;
-            font-family: 'Inter', sans-serif;
-            cursor: pointer;
-            transition: all 0.3s;
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-            box-shadow: 0 4px 14px rgba(255,107,53,0.3);
-        }
-
-        .btn-submit-lodge:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 8px 24px rgba(255,107,53,0.4);
-        }
-
-        .btn-submit-lodge:active {
-            transform: translateY(0);
-        }
-
-        /* ─── Responsive ─── */
-        @media (max-width: 768px) {
-            .top-bar {
-                padding: 0.75rem 1rem;
-            }
-
-            .breadcrumb-nav { display: none; }
-
-            .page-wrapper {
-                padding: 1.5rem 1rem 3rem;
-            }
-
-            .page-intro h1 { font-size: 1.35rem; }
-
-            .form-section {
-                padding: 1.25rem;
-                border-radius: var(--radius-lg);
-            }
-
-            .action-footer {
-                flex-direction: column;
-                text-align: center;
-            }
-
-            .action-buttons {
-                width: 100%;
-                flex-direction: column;
-            }
-
-            .btn-cancel, .btn-submit-lodge {
-                width: 100%;
-                justify-content: center;
-            }
-        }
-    </style>
-</head>
-<body>
-
-    <!-- Top Navigation -->
-    <div class="top-bar">
-        <div class="top-bar-left">
-            <a href="{% url 'owner_dashboard' %}" class="brand-add">
-                <span class="brand-dot-add"></span>
-                LodgeFinder
-            </a>
-            <div class="breadcrumb-nav">
-                <a href="{% url 'owner_dashboard' %}">Dashboard</a>
-                <i class="bi bi-chevron-right"></i>
-                <span class="current">Register New Lodge</span>
-            </div>
-        </div>
-        <div class="top-bar-right">
-            <a href="{% url 'owner_dashboard' %}">
-                <i class="bi bi-arrow-left"></i> Back to Dashboard
-            </a>
-        </div>
+{% block title %}Register New Lodge - LodgeFinder{% endblock %}
+
+{% block content %}
+<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+    <!-- Page Intro -->
+    <div class="mb-8">
+        <span class="inline-block px-3 py-1 bg-amber-100 text-amber-800 text-xs font-bold uppercase tracking-wider rounded-full mb-2">New Property</span>
+        <h1 class="text-3xl sm:text-4xl font-extrabold text-slate-900 tracking-tight">Register New Lodge</h1>
+        <p class="text-slate-600 text-sm sm:text-base mt-1">Fill in your lodge details and upload photos to get listed for AE-FUNAI students.</p>
     </div>
 
-    <!-- Page Content -->
-    <div class="page-wrapper">
+    <form method="post" enctype="multipart/form-data">
+        {% csrf_token %}
 
-        <!-- Page Intro -->
-        <div class="page-intro">
-            <h1>Register New Lodge</h1>
-            <p>Fill in your lodge details and upload photos to get listed for AE-FUNAI students.</p>
-        </div>
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
+            <!-- Left Column: Form Fields (8 cols) -->
+            <div class="lg:col-span-8 space-y-6">
+                
+                <!-- Basic Information -->
+                <div class="bg-white rounded-3xl p-6 sm:p-8 border border-slate-200 shadow-sm">
+                    <div class="flex items-center gap-3 mb-6 pb-4 border-b border-slate-100">
+                        <div class="w-10 h-10 rounded-xl bg-blue-50 text-blue-900 flex items-center justify-center text-lg">
+                            <i class="bi bi-building"></i>
+                        </div>
+                        <div>
+                            <h2 class="text-lg font-bold text-slate-900">Basic Information</h2>
+                            <p class="text-xs text-slate-500">Tell students about your lodge</p>
+                        </div>
+                    </div>
 
-        <!-- Step Progress -->
-        <div class="steps-bar">
-            <div class="step-pill active"></div>
-            <div class="step-pill active"></div>
-            <div class="step-pill active"></div>
-        </div>
-
-        <form method="post" enctype="multipart/form-data">
-            {% csrf_token %}
-
-            <div class="row g-4">
-                <!-- Left Column: Form Fields -->
-                <div class="col-lg-7">
-                    
-                    <!-- Basic Information -->
-                    <div class="form-section">
-                        <div class="section-header">
-                            <div class="section-icon info">
-                                <i class="bi bi-building"></i>
+                    <div class="space-y-5">
+                        <div>
+                            <label class="block font-bold text-xs uppercase tracking-wider text-slate-600 mb-2">Lodge Name</label>
+                            {{ form.name|add_class:"w-full px-4 py-3 bg-slate-50 border border-slate-300 rounded-xl text-sm text-slate-900 focus:outline-none focus:border-amber-500 focus:bg-white transition-all"|attr:"placeholder:e.g. Nazareth Lodge" }}
+                        </div>
+                        <div>
+                            <label class="block font-bold text-xs uppercase tracking-wider text-slate-600 mb-2">Location / Area</label>
+                            {{ form.location|add_class:"w-full px-4 py-3 bg-slate-50 border border-slate-300 rounded-xl text-sm text-slate-900 focus:outline-none focus:border-amber-500 focus:bg-white transition-all"|attr:"placeholder:e.g. Akanu, Ozizza, Backgate" }}
+                        </div>
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                            <div>
+                                <label class="block font-bold text-xs uppercase tracking-wider text-slate-600 mb-2">Price per Year (₦)</label>
+                                {{ form.price_per_year|add_class:"w-full px-4 py-3 bg-slate-50 border border-slate-300 rounded-xl text-sm text-slate-900 focus:outline-none focus:border-amber-500 focus:bg-white transition-all"|attr:"placeholder:e.g. 250000" }}
                             </div>
                             <div>
-                                <div class="section-title">Basic Information</div>
-                                <div class="section-subtitle">Tell students about your lodge</div>
+                                <label class="block font-bold text-xs uppercase tracking-wider text-slate-600 mb-2">Room Type</label>
+                                {{ form.room_type|add_class:"w-full px-4 py-3 bg-slate-50 border border-slate-300 rounded-xl text-sm text-slate-900 focus:outline-none focus:border-amber-500 focus:bg-white transition-all cursor-pointer" }}
                             </div>
                         </div>
-
-                        <div class="mb-4">
-                            <label class="field-label">Lodge Name</label>
-                            {{ form.name|add_class:"form-control"|attr:"placeholder:e.g. Nazareth Lodge" }}
-                        </div>
-                        <div class="mb-4">
-                            <label class="field-label">Location / Area</label>
-                            {{ form.location|add_class:"form-control"|attr:"placeholder:e.g. Akanu, Ozizza, Backgate" }}
-                        </div>
-                        <div class="row g-3 mb-4">
-                            <div class="col-md-6">
-                                <label class="field-label">Price per Year (₦)</label>
-                                {{ form.price_per_year|add_class:"form-control"|attr:"placeholder:e.g. 250000" }}
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                            <div>
+                                <label class="block font-bold text-xs uppercase tracking-wider text-slate-600 mb-2">Total Rooms</label>
+                                {{ form.total_rooms|add_class:"w-full px-4 py-3 bg-slate-50 border border-slate-300 rounded-xl text-sm text-slate-900 focus:outline-none focus:border-amber-500 focus:bg-white transition-all"|attr:"placeholder:e.g. 8"|attr:"min:1" }}
                             </div>
-                            <div class="col-md-6">
-                                <label class="field-label">Room Type</label>
-                                {{ form.room_type|add_class:"form-select" }}
-                            </div>
-                        </div>
-                        <div class="row g-3 mb-4">
-                            <div class="col-md-6">
-                                <label class="field-label">Total Rooms</label>
-                                {{ form.total_rooms|add_class:"form-control"|attr:"placeholder:e.g. 8"|attr:"min:1" }}
-                            </div>
-                            <div class="col-md-6">
-                                <label class="field-label">Rooms Available</label>
-                                {{ form.rooms_available|add_class:"form-control"|attr:"placeholder:e.g. 2"|attr:"min:0" }}
+                            <div>
+                                <label class="block font-bold text-xs uppercase tracking-wider text-slate-600 mb-2">Rooms Available</label>
+                                {{ form.rooms_available|add_class:"w-full px-4 py-3 bg-slate-50 border border-slate-300 rounded-xl text-sm text-slate-900 focus:outline-none focus:border-amber-500 focus:bg-white transition-all"|attr:"placeholder:e.g. 2"|attr:"min:0" }}
                             </div>
                         </div>
                         <div>
-                            <label class="field-label">Description</label>
-                            {{ form.description|add_class:"form-control"|attr:"rows:5"|attr:"placeholder:Describe the lodge, facilities, nearby landmarks, rules, etc." }}
-                        </div>
-                    </div>
-
-                    <!-- Amenities -->
-                    <div class="form-section">
-                        <div class="section-header">
-                            <div class="section-icon amenity">
-                                <i class="bi bi-stars"></i>
-                            </div>
-                            <div>
-                                <div class="section-title">Amenities</div>
-                                <div class="section-subtitle">Select all amenities available</div>
-                            </div>
-                        </div>
-
-                        <div class="amenities-grid">
-                            {% for checkbox in form.amenities %}
-                                <div class="form-check">
-                                    {{ checkbox|add_class:"form-check-input" }}
-                                    <label class="form-check-label" for="{{ checkbox.id_for_label }}">
-                                        {{ checkbox.choice_label }}
-                                    </label>
-                                </div>
-                            {% endfor %}
+                            <label class="block font-bold text-xs uppercase tracking-wider text-slate-600 mb-2">Description</label>
+                            {{ form.description|add_class:"w-full px-4 py-3 bg-slate-50 border border-slate-300 rounded-xl text-sm text-slate-900 focus:outline-none focus:border-amber-500 focus:bg-white transition-all"|attr:"rows:5"|attr:"placeholder:Describe the lodge, facilities, nearby landmarks, rules, etc." }}
                         </div>
                     </div>
                 </div>
 
-                <!-- Right Column: Photos & Actions -->
-                <div class="col-lg-5">
-
-                    <!-- Lodge Photos -->
-                    <div class="form-section">
-                        <div class="section-header">
-                            <div class="section-icon photo">
-                                <i class="bi bi-camera-fill"></i>
-                            </div>
-                            <div>
-                                <div class="section-title">Lodge Photos</div>
-                                <div class="section-subtitle">Upload up to 3 high-quality images</div>
-                            </div>
+                <!-- Amenities -->
+                <div class="bg-white rounded-3xl p-6 sm:p-8 border border-slate-200 shadow-sm">
+                    <div class="flex items-center gap-3 mb-6 pb-4 border-b border-slate-100">
+                        <div class="w-10 h-10 rounded-xl bg-amber-50 text-amber-600 flex items-center justify-center text-lg">
+                            <i class="bi bi-stars"></i>
                         </div>
-
-                        {{ image_formset.management_form }}
-
-                        <div class="d-flex flex-column gap-3">
-                            {% for image_form in image_formset %}
-                            <div class="photo-upload-card">
-                                <div class="upload-icon">
-                                    <i class="bi bi-image"></i>
-                                </div>
-                                <div class="upload-text">Photo {{ forloop.counter }}</div>
-                                <div class="upload-hint">JPG, PNG · Max 5MB</div>
-                                {{ image_form.image|add_class:"form-control" }}
-                            </div>
-                            {% endfor %}
-                        </div>
-
-                        <div class="mt-3 p-3" style="background: rgba(15,76,129,0.05); border-radius: var(--radius-md);">
-                            <div style="display: flex; align-items: flex-start; gap: 0.6rem;">
-                                <i class="bi bi-lightbulb-fill" style="color: var(--warning); font-size: 1rem; margin-top: 2px;"></i>
-                                <p style="margin: 0; font-size: 0.8rem; color: var(--gray-600); line-height: 1.5;">
-                                    <strong>Pro tip:</strong> Lodges with clear, well-lit photos get <strong>3x more views</strong> from students.
-                                </p>
-                            </div>
+                        <div>
+                            <h2 class="text-lg font-bold text-slate-900">Amenities</h2>
+                            <p class="text-xs text-slate-500">Select all amenities available at your lodge</p>
                         </div>
                     </div>
 
-                    <!-- Action Footer -->
-                    <div class="action-footer">
-                        <div class="action-info">
-                            <i class="bi bi-shield-check-fill"></i>
-                            <span>Your lodge will be reviewed within <strong>24–48 hrs</strong></span>
-                        </div>
-                        <div class="action-buttons w-100 mt-2">
-                            <a href="{% url 'owner_dashboard' %}" class="btn-cancel">
-                                <i class="bi bi-x-lg"></i> Cancel
-                            </a>
-                            <button type="submit" class="btn-submit-lodge">
-                                <i class="bi bi-check-lg"></i> Register Lodge
-                            </button>
-                        </div>
+                    <div class="grid grid-cols-2 sm:grid-cols-3 gap-3">
+                        {% for checkbox in form.amenities %}
+                            <label class="flex items-center gap-2.5 p-3 bg-slate-50 border border-slate-200 rounded-xl cursor-pointer hover:bg-slate-100 transition-colors text-xs font-semibold text-slate-800">
+                                {{ checkbox|add_class:"w-4 h-4 rounded border-slate-300 text-amber-500 focus:ring-amber-500" }}
+                                <span>{{ checkbox.choice_label }}</span>
+                            </label>
+                        {% endfor %}
                     </div>
                 </div>
             </div>
-        </form>
-    </div>
 
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" defer></script>
-</body>
-</html>
+            <!-- Right Column: Photos & Submission (4 cols) -->
+            <div class="lg:col-span-4 space-y-6">
+                <!-- Lodge Photos -->
+                <div class="bg-white rounded-3xl p-6 sm:p-8 border border-slate-200 shadow-sm">
+                    <div class="flex items-center gap-3 mb-6 pb-4 border-b border-slate-100">
+                        <div class="w-10 h-10 rounded-xl bg-emerald-50 text-emerald-600 flex items-center justify-center text-lg">
+                            <i class="bi bi-camera-fill"></i>
+                        </div>
+                        <div>
+                            <h2 class="text-lg font-bold text-slate-900">Lodge Photos</h2>
+                            <p class="text-xs text-slate-500">Upload up to 3 clear photos</p>
+                        </div>
+                    </div>
+
+                    {{ image_formset.management_form }}
+
+                    <div class="space-y-4">
+                        {% for image_form in image_formset %}
+                        <div class="p-4 bg-slate-50 border border-slate-200 rounded-2xl text-center">
+                            <div class="text-xs font-extrabold uppercase text-slate-600 mb-2">Photo {{ forloop.counter }}</div>
+                            {{ image_form.image|add_class:"w-full text-xs text-slate-500 file:mr-2 file:py-2 file:px-3 file:rounded-lg file:border-0 file:text-xs file:font-semibold file:bg-blue-900 file:text-white cursor-pointer" }}
+                        </div>
+                        {% endfor %}
+                    </div>
+
+                    <div class="mt-4 p-3 bg-amber-50 border border-amber-200 rounded-xl flex items-start gap-2.5 text-xs text-amber-900">
+                        <i class="bi bi-lightbulb-fill text-amber-500 text-base flex-shrink-0 mt-0.5"></i>
+                        <p><strong>Pro tip:</strong> Clear photos get <strong>3x more views</strong> from AE-FUNAI students.</p>
+                    </div>
+                </div>
+
+                <!-- Submit Box -->
+                <div class="bg-white rounded-3xl p-6 border border-slate-200 shadow-lg space-y-4">
+                    <div class="flex items-center gap-2 text-xs font-semibold text-slate-600">
+                        <i class="bi bi-shield-check text-emerald-600 text-base"></i>
+                        <span>Reviewed within <strong>24–48 hrs</strong></span>
+                    </div>
+
+                    <div class="flex flex-col gap-2.5">
+                        <button type="submit" class="w-full py-3.5 px-6 bg-amber-500 hover:bg-amber-600 text-white font-extrabold rounded-xl text-sm flex items-center justify-center gap-2 shadow-lg shadow-amber-500/25 transition-all">
+                            <i class="bi bi-check-lg text-lg"></i>
+                            <span>Register Lodge</span>
+                        </button>
+
+                        <a href="{% url 'owner_dashboard' %}" class="w-full py-2.5 px-4 bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold rounded-xl text-xs text-center transition-all">
+                            Cancel
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </form>
+</div>
+{% endblock %}

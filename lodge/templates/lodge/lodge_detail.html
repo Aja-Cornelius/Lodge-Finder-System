@@ -1,670 +1,181 @@
 {% extends 'lodge/base.html' %}
 {% block title %}{{ lodge.name }} - LodgeFinder{% endblock %}
 
-{% block extra_css %}
-<style>
-    /* Hero Gallery Section */
-    .lodge-gallery-hero {
-        position: relative;
-        height: 500px;
-        background: var(--gray-900);
-        overflow: hidden;
-    }
-
-    .gallery-main {
-        height: 100%;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-    }
-
-    .gallery-main img {
-        width: 100%;
-        height: 100%;
-        object-fit: cover;
-    }
-
-    .gallery-thumbnails {
-        position: absolute;
-        bottom: 1.5rem;
-        left: 1.5rem;
-        right: 1.5rem;
-        display: flex;
-        gap: 0.75rem;
-        overflow-x: auto;
-        padding: 0.5rem;
-        background: rgba(0, 0, 0, 0.5);
-        backdrop-filter: blur(10px);
-        border-radius: var(--radius-md);
-    }
-
-    .thumbnail-item {
-        width: 100px;
-        height: 70px;
-        border-radius: var(--radius-sm);
-        overflow: hidden;
-        cursor: pointer;
-        border: 2px solid transparent;
-        transition: all 0.2s ease;
-        flex-shrink: 0;
-    }
-
-    .thumbnail-item:hover {
-        border-color: var(--white);
-        transform: scale(1.05);
-    }
-
-    .thumbnail-item.active {
-        border-color: var(--accent);
-    }
-
-    .thumbnail-item img {
-        width: 100%;
-        height: 100%;
-        object-fit: cover;
-    }
-
-    .btn-view-all-photos {
-        position: absolute;
-        top: 1.5rem;
-        right: 1.5rem;
-        background: var(--white);
-        color: var(--gray-900);
-        padding: 0.75rem 1.25rem;
-        border-radius: var(--radius-md);
-        font-weight: 600;
-        font-size: 0.938rem;
-        border: none;
-        display: flex;
-        align-items: center;
-        gap: 0.5rem;
-        box-shadow: var(--shadow-lg);
-        transition: all 0.2s ease;
-    }
-
-    .btn-view-all-photos:hover {
-        transform: translateY(-2px);
-        box-shadow: var(--shadow-xl);
-    }
-
-    /* Content Layout */
-    .lodge-content {
-        padding: 3rem 0;
-    }
-
-    .lodge-main-content {
-        flex: 1;
-    }
-
-    .lodge-sidebar {
-        width: 400px;
-        position: sticky;
-        top: 100px;
-    }
-
-    /* Breadcrumb */
-    .breadcrumb-modern {
-        background: none;
-        padding: 0;
-        margin-bottom: 1.5rem;
-        font-size: 0.875rem;
-    }
-
-    .breadcrumb-modern a {
-        color: var(--gray-600);
-        text-decoration: none;
-        transition: color 0.2s ease;
-    }
-
-    .breadcrumb-modern a:hover {
-        color: var(--primary);
-    }
-
-    .breadcrumb-modern .active {
-        color: var(--gray-900);
-    }
-
-    /* Header Section */
-    .lodge-header {
-        margin-bottom: 2rem;
-    }
-
-    .lodge-title-main {
-        font-size: clamp(2rem, 4vw, 2.75rem);
-        font-weight: 800;
-        color: var(--gray-900);
-        margin-bottom: 1rem;
-        line-height: 1.2;
-    }
-
-    .lodge-meta-main {
-        display: flex;
-        flex-wrap: wrap;
-        gap: 1.5rem;
-        align-items: center;
-        margin-bottom: 1rem;
-    }
-
-    .meta-item-main {
-        display: flex;
-        align-items: center;
-        gap: 0.5rem;
-        color: var(--gray-700);
-        font-size: 1rem;
-    }
-
-    .meta-item-main i {
-        color: var(--primary);
-        font-size: 1.125rem;
-    }
-
-    .verified-badge-large {
-        display: inline-flex;
-        align-items: center;
-        gap: 0.5rem;
-        background: rgba(16, 185, 129, 0.1);
-        color: var(--success);
-        padding: 0.5rem 1rem;
-        border-radius: var(--radius-sm);
-        font-weight: 700;
-        font-size: 0.875rem;
-    }
-
-    /* Pricing Card */
-    .pricing-card {
-        background: var(--white);
-        border: 1px solid var(--gray-200);
-        border-radius: var(--radius-lg);
-        padding: 2rem;
-        box-shadow: var(--shadow-lg);
-        position: sticky;
-        top: 100px;
-    }
-
-    .price-main {
-        font-family: 'Sora', sans-serif;
-        font-size: 2.5rem;
-        font-weight: 800;
-        color: var(--primary);
-        margin-bottom: 0.5rem;
-        line-height: 1;
-    }
-
-    .price-period {
-        font-size: 1rem;
-        color: var(--gray-600);
-        font-weight: 500;
-        margin-bottom: 1.5rem;
-    }
-
-    .btn-contact-owner {
-        background: var(--accent);
-        color: var(--white);
-        border: none;
-        padding: 1rem 1.5rem;
-        border-radius: var(--radius-md);
-        font-weight: 700;
-        font-size: 1rem;
-        width: 100%;
-        transition: all 0.2s ease;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        gap: 0.5rem;
-        text-decoration: none;
-        margin-bottom: 1rem;
-    }
-
-    .btn-contact-owner:hover {
-        background: var(--accent-dark);
-        transform: translateY(-2px);
-        box-shadow: var(--shadow-md);
-        color: var(--white);
-    }
-
-    .btn-contact-whatsapp {
-        background: #25D366;
-        color: var(--white);
-        border: none;
-        padding: 1rem 1.5rem;
-        border-radius: var(--radius-md);
-        font-weight: 700;
-        font-size: 1rem;
-        width: 100%;
-        transition: all 0.2s ease;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        gap: 0.5rem;
-        text-decoration: none;
-    }
-
-    .btn-contact-whatsapp:hover {
-        background: #20BA5A;
-        transform: translateY(-2px);
-        box-shadow: var(--shadow-md);
-        color: var(--white);
-    }
-
-    .owner-info {
-        border-top: 1px solid var(--gray-200);
-        margin-top: 1.5rem;
-        padding-top: 1.5rem;
-    }
-
-    .owner-label {
-        font-size: 0.875rem;
-        color: var(--gray-600);
-        font-weight: 600;
-        margin-bottom: 0.5rem;
-    }
-
-    .owner-name {
-        font-size: 1rem;
-        color: var(--gray-900);
-        font-weight: 700;
-        margin-bottom: 0.25rem;
-    }
-
-    .owner-phone {
-        font-size: 0.938rem;
-        color: var(--gray-700);
-        display: flex;
-        align-items: center;
-        gap: 0.5rem;
-    }
-
-    /* Content Sections */
-    .content-section {
-        background: var(--white);
-        border: 1px solid var(--gray-200);
-        border-radius: var(--radius-lg);
-        padding: 2rem;
-        margin-bottom: 1.5rem;
-        box-shadow: var(--shadow-sm);
-    }
-
-    .section-title {
-        font-size: 1.5rem;
-        font-weight: 700;
-        color: var(--gray-900);
-        margin-bottom: 1.5rem;
-        display: flex;
-        align-items: center;
-        gap: 0.75rem;
-    }
-
-    .section-title i {
-        color: var(--primary);
-        font-size: 1.75rem;
-    }
-
-    .description-text {
-        color: var(--gray-700);
-        font-size: 1rem;
-        line-height: 1.8;
-    }
-
-    /* Amenities Grid */
-    .amenities-grid {
-        display: grid;
-        grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-        gap: 1rem;
-    }
-
-    .amenity-item {
-        display: flex;
-        align-items: center;
-        gap: 0.75rem;
-        padding: 0.875rem 1rem;
-        background: var(--gray-50);
-        border-radius: var(--radius-sm);
-        border: 1px solid var(--gray-200);
-        transition: all 0.2s ease;
-    }
-
-    .amenity-item:hover {
-        background: rgba(15, 76, 129, 0.05);
-        border-color: var(--primary);
-    }
-
-    .amenity-icon {
-        width: 40px;
-        height: 40px;
-        background: var(--white);
-        border-radius: var(--radius-sm);
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        flex-shrink: 0;
-    }
-
-    .amenity-icon i {
-        color: var(--primary);
-        font-size: 1.25rem;
-    }
-
-    .amenity-name {
-        font-weight: 600;
-        color: var(--gray-900);
-        font-size: 0.938rem;
-    }
-
-    /* Location Map */
-    .map-placeholder {
-        width: 100%;
-        height: 350px;
-        background: var(--gray-100);
-        border-radius: var(--radius-md);
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        color: var(--gray-500);
-        font-size: 1rem;
-        border: 1px solid var(--gray-200);
-    }
-
-    /* Related Lodges */
-    .related-lodges {
-        padding: 3rem 0;
-        background: var(--gray-50);
-        margin-top: 3rem;
-    }
-
-    .related-lodges-grid {
-        display: grid;
-        grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-        gap: 1.5rem;
-        margin-top: 2rem;
-    }
-
-    .related-lodge-card {
-        background: var(--white);
-        border: 1px solid var(--gray-200);
-        border-radius: var(--radius-lg);
-        overflow: hidden;
-        box-shadow: var(--shadow-sm);
-        transition: all 0.3s ease;
-        text-decoration: none;
-        display: block;
-    }
-
-    .related-lodge-card:hover {
-        box-shadow: var(--shadow-lg);
-        transform: translateY(-4px);
-    }
-
-    .related-lodge-image {
-        height: 200px;
-        overflow: hidden;
-    }
-
-    .related-lodge-image img {
-        width: 100%;
-        height: 100%;
-        object-fit: cover;
-        transition: transform 0.4s ease;
-    }
-
-    .related-lodge-card:hover .related-lodge-image img {
-        transform: scale(1.05);
-    }
-
-    .related-lodge-body {
-        padding: 1.25rem;
-    }
-
-    .related-lodge-name {
-        font-weight: 700;
-        font-size: 1.063rem;
-        color: var(--gray-900);
-        margin-bottom: 0.5rem;
-    }
-
-    .related-lodge-meta {
-        font-size: 0.875rem;
-        color: var(--gray-600);
-        margin-bottom: 1rem;
-    }
-
-    .related-lodge-price {
-        font-family: 'Sora', sans-serif;
-        font-size: 1.25rem;
-        font-weight: 700;
-        color: var(--primary);
-    }
-
-    /* Responsive */
-    @media (max-width: 992px) {
-        .lodge-gallery-hero {
-            height: 400px;
-        }
-
-        .lodge-content {
-            padding: 2rem 0;
-        }
-
-        .lodge-sidebar {
-            width: 100%;
-            position: static;
-            margin-top: 2rem;
-        }
-
-        .pricing-card {
-            position: static;
-        }
-
-        .content-section {
-            padding: 1.5rem;
-        }
-    }
-
-    @media (max-width: 768px) {
-        .lodge-gallery-hero {
-            height: 300px;
-        }
-
-        .gallery-thumbnails {
-            display: none;
-        }
-
-        .lodge-meta-main {
-            flex-direction: column;
-            align-items: flex-start;
-            gap: 0.75rem;
-        }
-
-        .amenities-grid {
-            grid-template-columns: 1fr;
-        }
-
-        .related-lodges-grid {
-            grid-template-columns: 1fr;
-        }
-    }
-</style>
-{% endblock %}
-
 {% block content %}
-<!-- Gallery Hero -->
-<section class="lodge-gallery-hero">
-    <div class="gallery-main" id="galleryMain">
+<!-- Gallery Hero Section -->
+<section class="relative h-[420px] sm:h-[500px] bg-slate-900 overflow-hidden">
+    <div class="w-full h-full flex items-center justify-center" id="galleryMain">
         {% if images %}
-        <img src="{{ images.0.image.url }}" alt="{{ lodge.name }}" id="mainImage">
+        <img src="{{ images.0.image.url }}" alt="{{ lodge.name }}" id="mainImage" class="w-full h-full object-cover">
         {% else %}
         <img src="https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=1920&q=80&auto=format&fit=crop"
-            alt="{{ lodge.name }}" id="mainImage">
+            alt="{{ lodge.name }}" id="mainImage" class="w-full h-full object-cover">
         {% endif %}
     </div>
 
     {% if images %}
-    <div class="gallery-thumbnails">
+    <div class="absolute bottom-6 left-6 right-6 flex gap-3 overflow-x-auto p-2 bg-black/50 backdrop-blur-md rounded-2xl border border-white/20">
         {% for image in images %}
-        <div class="thumbnail-item {% if forloop.first %}active{% endif %}" data-index="{{ forloop.counter0 }}">
-            <img src="{{ image.image.url }}" alt="{{ lodge.name }}">
+        <div class="thumbnail-item w-24 h-16 rounded-xl overflow-hidden cursor-pointer border-2 {% if forloop.first %}border-amber-500{% else %}border-transparent{% endif %} hover:border-white transition-all flex-shrink-0" data-index="{{ forloop.counter0 }}">
+            <img src="{{ image.image.url }}" alt="{{ lodge.name }}" class="w-full h-full object-cover">
         </div>
         {% endfor %}
     </div>
 
-    <button class="btn-view-all-photos">
+    <button class="absolute top-6 right-6 bg-white/95 backdrop-blur-md text-slate-900 px-4 py-2 rounded-xl text-sm font-extrabold flex items-center gap-2 shadow-lg hover:bg-white transition-all">
         <i class="bi bi-grid-3x3-gap"></i>
-        View All {{ images|length }} Photos
+        <span>{{ images|length }} Photos</span>
     </button>
     {% endif %}
 </section>
 
-<!-- Main Content -->
-<div class="lodge-content">
-    <div class="container">
-        <div class="row">
-            <!-- Main Content -->
-            <div class="col-lg-8">
-                <!-- Breadcrumb -->
-                <nav aria-label="breadcrumb">
-                    <ol class="breadcrumb breadcrumb-modern">
-                        <li class="breadcrumb-item"><a href="{% url 'home' %}">Home</a></li>
-                        <li class="breadcrumb-item"><a href="{% url 'search_results' %}">Search</a></li>
-                        <li class="breadcrumb-item"><a
-                                href="{% url 'search_results' %}?location={{ lodge.location }}">{{ lodge.location }}</a>
-                        </li>
-                        <li class="breadcrumb-item active">{{ lodge.name }}</li>
-                    </ol>
-                </nav>
+<!-- Main Detail Content -->
+<div class="py-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
+        
+        <!-- Left Main Content Column -->
+        <div class="lg:col-span-8">
+            <!-- Breadcrumb Navigation -->
+            <nav class="flex text-xs font-semibold text-slate-500 mb-4 space-x-2">
+                <a href="{% url 'home' %}" class="hover:text-blue-600">Home</a>
+                <span>/</span>
+                <a href="{% url 'search_results' %}" class="hover:text-blue-600">Search</a>
+                <span>/</span>
+                <a href="{% url 'search_results' %}?location={{ lodge.location }}" class="hover:text-blue-600">{{ lodge.location }}</a>
+                <span>/</span>
+                <span class="text-slate-900 font-bold">{{ lodge.name }}</span>
+            </nav>
 
-                <!-- Header -->
-                <div class="lodge-header">
-                    <h1 class="lodge-title-main">{{ lodge.name }}</h1>
+            <!-- Header Info -->
+            <div class="mb-8">
+                <h1 class="text-3xl sm:text-4xl font-extrabold text-slate-900 mb-3 tracking-tight">{{ lodge.name }}</h1>
 
-                    <div class="lodge-meta-main">
-                        <div class="meta-item-main">
-                            <i class="bi bi-geo-alt-fill"></i>
-                            <span>{{ lodge.location }}</span>
-                        </div>
-                        <div class="meta-item-main">
-                            <i class="bi bi-house-door-fill"></i>
-                            <span>{{ lodge.get_room_type_display }}</span>
-                        </div>
-                        {% if lodge.is_approved %}
-                        <div class="verified-badge-large">
-                            <i class="bi bi-patch-check-fill"></i>
-                            <span>Verified Property</span>
-                        </div>
-                        {% endif %}
+                <div class="flex flex-wrap items-center gap-4 text-sm font-medium text-slate-700">
+                    <div class="flex items-center gap-1.5 text-blue-900">
+                        <i class="bi bi-geo-alt-fill text-amber-500"></i>
+                        <span>{{ lodge.location }}</span>
                     </div>
-                </div>
-
-                <!-- Description -->
-                {% if lodge.description %}
-                <div class="content-section">
-                    <h2 class="section-title">
-                        <i class="bi bi-file-text"></i>
-                        Description
-                    </h2>
-                    <p class="description-text">{{ lodge.description }}</p>
-                </div>
-                {% endif %}
-
-                <!-- Amenities -->
-                {% if lodge.amenities.all %}
-                <div class="content-section">
-                    <h2 class="section-title">
-                        <i class="bi bi-check-circle"></i>
-                        Amenities
-                    </h2>
-                    <div class="amenities-grid">
-                        {% for amenity in lodge.amenities.all %}
-                        <div class="amenity-item">
-                            <div class="amenity-icon">
-                                <i class="bi bi-check-lg"></i>
-                            </div>
-                            <div class="amenity-name">{{ amenity.name }}</div>
-                        </div>
-                        {% endfor %}
+                    <div class="flex items-center gap-1.5">
+                        <i class="bi bi-house-door-fill text-blue-600"></i>
+                        <span>{{ lodge.get_room_type_display }}</span>
                     </div>
-                </div>
-                {% endif %}
-
-                <!-- Location -->
-                <div class="content-section">
-                    <h2 class="section-title">
-                        <i class="bi bi-map"></i>
-                        Location
-                    </h2>
-                    <p class="description-text mb-3">
-                        <i class="bi bi-geo-alt-fill me-2" style="color: var(--primary);"></i>
-                        <strong>{{ lodge.location }}</strong>, Afikpo, Ebonyi State
-                    </p>
-                    {% if lodge.latitude and lodge.longitude %}
-                    <div style="width: 100%; height: 380px; border-radius: var(--radius-md); overflow: hidden; border: 1px solid var(--gray-200); margin-bottom: 1rem;">
-                        <iframe 
-                            title="Google Map Location"
-                            width="100%" 
-                            height="100%" 
-                            style="border:0;" 
-                            loading="lazy" 
-                            allowfullscreen 
-                            src="https://maps.google.com/maps?q={{ lodge.latitude }},{{ lodge.longitude }}&hl=en&z=16&output=embed">
-                        </iframe>
-                    </div>
-                    {% else %}
-                    <div class="map-placeholder">
-                        <div class="text-center">
-                            <i class="bi bi-geo-alt" style="font-size: 3rem; margin-bottom: 1rem;"></i>
-                            <p>Location coordinates not yet available</p>
-                        </div>
+                    {% if lodge.is_approved %}
+                    <div class="inline-flex items-center gap-1.5 bg-emerald-50 text-emerald-700 px-3 py-1 rounded-lg text-xs font-bold border border-emerald-200">
+                        <i class="bi bi-patch-check-fill"></i>
+                        <span>Verified Property</span>
                     </div>
                     {% endif %}
                 </div>
             </div>
 
-            <!-- Sidebar -->
-            <div class="col-lg-4">
-                <div class="pricing-card">
-                    <div class="price-main">₦{{ lodge.price_per_year|floatformat:0 }}</div>
-                    <div class="price-period">per year</div>
+            <!-- Description Card -->
+            {% if lodge.description %}
+            <div class="bg-white rounded-3xl p-6 sm:p-8 border border-slate-200 shadow-sm mb-6">
+                <h2 class="text-xl font-bold text-slate-900 mb-4 flex items-center gap-2">
+                    <i class="bi bi-file-text text-blue-900"></i>
+                    Description
+                </h2>
+                <p class="text-slate-600 text-sm sm:text-base leading-relaxed whitespace-pre-line">{{ lodge.description }}</p>
+            </div>
+            {% endif %}
 
-                    <!-- Room Availability Section -->
-                    <div class="availability-card-section mt-4 mb-4 p-3 bg-light rounded-3" style="border: 1px dashed var(--gray-300);">
-                        <div class="d-flex justify-content-between align-items-center mb-2">
-                            <span class="fw-bold text-dark" style="font-size: 0.9rem;">Room Availability</span>
-                            <span class="badge bg-success text-white" style="font-size: 0.75rem;">{{ lodge.rooms_available }} left</span>
+            <!-- Amenities Grid -->
+            {% if lodge.amenities.all %}
+            <div class="bg-white rounded-3xl p-6 sm:p-8 border border-slate-200 shadow-sm mb-6">
+                <h2 class="text-xl font-bold text-slate-900 mb-5 flex items-center gap-2">
+                    <i class="bi bi-check-circle text-blue-900"></i>
+                    Amenities & Facilities
+                </h2>
+                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
+                    {% for amenity in lodge.amenities.all %}
+                    <div class="flex items-center gap-3 p-3 bg-slate-50 border border-slate-200 rounded-xl">
+                        <div class="w-8 h-8 rounded-lg bg-white flex items-center justify-center text-blue-900 shadow-xs">
+                            <i class="bi bi-check-lg text-base"></i>
                         </div>
-                        <div class="progress mb-2" style="height: 10px; background-color: var(--gray-200); border-radius: 5px; overflow: hidden;">
-                            <div class="progress-bar bg-success" role="progressbar" style="width: {{ lodge.available_percentage }}%;"></div>
-                        </div>
-                        <div class="d-flex justify-content-between text-muted" style="font-size: 0.8rem; font-weight: 500;">
-                            <span>{{ lodge.total_rooms }} rooms total</span>
-                            <span>{{ lodge.rooms_available }} still available</span>
-                        </div>
+                        <span class="font-bold text-slate-900 text-xs sm:text-sm">{{ amenity.name }}</span>
                     </div>
+                    {% endfor %}
+                </div>
+            </div>
+            {% endif %}
 
+            <!-- Location Map -->
+            <div class="bg-white rounded-3xl p-6 sm:p-8 border border-slate-200 shadow-sm mb-6">
+                <h2 class="text-xl font-bold text-slate-900 mb-4 flex items-center gap-2">
+                    <i class="bi bi-map text-blue-900"></i>
+                    Location Map
+                </h2>
+                <p class="text-slate-600 text-sm mb-4 flex items-center gap-2">
+                    <i class="bi bi-geo-alt-fill text-amber-500"></i>
+                    <strong>{{ lodge.location }}</strong>, Afikpo, Ebonyi State
+                </p>
+                {% if lodge.latitude and lodge.longitude %}
+                <div class="w-full h-80 rounded-2xl overflow-hidden border border-slate-200">
+                    <iframe 
+                        title="Google Map Location"
+                        width="100%" 
+                        height="100%" 
+                        style="border:0;" 
+                        loading="lazy" 
+                        allowfullscreen 
+                        src="https://maps.google.com/maps?q={{ lodge.latitude }},{{ lodge.longitude }}&hl=en&z=16&output=embed">
+                    </iframe>
+                </div>
+                {% else %}
+                <div class="w-full h-64 bg-slate-100 rounded-2xl flex flex-col items-center justify-center text-slate-400 border border-slate-200 p-6 text-center">
+                    <i class="bi bi-geo-alt text-5xl mb-2"></i>
+                    <p class="text-sm font-semibold">Location map coordinates coming soon</p>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+
+        <!-- Right Sticky Sidebar Column -->
+        <div class="lg:col-span-4">
+            <div class="bg-white rounded-3xl p-6 sm:p-8 border border-slate-200 shadow-xl lg:sticky lg:top-24">
+                <div class="text-3xl font-extrabold text-blue-900 mb-1">₦{{ lodge.price_per_year|floatformat:0 }}</div>
+                <div class="text-xs font-semibold text-slate-500 mb-6">per year</div>
+
+                <!-- Room Availability Section -->
+                <div class="bg-slate-50 border border-dashed border-slate-300 rounded-2xl p-4 mb-6">
+                    <div class="flex justify-between items-center mb-2">
+                        <span class="font-bold text-slate-900 text-xs">Room Availability</span>
+                        <span class="px-2.5 py-0.5 bg-emerald-100 text-emerald-800 text-xs font-extrabold rounded-md">{{ lodge.rooms_available }} left</span>
+                    </div>
+                    <div class="w-full bg-slate-200 rounded-full h-2 overflow-hidden mb-2">
+                        <div class="bg-emerald-500 h-full rounded-full" style="width: {{ lodge.available_percentage }}%;"></div>
+                    </div>
+                    <div class="flex justify-between text-xs text-slate-500 font-medium">
+                        <span>{{ lodge.total_rooms }} rooms total</span>
+                        <span class="text-emerald-700 font-semibold">{{ lodge.rooms_available }} available</span>
+                    </div>
+                </div>
+
+                {% if lodge.owner.phone_number %}
+                <a href="tel:{{ lodge.owner.phone_number }}" class="w-full py-3.5 px-4 bg-amber-500 hover:bg-amber-600 text-white font-extrabold rounded-xl text-sm flex items-center justify-center gap-2 shadow-lg shadow-amber-500/25 transition-all mb-3">
+                    <i class="bi bi-telephone-fill"></i>
+                    <span>Call Owner</span>
+                </a>
+
+                <a href="https://wa.me/{{ lodge.owner.phone_number }}" target="_blank" class="w-full py-3.5 px-4 bg-emerald-600 hover:bg-emerald-700 text-white font-extrabold rounded-xl text-sm flex items-center justify-center gap-2 shadow-lg shadow-emerald-600/25 transition-all">
+                    <i class="bi bi-whatsapp"></i>
+                    <span>Chat on WhatsApp</span>
+                </a>
+                {% else %}
+                <button class="w-full py-3.5 px-4 bg-slate-300 text-slate-600 font-extrabold rounded-xl text-sm cursor-not-allowed" disabled>
+                    Contact Info Unavailable
+                </button>
+                {% endif %}
+
+                <div class="border-t border-slate-100 mt-6 pt-6 space-y-1">
+                    <div class="text-xs text-slate-400 font-bold uppercase">Listed By</div>
+                    <div class="text-sm font-extrabold text-slate-900">{{ lodge.owner.get_full_name|default:lodge.owner.username }}</div>
                     {% if lodge.owner.phone_number %}
-                    <a href="tel:{{ lodge.owner.phone_number }}" class="btn-contact-owner">
-                        <i class="bi bi-telephone-fill"></i>
-                        Call Owner
-                    </a>
-
-                    <a href="https://wa.me/{{ lodge.owner.phone_number }}" target="_blank" class="btn-contact-whatsapp">
-                        <i class="bi bi-whatsapp"></i>
-                        WhatsApp
-                    </a>
-                    {% else %}
-                    <button class="btn-contact-owner" disabled>
-                        <i class="bi bi-telephone-fill"></i>
-                        Contact Information Unavailable
-                    </button>
-                    {% endif %}
-
-                    <div class="owner-info">
-                        <div class="owner-label">Listed by</div>
-                        <div class="owner-name">{{ lodge.owner.get_full_name|default:lodge.owner.username }}</div>
-                        {% if lodge.owner.phone_number %}
-                        <div class="owner-phone">
-                            <i class="bi bi-telephone"></i>
-                            {{ lodge.owner.phone_number }}
-                        </div>
-                        {% endif %}
+                    <div class="text-xs text-slate-600 font-medium flex items-center gap-1.5 pt-1">
+                        <i class="bi bi-telephone text-slate-400"></i>
+                        <span>{{ lodge.owner.phone_number }}</span>
                     </div>
+                    {% endif %}
                 </div>
             </div>
         </div>
@@ -673,30 +184,27 @@
 
 <!-- Related Lodges -->
 {% if related_lodges %}
-<section class="related-lodges">
-    <div class="container">
-        <h2 class="section-title" style="border: none; padding: 0;">
-            <i class="bi bi-building"></i>
+<section class="py-16 bg-slate-100 border-t border-slate-200 mt-12">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <h2 class="text-2xl font-extrabold text-slate-900 mb-8 flex items-center gap-2">
+            <i class="bi bi-building text-blue-900"></i>
             Similar Lodges in {{ lodge.location }}
         </h2>
 
-        <div class="related-lodges-grid">
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
             {% for related in related_lodges %}
-            <a href="{% url 'lodge_detail' related.id %}" class="related-lodge-card">
-                <div class="related-lodge-image">
+            <a href="{% url 'lodge_detail' related.id %}" class="bg-white border border-slate-200 rounded-3xl overflow-hidden shadow-sm hover:shadow-xl transition-all duration-300 group">
+                <div class="h-48 overflow-hidden bg-slate-100">
                     {% if related.images.all %}
-                    <img src="{{ related.images.first.image.url }}" alt="{{ related.name }}" loading="lazy">
+                    <img src="{{ related.images.first.image.url }}" alt="{{ related.name }}" loading="lazy" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
                     {% else %}
-                    <img src="https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=600&q=80&auto=format&fit=crop"
-                        alt="{{ related.name }}" loading="lazy">
+                    <img src="https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=600&q=80&auto=format&fit=crop" alt="{{ related.name }}" loading="lazy" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
                     {% endif %}
                 </div>
-                <div class="related-lodge-body">
-                    <div class="related-lodge-name">{{ related.name }}</div>
-                    <div class="related-lodge-meta">
-                        {{ related.get_room_type_display }} · {{ related.location }}
-                    </div>
-                    <div class="related-lodge-price">₦{{ related.price_per_year|floatformat:0 }}/yr</div>
+                <div class="p-5">
+                    <h3 class="font-bold text-slate-900 text-base mb-1 group-hover:text-blue-600 transition-colors">{{ related.name }}</h3>
+                    <div class="text-xs text-slate-500 mb-3">{{ related.get_room_type_display }} · {{ related.location }}</div>
+                    <div class="text-lg font-extrabold text-blue-900">₦{{ related.price_per_year|floatformat:0 }}<span class="text-xs text-slate-500 font-normal">/yr</span></div>
                 </div>
             </a>
             {% endfor %}
@@ -709,33 +217,21 @@
 {% block extra_js %}
 <script>
     document.addEventListener("DOMContentLoaded", function () {
-        // Gallery thumbnail navigation
         const thumbnails = document.querySelectorAll('.thumbnail-item');
         const mainImage = document.getElementById('mainImage');
 
         thumbnails.forEach(thumbnail => {
             thumbnail.addEventListener('click', function () {
-                // Remove active class from all
-                thumbnails.forEach(t => t.classList.remove('active'));
+                thumbnails.forEach(t => {
+                    t.classList.remove('border-amber-500');
+                    t.classList.add('border-transparent');
+                });
+                this.classList.remove('border-transparent');
+                this.classList.add('border-amber-500');
 
-                // Add active class to clicked
-                this.classList.add('active');
-
-                // Update main image
                 const imgSrc = this.querySelector('img').src;
                 mainImage.src = imgSrc;
             });
-        });
-
-        // Lazy load images
-        const images = document.querySelectorAll('img[loading="lazy"]');
-        images.forEach(img => {
-            img.style.opacity = '0';
-            img.style.transition = 'opacity 0.4s ease';
-            img.addEventListener('load', function () {
-                this.style.opacity = '1';
-            });
-            if (img.complete) img.style.opacity = '1';
         });
     });
 </script>

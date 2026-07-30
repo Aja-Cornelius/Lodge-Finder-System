@@ -1,15 +1,16 @@
 {% extends 'lodge/base.html' %}
 {% block title %}AE-FUNAI Lodge Finder{% endblock %}
 {% block content %}
-<div style="min-height:60vh;display:flex;align-items:center;justify-content:center;text-align:center;padding:3rem;">
-    <div>
-        <span class="section-label">Welcome</span>
-        <h1 class="serif" style="font-size:2.8rem;">AE-FUNAI Lodge Finder</h1>
-        <p style="color:var(--muted);font-size:1.1rem;max-width:480px;margin:.8rem auto 2rem;">
+<div class="min-h-[65vh] flex items-center justify-center text-center px-4 py-16">
+    <div class="max-w-xl mx-auto">
+        <span class="inline-block px-3 py-1 bg-amber-100 text-amber-800 text-xs font-bold uppercase tracking-wider rounded-full mb-3">Welcome</span>
+        <h1 class="text-4xl sm:text-5xl font-extrabold text-slate-900 tracking-tight mb-4">AE-FUNAI Lodge Finder</h1>
+        <p class="text-slate-600 text-lg mb-8 max-w-md mx-auto leading-relaxed">
             Find your perfect off-campus lodge easily!
         </p>
-        <a href="{% url 'home' %}" class="btn btn-primary px-5 py-3">
-            Browse Lodges <i class="bi bi-arrow-right ms-2"></i>
+        <a href="{% url 'search_results' %}" class="inline-flex items-center gap-2 px-8 py-3.5 bg-blue-900 hover:bg-blue-950 text-white font-bold rounded-xl shadow-lg shadow-blue-900/20 transition-all transform hover:-translate-y-0.5">
+            <span>Browse Lodges</span>
+            <i class="bi bi-arrow-right"></i>
         </a>
     </div>
 </div>

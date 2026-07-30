@@ -4,7 +4,6 @@
 
 {% block extra_css %}
 <style>
-    /* Full-screen background with blurred overlay */
     .auth-bg-wrapper {
         min-height: 100vh;
         width: 100%;
@@ -18,270 +17,69 @@
             linear-gradient(135deg, rgba(15, 23, 42, 0.88) 0%, rgba(30, 41, 59, 0.82) 100%),
             url('{% static "landing_pg_lodge-img/nazareth-lodge.jpeg" %}') center/cover fixed no-repeat;
     }
-
-    /* Glassmorphism Card */
-    .glass-auth-card {
-        background: rgba(255, 255, 255, 0.98);
-        backdrop-filter: blur(20px);
-        -webkit-backdrop-filter: blur(20px);
-        border: 1px solid rgba(255, 255, 255, 0.4);
-        border-radius: var(--radius-xl);
-        box-shadow: var(--shadow-xl);
-        width: 100%;
-        max-width: 480px;
-        overflow: hidden;
-        animation: slideUp 0.7s cubic-bezier(0.16, 1, 0.3, 1);
-    }
-
-    @keyframes slideUp {
-        from {
-            opacity: 0;
-            transform: translateY(30px);
-        }
-
-        to {
-            opacity: 1;
-            transform: translateY(0);
-        }
-    }
-
-    .auth-header {
-        padding: 3.5rem 3rem 1.5rem;
-        text-align: center;
-    }
-
-    .auth-brand-icon {
-        width: 72px;
-        height: 72px;
-        background: var(--primary);
-        color: white;
-        border-radius: 20px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        font-size: 2.2rem;
-        margin: 0 auto 1.5rem;
-        box-shadow: 0 12px 24px rgba(15, 76, 129, 0.2);
-    }
-
-    .auth-title {
-        font-family: 'Sora', sans-serif;
-        font-size: 1.85rem;
-        font-weight: 800;
-        color: var(--gray-900);
-        margin-bottom: 0.5rem;
-        letter-spacing: -0.03em;
-    }
-
-    .auth-subtitle {
-        color: var(--gray-600);
-        font-size: 1rem;
-    }
-
-    .auth-body {
-        padding: 0 3rem 3.5rem;
-    }
-
-    /* Role Toggle Filter */
-    .role-toggle {
-        display: flex;
-        background: var(--gray-100);
-        padding: 0.4rem;
-        border-radius: 14px;
-        margin-bottom: 2rem;
-    }
-
-    .toggle-btn {
-        flex: 1;
-        text-align: center;
-        padding: 0.75rem;
-        border-radius: 10px;
-        font-size: 0.9rem;
-        font-weight: 700;
-        color: var(--gray-500);
-        text-decoration: none;
-        transition: all 0.3s ease;
-    }
-
-    .toggle-btn.active {
-        background: white;
-        color: var(--primary);
-        box-shadow: var(--shadow-md);
-    }
-
-    .toggle-btn:hover:not(.active) {
-        color: var(--gray-800);
-    }
-
-    /* Premium Input Fields */
-    .form-group-premium {
-        margin-bottom: 1.8rem;
-    }
-
-    .label-premium {
-        display: block;
-        font-weight: 700;
-        font-size: 0.8rem;
-        text-transform: uppercase;
-        letter-spacing: 0.08em;
-        color: var(--gray-600);
-        margin-bottom: 0.6rem;
-    }
-
-    .input-wrapper {
-        position: relative;
-    }
-
-    .input-premium {
-        width: 100%;
-        padding: 1rem 1.25rem 1rem 3.2rem;
-        background: var(--gray-50);
-        border: 2px solid var(--gray-100);
-        border-radius: var(--radius-md);
-        font-size: 1.05rem;
-        color: var(--gray-900);
-        transition: all 0.3s ease;
-    }
-
-    .input-premium:focus {
-        outline: none;
-        border-color: var(--primary);
-        background: white;
-        box-shadow: 0 0 0 5px rgba(15, 76, 129, 0.08);
-    }
-
-    .input-icon {
-        position: absolute;
-        left: 1.2rem;
-        top: 50%;
-        transform: translateY(-50%);
-        color: var(--gray-400);
-        font-size: 1.2rem;
-        transition: all 0.3s ease;
-    }
-
-    .input-premium:focus+.input-icon {
-        color: var(--primary);
-    }
-
-    /* Sharp Button */
-    .btn-premium-auth {
-        width: 100%;
-        padding: 1.1rem;
-        background: var(--primary);
-        color: white;
-        border: none;
-        border-radius: var(--radius-md);
-        font-weight: 800;
-        font-size: 1.1rem;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        gap: 0.75rem;
-        transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
-        margin-top: 0.5rem;
-    }
-
-    .btn-premium-auth:hover {
-        background: var(--primary-dark);
-        transform: translateY(-3px);
-        box-shadow: 0 12px 24px rgba(15, 76, 129, 0.3);
-    }
-
-    .btn-premium-auth:active {
-        transform: translateY(-1px);
-    }
-
-    .auth-footer {
-        text-align: center;
-        margin-top: 2.5rem;
-        padding-top: 2rem;
-        border-top: 1px solid var(--gray-100);
-    }
-
-    .footer-text {
-        font-size: 0.95rem;
-        color: var(--gray-600);
-    }
-
-    .footer-link {
-        color: var(--primary);
-        font-weight: 800;
-        text-decoration: none;
-        transition: all 0.2s ease;
-    }
-
-    .footer-link:hover {
-        color: var(--primary-dark);
-        text-decoration: underline;
-    }
-
-    /* Custom Checkbox */
-    .form-check-input:checked {
-        background-color: var(--primary);
-        border-color: var(--primary);
-    }
 </style>
 {% endblock %}
 
 {% block content %}
 <div class="auth-bg-wrapper">
-    <div class="glass-auth-card">
-        <div class="auth-header">
-            <div class="auth-brand-icon">
+    <div class="w-full max-w-md bg-white/95 backdrop-blur-xl border border-white/40 rounded-3xl shadow-2xl overflow-hidden transition-all duration-300">
+        <!-- Auth Header -->
+        <div class="pt-10 px-8 pb-6 text-center">
+            <div class="w-16 h-16 bg-blue-900 text-white rounded-2xl flex items-center justify-center text-3xl mx-auto mb-4 shadow-lg shadow-blue-900/20">
                 <i class="bi bi-mortarboard-fill"></i>
             </div>
-            <h2 class="auth-title">Student Login</h2>
-            <p class="auth-subtitle">Welcome back! Find your next home.</p>
+            <h2 class="text-2xl font-extrabold text-slate-900 mb-1">Student Login</h2>
+            <p class="text-slate-500 text-sm">Welcome back! Find your next home.</p>
         </div>
 
-        <div class="auth-body">
-            <!-- Student/Owner Toggle -->
-            <div class="role-toggle">
-                <a href="{% url 'student_login' %}" class="toggle-btn active">Student</a>
-                <a href="{% url 'owner_login' %}" class="toggle-btn">Lodge Owner</a>
+        <div class="px-8 pb-10">
+            <!-- Student/Owner Role Switcher -->
+            <div class="flex bg-slate-100 p-1.5 rounded-2xl mb-6 text-xs font-bold">
+                <a href="{% url 'student_login' %}" class="flex-1 text-center py-2.5 rounded-xl bg-white text-blue-900 shadow-md transition-all">Student</a>
+                <a href="{% url 'owner_login' %}" class="flex-1 text-center py-2.5 rounded-xl text-slate-500 hover:text-slate-900 transition-all">Lodge Owner</a>
             </div>
 
-            <form method="post">
-{% csrf_token %}
-                <div class="form-group-premium">
-                    <label class="label-premium">Email or Matric Number</label>
-                    <div class="input-wrapper">
-                        <input type="text" class="input-premium" name="identifier" placeholder="yourname@funai.edu.ng"
-                            required autofocus>
-                        <i class="bi bi-person-fill input-icon"></i>
+            <form method="post" class="space-y-5">
+                {% csrf_token %}
+                <div>
+                    <label class="block font-bold text-xs uppercase tracking-wider text-slate-600 mb-2">Email or Matric Number</label>
+                    <div class="relative">
+                        <input type="text" name="identifier" required autofocus
+                               placeholder="yourname@funai.edu.ng" 
+                               class="w-full pl-11 pr-4 py-3 bg-slate-50 border-2 border-slate-100 rounded-xl text-sm text-slate-900 focus:outline-none focus:border-blue-600 focus:bg-white focus:ring-4 focus:ring-blue-600/10 transition-all">
+                        <i class="bi bi-person-fill absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 text-base"></i>
                     </div>
                 </div>
 
-                <div class="form-group-premium">
-                    <div class="d-flex justify-content-between align-items-center mb-1">
-                        <label class="label-premium mb-0">Password</label>
-                        <a href="#" class="footer-link" style="font-size: 0.8rem;">Forgot Password?</a>
+                <div>
+                    <div class="flex justify-between items-center mb-2">
+                        <label class="font-bold text-xs uppercase tracking-wider text-slate-600">Password</label>
+                        <a href="#" class="text-xs text-blue-600 hover:underline font-semibold">Forgot Password?</a>
                     </div>
-                    <div class="input-wrapper">
-                        <input type="password" class="input-premium" name="password" placeholder="••••••••" required>
-                        <i class="bi bi-shield-lock-fill input-icon"></i>
-                    </div>
-                </div>
-
-                <div class="d-flex align-items-center mb-4">
-                    <div class="form-check">
-                        <input class="form-check-input" type="checkbox" id="remember" name="remember">
-                        <label class="form-check-label footer-text ps-1" for="remember">
-                            Keep me signed in
-                        </label>
+                    <div class="relative">
+                        <input type="password" name="password" required
+                               placeholder="••••••••" 
+                               class="w-full pl-11 pr-4 py-3 bg-slate-50 border-2 border-slate-100 rounded-xl text-sm text-slate-900 focus:outline-none focus:border-blue-600 focus:bg-white focus:ring-4 focus:ring-blue-600/10 transition-all">
+                        <i class="bi bi-shield-lock-fill absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 text-base"></i>
                     </div>
                 </div>
 
-                <button type="submit" class="btn-premium-auth">
-                    Sign In <i class="bi bi-arrow-right-short ms-1" style="font-size: 1.4rem;"></i>
+                <div class="flex items-center">
+                    <label class="flex items-center gap-2.5 text-xs text-slate-600 font-medium cursor-pointer">
+                        <input type="checkbox" name="remember" class="w-4 h-4 rounded border-slate-300 text-blue-600 focus:ring-blue-600">
+                        <span>Keep me signed in</span>
+                    </label>
+                </div>
+
+                <button type="submit" class="w-full py-3.5 px-6 bg-blue-900 hover:bg-blue-950 text-white font-extrabold rounded-xl text-base flex items-center justify-center gap-2 shadow-lg shadow-blue-900/25 transition-all transform hover:-translate-y-0.5">
+                    <span>Sign In</span>
+                    <i class="bi bi-arrow-right-short text-xl"></i>
                 </button>
             </form>
 
-            <div class="auth-footer">
-                <p class="footer-text mb-0">
-                    Don't have an account? <a href="{% url 'student_signup' %}" class="footer-link">Create Student
-                        Account</a>
+            <div class="mt-8 pt-6 border-t border-slate-100 text-center">
+                <p class="text-xs text-slate-600">
+                    Don't have an account? <a href="{% url 'student_signup' %}" class="text-blue-900 font-bold hover:underline">Create Student Account</a>
                 </p>
             </div>
         </div>

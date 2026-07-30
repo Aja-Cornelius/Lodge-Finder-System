@@ -5,237 +5,52 @@
 
 {% block extra_css %}
 <style>
-/* --- Premium Typography & Colors --- */
-:root {
-    --glass: rgba(255, 255, 255, 0.85);
-    --glass-border: rgba(255, 255, 255, 0.4);
-    --mesh-gradient: linear-gradient(135deg, #0f172a 0%, #1e293b 50%, #0f172a 100%);
-}
-
-/* --- Hero Section: Sleek Midnight Slate & Navy Overlay --- */
 .hero-premium {
     background: 
         radial-gradient(circle at 80% 20%, rgba(37, 99, 235, 0.28) 0%, transparent 50%),
         radial-gradient(circle at 15% 85%, rgba(249, 115, 22, 0.15) 0%, transparent 45%),
         linear-gradient(135deg, rgba(15, 23, 42, 0.93) 0%, rgba(30, 41, 59, 0.78) 55%, rgba(15, 23, 42, 0.88) 100%),
         url('{% static "landing_pg_lodge-img/nazareth-lodge.jpeg" %}') center/cover fixed no-repeat;
-    min-height: 90vh;
-    display: flex;
-    align-items: center;
-    position: relative;
-    padding: 8rem 0 6rem;
-    overflow: hidden;
-}
-
-/* Subtle pulse animation for background depth */
-.hero-premium::after {
-    content: '';
-    position: absolute;
-    top: -50%;
-    left: -50%;
-    width: 200%;
-    height: 200%;
-    background: radial-gradient(circle at center, rgba(249, 115, 22, 0.08) 0%, transparent 40%);
-    animation: pulse-bg 15s infinite alternate ease-in-out;
-    pointer-events: none;
-}
-
-@keyframes pulse-bg {
-    0% { transform: translate(0, 0); }
-    100% { transform: translate(8%, 8%); }
-}
-
-.hero-content {
-    max-width: 720px;
-    position: relative;
-    z-index: 5;
-}
-
-.hero-badge-premium {
-    display: inline-flex;
-    align-items: center;
-    gap: 0.6rem;
-    background: rgba(255, 255, 255, 0.12);
-    backdrop-filter: blur(16px);
-    -webkit-backdrop-filter: blur(16px);
-    border: 1px solid rgba(255, 255, 255, 0.22);
-    padding: 0.6rem 1.3rem;
-    border-radius: 100px;
-    color: #F8FAFC;
-    font-size: 0.9rem;
-    font-weight: 600;
-    margin-bottom: 2.5rem;
-    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
-}
-
-.hero-title-premium {
-    font-family: 'Sora', sans-serif;
-    font-size: clamp(2.8rem, 6vw, 4.5rem);
-    font-weight: 800;
-    color: var(--white);
-    line-height: 1.05;
-    margin-bottom: 1.8rem;
-    letter-spacing: -0.03em;
-    text-shadow: 0 2px 10px rgba(0,0,0,0.3);
-}
-
-.hero-subtitle-premium {
-    font-size: 1.2rem;
-    color: rgba(241, 245, 249, 0.92);
-    line-height: 1.8;
-    margin-bottom: 3.5rem;
-    max-width: 600px;
-    text-shadow: 0 1px 4px rgba(0,0,0,0.2);
-}
-
-/* --- Floating Search Box --- */
-.search-floating {
-    background: rgba(255, 255, 255, 0.97);
-    backdrop-filter: blur(20px);
-    -webkit-backdrop-filter: blur(20px);
-    border-radius: 24px;
-    padding: 1.75rem;
-    box-shadow: 0 25px 60px -12px rgba(15, 23, 42, 0.35);
-    margin-top: 2rem;
-    border: 1px solid rgba(255, 255, 255, 0.8);
-}
-
-/* --- Dynamic Lodges Section --- */
-.lodges-dynamic-section {
-    padding: 7rem 0;
-    background: var(--white);
-}
-
-.section-head-modern {
-    text-align: center;
-    max-width: 700px;
-    margin: 0 auto 5rem;
-}
-
-.section-tag {
-    font-size: 0.85rem;
-    font-weight: 800;
-    text-transform: uppercase;
-    letter-spacing: 0.15em;
-    color: var(--accent);
-    margin-bottom: 1rem;
-    display: inline-block;
-}
-
-.lodge-card-premium {
-    background: var(--white);
-    border-radius: 24px;
-    overflow: hidden;
-    border: 1px solid var(--gray-100);
-    transition: all 0.5s cubic-bezier(0.165, 0.84, 0.44, 1);
-    height: 100%;
-}
-
-.lodge-card-premium:hover {
-    transform: translateY(-12px);
-    box-shadow: 0 40px 80px -15px rgba(15, 76, 129, 0.15);
-}
-
-.lodge-img-container {
-    height: 280px;
-    position: relative;
-    overflow: hidden;
-}
-
-.lodge-img-premium {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    transition: transform 0.8s ease;
-}
-
-.lodge-card-premium:hover .lodge-img-premium {
-    transform: scale(1.1);
-}
-
-.lodge-price-badge {
-    position: absolute;
-    top: 20px;
-    right: 20px;
-    background: var(--white);
-    padding: 0.6rem 1rem;
-    border-radius: 12px;
-    font-weight: 800;
-    color: var(--primary);
-    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
-    z-index: 2;
-}
-
-.lodge-card-body {
-    padding: 2rem;
-}
-
-.lodge-name-premium {
-    font-family: 'Sora', sans-serif;
-    font-size: 1.4rem;
-    font-weight: 700;
-    margin-bottom: 0.8rem;
-    color: var(--gray-900);
-}
-
-/* Glassmorphism overlays for empty states */
-.empty-placeholder {
-    padding: 6rem;
-    background: var(--gray-50);
-    border-radius: 30px;
-    border: 2px dashed var(--gray-300);
-    text-align: center;
-}
-
-/* --- Responsive & Polish --- */
-.scroll-reveal {
-    opacity: 0;
-    transform: translateY(30px);
-    transition: all 0.8s ease-out;
-}
-
-.scroll-reveal.active {
-    opacity: 1;
-    transform: translateY(0);
 }
 </style>
 {% endblock %}
 
 {% block content %}
 <!-- Hero Section -->
-<section class="hero-premium">
-    <div class="container">
-        <div class="hero-content">
-            <div class="hero-badge-premium fadeInDown">
-                <i class="bi bi-stars"></i>
+<section class="hero-premium relative min-h-[85vh] flex items-center py-20 overflow-hidden">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full relative z-10">
+        <div class="max-w-3xl">
+            <!-- Badge -->
+            <div class="inline-flex items-center gap-2.5 bg-white/10 backdrop-blur-md border border-white/20 px-4 py-2 rounded-full text-slate-100 text-sm font-semibold mb-8 shadow-lg">
+                <i class="bi bi-stars text-amber-400"></i>
                 <span>Premium Student Housing</span>
             </div>
             
-            <h1 class="hero-title-premium fadeInUp">
-                Elevate Your <br>Living Experience
+            <h1 class="text-4xl sm:text-6xl lg:text-7xl font-extrabold text-white leading-tight tracking-tight mb-6 drop-shadow-md">
+                Elevate Your <br><span class="text-amber-400">Living Experience</span>
             </h1>
             
-            <p class="hero-subtitle-premium fadeInUp" style="animation-delay: 0.2s;">
+            <p class="text-slate-200 text-lg sm:text-xl leading-relaxed mb-10 max-w-2xl drop-shadow-sm">
                 Discover hand-picked, verified lodges near AE-FUNAI. We simplify your search for comfort, safety, and modern student life.
             </p>
         </div>
         
-        <!-- Search Floating -->
-        <div class="search-floating fadeInUp" style="animation-delay: 0.4s;">
+        <!-- Floating Search Card -->
+        <div class="bg-white/95 backdrop-blur-xl rounded-3xl p-6 sm:p-8 shadow-2xl border border-white/80 mt-6 max-w-5xl">
             <form action="{% url 'search_results' %}" method="get">
-                <div class="row g-4 align-items-center">
-                    <div class="col-lg-4 col-md-6">
-                        <label class="form-label-modern mb-2">WHERE TO LOOK?</label>
-                        <div class="input-group">
-                            <span class="input-group-text bg-transparent border-0 ps-0"><i class="bi bi-geo-alt text-primary"></i></span>
-                            <input type="text" class="form-control border-0 p-0 fs-5 fw-bold" name="location" 
-                                   placeholder="Frontgate, Backgate..." value="{{ request.GET.location }}" style="box-shadow: none;">
+                <div class="grid grid-cols-1 md:grid-cols-12 gap-6 items-center">
+                    <div class="md:col-span-4">
+                        <label class="block text-xs font-extrabold uppercase tracking-wider text-slate-500 mb-2">Where to look?</label>
+                        <div class="flex items-center gap-2 border-b-2 border-slate-200 focus-within:border-blue-600 pb-1">
+                            <i class="bi bi-geo-alt text-blue-900 text-xl"></i>
+                            <input type="text" name="location" placeholder="Frontgate, Backgate..." value="{{ request.GET.location }}"
+                                   class="w-full bg-transparent border-0 focus:outline-none text-base font-bold text-slate-900 placeholder:text-slate-400 placeholder:font-normal">
                         </div>
                     </div>
                     
-                    <div class="col-lg-3 col-md-6">
-                        <label class="form-label-modern mb-2">ROOM STYLE</label>
-                        <select class="form-select border-0 p-0 fs-6 fw-bold text-muted-modern" name="room_type" style="box-shadow: none; cursor: pointer;">
+                    <div class="md:col-span-3">
+                        <label class="block text-xs font-extrabold uppercase tracking-wider text-slate-500 mb-2">Room Style</label>
+                        <select name="room_type" class="w-full bg-transparent border-b-2 border-slate-200 focus-within:border-blue-600 pb-1 text-base font-bold text-slate-800 focus:outline-none cursor-pointer">
                             <option value="">Any Style</option>
                             <option value="single">Single Room</option>
                             <option value="self_contain">Self-Contain</option>
@@ -243,16 +58,18 @@
                         </select>
                     </div>
                     
-                    <div class="col-lg-3 col-md-12">
-                        <label class="form-label-modern mb-2">BUDGET RANGE</label>
-                        <div class="d-flex align-items-center gap-2">
-                           <input type="number" class="form-control border-0 p-0 fs-6 fw-bold" name="max_price" placeholder="Max Price" style="box-shadow: none;">
+                    <div class="md:col-span-3">
+                        <label class="block text-xs font-extrabold uppercase tracking-wider text-slate-500 mb-2">Max Budget (₦)</label>
+                        <div class="flex items-center gap-2 border-b-2 border-slate-200 focus-within:border-blue-600 pb-1">
+                            <input type="number" name="max_price" placeholder="e.g. 200000"
+                                   class="w-full bg-transparent border-0 focus:outline-none text-base font-bold text-slate-900 placeholder:text-slate-400 placeholder:font-normal">
                         </div>
                     </div>
                     
-                    <div class="col-lg-2 col-md-12">
-                        <button type="submit" class="btn btn-primary-modern py-3 w-100 fs-6" style="border-radius: 18px;">
-                            Find Now
+                    <div class="md:col-span-2">
+                        <button type="submit" class="w-full py-3.5 px-6 bg-blue-900 hover:bg-blue-950 text-white font-extrabold rounded-2xl shadow-lg shadow-blue-900/30 transition-all transform hover:-translate-y-0.5 text-base flex items-center justify-center gap-2">
+                            <span>Find Now</span>
+                            <i class="bi bi-search"></i>
                         </button>
                     </div>
                 </div>
@@ -262,74 +79,73 @@
 </section>
 
 <!-- Latest Lodges Section -->
-<section class="lodges-dynamic-section">
-    <div class="container">
-        <div class="section-head-modern scroll-reveal">
-            <span class="section-tag">New Listings</span>
-            <h2 class="section-title h1">Freshly Added Lodges</h2>
-            <p class="text-muted fs-5">Browse the latest verified accommodations approved by our team.</p>
+<section class="py-24 bg-white">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="text-center max-w-2xl mx-auto mb-16">
+            <span class="inline-block px-3 py-1 bg-amber-100 text-amber-800 text-xs font-extrabold uppercase tracking-widest rounded-full mb-3">New Listings</span>
+            <h2 class="text-3xl sm:text-4xl font-extrabold text-slate-900 tracking-tight">Freshly Added Lodges</h2>
+            <p class="text-slate-600 text-base sm:text-lg mt-3">Browse the latest verified accommodations approved by our team.</p>
         </div>
         
-        <div class="row g-4">
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
             {% for lodge in recent_lodges %}
-            <div class="col-lg-4 col-md-6 scroll-reveal" style="animation-delay: {{ forloop.counter0|add:1|multiply:0.1 }}s">
-                <div class="lodge-card-premium">
-                    <div class="lodge-img-container">
-                        {% if lodge.images.all %}
-                            <img src="{{ lodge.images.first.image.url }}" alt="{{ lodge.name }}" class="lodge-img-premium">
-                        {% else %}
-                            <img src="https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?w=800&auto=format&fit=crop" alt="Lodge" class="lodge-img-premium">
-                        {% endif %}
-                        <div class="lodge-price-badge">
-                            ₦{{ lodge.price_per_year|floatformat:0 }}<small class="fw-normal text-muted">/yr</small>
+            <div class="bg-white rounded-3xl overflow-hidden border border-slate-200 hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-2 flex flex-col group">
+                <div class="h-64 relative overflow-hidden bg-slate-100">
+                    {% if lodge.images.all %}
+                        <img src="{{ lodge.images.first.image.url }}" alt="{{ lodge.name }}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700">
+                    {% else %}
+                        <img src="https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?w=800&auto=format&fit=crop" alt="Lodge" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700">
+                    {% endif %}
+                    <div class="absolute top-4 right-4 bg-white/95 backdrop-blur-md px-3.5 py-1.5 rounded-xl text-sm font-extrabold text-blue-900 shadow-md">
+                        ₦{{ lodge.price_per_year|floatformat:0 }}<span class="text-xs text-slate-500 font-normal">/yr</span>
+                    </div>
+                </div>
+                
+                <div class="p-6 flex-grow flex flex-col">
+                    <div class="flex items-center justify-between mb-3">
+                        <span class="px-3 py-1 bg-blue-50 text-blue-900 text-xs font-bold rounded-lg">{{ lodge.get_room_type_display }}</span>
+                        <span class="text-amber-500 text-xs font-bold flex items-center gap-1">
+                            <i class="bi bi-star-fill"></i> New
+                        </span>
+                    </div>
+                    <h3 class="text-xl font-bold text-slate-900 mb-2 group-hover:text-blue-600 transition-colors">{{ lodge.name }}</h3>
+                    <p class="text-slate-500 text-sm mb-4 flex items-center gap-1.5">
+                        <i class="bi bi-geo-alt text-amber-500"></i> {{ lodge.location }}
+                    </p>
+                    
+                    <!-- Availability Progress -->
+                    <div class="mb-5 mt-auto">
+                        <div class="w-full bg-slate-100 rounded-full h-2 overflow-hidden mb-1.5">
+                            <div class="bg-emerald-500 h-full rounded-full" style="width: {{ lodge.available_percentage }}%;"></div>
+                        </div>
+                        <div class="flex justify-between text-xs text-slate-500 font-semibold">
+                            <span>{{ lodge.total_rooms }} total rooms</span>
+                            <span class="text-emerald-600">{{ lodge.rooms_available }} available</span>
                         </div>
                     </div>
                     
-                    <div class="lodge-card-body">
-                        <div class="d-flex justify-content-between align-items-start mb-2">
-                            <span class="badge-modern badge-primary">{{ lodge.get_room_type_display }}</span>
-                            <div class="text-warning small">
-                                <i class="bi bi-star-fill"></i> New
-                            </div>
-                        </div>
-                        <h3 class="lodge-name-premium">{{ lodge.name }}</h3>
-                        <p class="text-muted-modern mb-3">
-                            <i class="bi bi-geo-alt me-1"></i> {{ lodge.location }}
-                        </p>
-                        
-                        <!-- Room Availability Progress Bar -->
-                        <div class="mb-3">
-                            <div class="progress" style="height: 6px; background-color: #E5E7EB; border-radius: 3px; overflow: hidden; margin-bottom: 4px;">
-                                <div class="progress-bar" role="progressbar" style="width: {{ lodge.available_percentage }}%; background-color: #10B981;" aria-valuenow="{{ lodge.rooms_available }}" aria-valuemin="0" aria-valuemax="{{ lodge.total_rooms }}"></div>
-                            </div>
-                            <div class="d-flex justify-content-between text-muted-modern" style="font-size: 0.8rem; font-weight: 500;">
-                                <span>{{ lodge.total_rooms }} rooms</span>
-                                <span>{{ lodge.rooms_available }} still available</span>
-                            </div>
-                        </div>
-                        
-                        <div class="d-flex gap-3 mb-4">
-                            {% for amenity in lodge.amenities.all|slice:":3" %}
-                            <div class="small text-muted-modern bg-light-modern px-2 py-1 rounded">
-                                <i class="bi bi-check2"></i> {{ amenity.name }}
-                            </div>
-                            {% endfor %}
-                        </div>
-                        
-                        <a href="{% url 'lodge_detail' lodge.id %}" class="btn btn-outline-modern w-100 py-2">
-                            View Details <i class="bi bi-arrow-right ms-2"></i>
-                        </a>
+                    <!-- Amenities Badges -->
+                    <div class="flex flex-wrap gap-2 mb-6">
+                        {% for amenity in lodge.amenities.all|slice:":3" %}
+                        <span class="px-2.5 py-1 bg-slate-100 text-slate-700 text-xs font-medium rounded-md flex items-center gap-1">
+                            <i class="bi bi-check2 text-emerald-600"></i> {{ amenity.name }}
+                        </span>
+                        {% endfor %}
                     </div>
+                    
+                    <a href="{% url 'lodge_detail' lodge.id %}" class="w-full py-2.5 px-4 border-2 border-blue-900 text-blue-900 hover:bg-blue-900 hover:text-white font-bold rounded-xl text-sm transition-all text-center flex items-center justify-center gap-2">
+                        <span>View Details</span>
+                        <i class="bi bi-arrow-right"></i>
+                    </a>
                 </div>
             </div>
             {% empty %}
-            <!-- Placeholder for Empty State -->
-            <div class="col-12 text-center py-5">
-                <div class="empty-placeholder">
-                    <i class="bi bi-building-add display-1 text-gray-300 mb-4"></i>
-                    <h3 class="h2 fw-bold text-gray-900">Starting Fresh!</h3>
-                    <p class="text-muted fs-5 mb-4">We are currently verifying new lodges. Check back in a few minutes!</p>
-                    <a href="{% url 'owner_signup' %}" class="btn btn-primary-modern btn-lg px-5">Be the First to List</a>
+            <div class="col-span-full text-center py-16 px-4">
+                <div class="bg-slate-50 border-2 border-dashed border-slate-300 rounded-3xl p-12 max-w-lg mx-auto">
+                    <i class="bi bi-building-add text-6xl text-slate-300 mb-4 inline-block"></i>
+                    <h3 class="text-2xl font-bold text-slate-900 mb-2">Starting Fresh!</h3>
+                    <p class="text-slate-600 text-sm mb-6">We are currently verifying new lodges. Check back in a few minutes!</p>
+                    <a href="{% url 'owner_signup' %}" class="inline-flex items-center gap-2 px-6 py-3 bg-blue-900 text-white font-bold rounded-xl shadow-md hover:bg-blue-950 transition-all">Be the First to List</a>
                 </div>
             </div>
             {% endfor %}
@@ -337,90 +153,63 @@
     </div>
 </section>
 
-<!-- Stats / Feature Grid -->
-<section class="py-5 bg-light-modern">
-    <div class="container">
-        <div class="row g-5 align-items-center">
-            <div class="col-lg-5">
-                <h2 class="h1 fw-bold mb-4" style="line-height: 1.2;">Built for AE-FUNAI Students</h2>
-                <p class="fs-5 text-muted mb-5">We understand the struggle of finding a good home. Our platform ensures you get what you see, with verified owners and transparent pricing.</p>
+<!-- Features Grid Section -->
+<section class="py-20 bg-slate-100">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
+            <div class="lg:col-span-5">
+                <h2 class="text-3xl sm:text-4xl font-extrabold text-slate-900 leading-tight mb-6">Built Specifically for AE-FUNAI Students</h2>
+                <p class="text-slate-600 text-base sm:text-lg mb-8 leading-relaxed">We understand the struggle of finding a good off-campus home. Our platform ensures you get what you see, with verified property owners and transparent pricing.</p>
                 
-                <div class="d-flex gap-4 mb-4">
-                    <div class="p-3 bg-white rounded-4 shadow-sm">
-                        <i class="bi bi-shield-check text-primary fs-2"></i>
-                        <h5 class="mt-2 fw-bold">Verified</h5>
+                <div class="grid grid-cols-3 gap-4">
+                    <div class="p-4 bg-white rounded-2xl shadow-sm border border-slate-200 text-center">
+                        <i class="bi bi-shield-check text-amber-500 text-3xl mb-2 inline-block"></i>
+                        <h5 class="font-bold text-slate-900 text-sm">Verified</h5>
                     </div>
-                    <div class="p-3 bg-white rounded-4 shadow-sm">
-                        <i class="bi bi-lightning-charge text-primary fs-2"></i>
-                        <h5 class="mt-2 fw-bold">Fast Search</h5>
+                    <div class="p-4 bg-white rounded-2xl shadow-sm border border-slate-200 text-center">
+                        <i class="bi bi-lightning-charge text-blue-600 text-3xl mb-2 inline-block"></i>
+                        <h5 class="font-bold text-slate-900 text-sm">Fast Search</h5>
                     </div>
-                    <div class="p-3 bg-white rounded-4 shadow-sm">
-                        <i class="bi bi-cash-stack text-primary fs-2"></i>
-                        <h5 class="mt-2 fw-bold">No Hidden Fees</h5>
+                    <div class="p-4 bg-white rounded-2xl shadow-sm border border-slate-200 text-center">
+                        <i class="bi bi-cash-stack text-emerald-600 text-3xl mb-2 inline-block"></i>
+                        <h5 class="font-bold text-slate-900 text-sm">No Extra Fees</h5>
                     </div>
                 </div>
             </div>
-            <div class="col-lg-7">
-                <div class="row g-4">
-                    <div class="col-6">
-                        <img src="https://images.unsplash.com/photo-1590274853856-f22d5ee3d228?w=500&auto=format&fit=crop" class="img-fluid rounded-5 shadow" alt="Interior">
-                    </div>
-                    <div class="col-6">
-                        <img src="https://images.unsplash.com/photo-1484154218962-a197022b5858?w=500&auto=format&fit=crop" class="img-fluid rounded-5 shadow mt-5" alt="Kitchen">
-                    </div>
+            
+            <div class="lg:col-span-7">
+                <div class="grid grid-cols-2 gap-6">
+                    <img src="https://images.unsplash.com/photo-1590274853856-f22d5ee3d228?w=500&auto=format&fit=crop" class="rounded-3xl shadow-xl w-full h-72 object-cover" alt="Interior">
+                    <img src="https://images.unsplash.com/photo-1484154218962-a197022b5858?w=500&auto=format&fit=crop" class="rounded-3xl shadow-xl w-full h-72 object-cover mt-8" alt="Kitchen">
                 </div>
             </div>
         </div>
     </div>
 </section>
 
-<!-- Final CTA -->
-<section class="py-5 mb-5">
-    <div class="container">
-        <div class="bg-primary p-5 rounded-5 shadow-lg text-center text-white position-relative overflow-hidden">
-            <div style="position: relative; z-index: 2;">
-                <h2 class="display-5 fw-bold mb-3">Ready to Move In?</h2>
-                <p class="fs-5 mb-5 opacity-75">Join our community today and secure your spot.</p>
-                <div class="d-flex justify-content-center gap-3 flex-wrap">
+<!-- CTA Banner Section -->
+<section class="py-16 my-8">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="bg-blue-900 rounded-3xl p-10 sm:p-16 text-center text-white relative overflow-hidden shadow-2xl">
+            <div class="relative z-10 max-w-2xl mx-auto">
+                <h2 class="text-3xl sm:text-5xl font-extrabold mb-4">Ready to Move In?</h2>
+                <p class="text-slate-200 text-base sm:text-lg mb-8 opacity-90">Join our community today and secure your ideal off-campus lodge.</p>
+                <div class="flex flex-wrap justify-center gap-4">
                     {% if user.is_authenticated %}
                         {% if user.user_type == 'student' %}
-                            <a href="{% url 'student_dashboard' %}" class="btn btn-light btn-lg px-5 py-3 fw-bold text-primary">Go to Dashboard</a>
+                            <a href="{% url 'student_dashboard' %}" class="px-8 py-3.5 bg-white text-blue-900 font-extrabold rounded-xl shadow-lg hover:bg-slate-100 transition-all">Go to Dashboard</a>
                         {% elif user.user_type == 'owner' %}
-                            <a href="{% url 'owner_dashboard' %}" class="btn btn-light btn-lg px-5 py-3 fw-bold text-primary">Go to Dashboard</a>
-                            <a href="{% url 'add_lodge' %}" class="btn btn-outline-light btn-lg px-5 py-3 fw-bold">List a Lodge</a>
+                            <a href="{% url 'owner_dashboard' %}" class="px-8 py-3.5 bg-white text-blue-900 font-extrabold rounded-xl shadow-lg hover:bg-slate-100 transition-all">Go to Dashboard</a>
+                            <a href="{% url 'add_lodge' %}" class="px-8 py-3.5 border-2 border-white text-white font-extrabold rounded-xl hover:bg-white/10 transition-all">List a Lodge</a>
                         {% endif %}
                     {% else %}
-                        <a href="{% url 'student_signup' %}" class="btn btn-light btn-lg px-5 py-3 fw-bold text-primary">Get Started</a>
-                        <a href="{% url 'owner_signup' %}" class="btn btn-outline-light btn-lg px-5 py-3 fw-bold">List Property</a>
+                        <a href="{% url 'student_signup' %}" class="px-8 py-3.5 bg-amber-500 hover:bg-amber-600 text-white font-extrabold rounded-xl shadow-lg transition-all">Get Started</a>
+                        <a href="{% url 'owner_signup' %}" class="px-8 py-3.5 border-2 border-white text-white font-extrabold rounded-xl hover:bg-white/10 transition-all">List Property</a>
                     {% endif %}
                 </div>
             </div>
-            <div style="position: absolute; top: -50%; left: -20%; width: 500px; height: 500px; background: rgba(255,255,255,0.05); border-radius: 50%;"></div>
+            <div class="absolute -top-24 -left-24 w-96 h-96 bg-white/5 rounded-full pointer-events-none"></div>
         </div>
     </div>
 </section>
-
-{% endblock %}
-
-{% block extra_js %}
-<script>
-// Scroll Reveal Logic
-document.addEventListener('DOMContentLoaded', function() {
-    const observerOptions = {
-        threshold: 0.1
-    };
-
-    const observer = new IntersectionObserver((entries) => {
-        entries.forEach(entry => {
-            if (entry.isIntersecting) {
-                entry.target.classList.add('active');
-            }
-        });
-    }, observerOptions);
-
-    document.querySelectorAll('.scroll-reveal').forEach(el => {
-        observer.observe(el);
-    });
-});
-</script>
 {% endblock %}

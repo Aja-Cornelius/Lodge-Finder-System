@@ -1,888 +1,142 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Owner Dashboard - LodgeFinder</title>
-    
-    <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
-    <link rel="preconnect" href="https://fonts.googleapis.com" crossorigin>
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Sora:wght@600;700;800&display=swap" rel="stylesheet">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
-    
-    <style>
-        :root {
-            --primary: #0F4C81;
-            --primary-dark: #0A3A61;
-            --primary-light: #1A5F9B;
-            --accent: #FF6B35;
-            --accent-dark: #E5522A;
-            --success: #10B981;
-            --warning: #F59E0B;
-            --danger: #EF4444;
-            --white: #FFFFFF;
-            --gray-50: #F9FAFB;
-            --gray-100: #F3F4F6;
-            --gray-200: #E5E7EB;
-            --gray-300: #D1D5DB;
-            --gray-600: #4B5563;
-            --gray-700: #374151;
-            --gray-800: #1F2937;
-            --gray-900: #111827;
-            --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
-            --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
-            --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
-            --shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
-            --radius-sm: 8px;
-            --radius-md: 12px;
-            --radius-lg: 16px;
-            --radius-xl: 20px;
-        }
-        
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-        
-        body {
-            font-family: 'Inter', sans-serif;
-            background: var(--gray-50);
-            color: var(--gray-900);
-        }
-        
-        h1, h2, h3, h4, h5, h6 {
-            font-family: 'Sora', sans-serif;
-        }
-        
-        /* Dashboard Layout */
-        .dashboard-wrapper {
-            display: flex;
-            min-height: 100vh;
-        }
-        
-        /* Sidebar */
-        .sidebar-owner {
-            width: 280px;
-            background: var(--white);
-            border-right: 1px solid var(--gray-200);
-            position: fixed;
-            height: 100vh;
-            overflow-y: auto;
-            z-index: 100;
-            transition: transform 0.3s ease;
-        }
-        
-        .sidebar-header {
-            padding: 1.5rem;
-            border-bottom: 1px solid var(--gray-200);
-        }
-        
-        .brand-owner {
-            font-family: 'Sora', sans-serif;
-            font-size: 1.5rem;
-            font-weight: 800;
-            color: var(--primary);
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-        }
-        
-        .brand-dot {
-            width: 8px;
-            height: 8px;
-            background: var(--accent);
-            border-radius: 50%;
-        }
-        
-        .user-profile {
-            padding: 1.5rem;
-            border-bottom: 1px solid var(--gray-200);
-        }
-        
-        .user-avatar {
-            width: 48px;
-            height: 48px;
-            background: linear-gradient(135deg, var(--primary), var(--primary-light));
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 1.25rem;
-            color: var(--white);
-            font-weight: 700;
-            margin-bottom: 0.75rem;
-        }
-        
-        .user-name {
-            font-weight: 700;
-            font-size: 1rem;
-            color: var(--gray-900);
-            margin-bottom: 0.25rem;
-        }
-        
-        .user-role {
-            font-size: 0.875rem;
-            color: var(--gray-600);
-        }
-        
-        .sidebar-nav {
-            padding: 1rem;
-        }
-        
-        .nav-section-title {
-            font-size: 0.75rem;
-            font-weight: 700;
-            text-transform: uppercase;
-            letter-spacing: 0.05em;
-            color: var(--gray-600);
-            padding: 0 0.75rem;
-            margin: 1.5rem 0 0.5rem;
-        }
-        
-        .nav-section-title:first-child {
-            margin-top: 0;
-        }
-        
-        .nav-link-owner {
-            display: flex;
-            align-items: center;
-            gap: 0.75rem;
-            padding: 0.75rem;
-            border-radius: var(--radius-sm);
-            color: var(--gray-700);
-            text-decoration: none;
-            font-weight: 500;
-            font-size: 0.938rem;
-            transition: all 0.2s ease;
-            margin-bottom: 0.25rem;
-        }
-        
-        .nav-link-owner:hover {
-            background: var(--gray-100);
-            color: var(--primary);
-        }
-        
-        .nav-link-owner.active {
-            background: rgba(15, 76, 129, 0.1);
-            color: var(--primary);
-            font-weight: 600;
-        }
-        
-        .nav-link-owner i {
-            font-size: 1.125rem;
-        }
-        
-        /* Mobile Header */
-        .mobile-header {
-            display: none;
-            background: var(--white);
-            border-bottom: 1px solid var(--gray-200);
-            padding: 1rem;
-            position: sticky;
-            top: 0;
-            z-index: 99;
-        }
-        
-        .mobile-toggle {
-            background: none;
-            border: none;
-            font-size: 1.5rem;
-            color: var(--gray-700);
-            cursor: pointer;
-        }
-        
-        .sidebar-overlay {
-            display: none;
-            position: fixed;
-            inset: 0;
-            background: rgba(0, 0, 0, 0.5);
-            z-index: 98;
-        }
-        
-        /* Main Content */
-        .main-content-owner {
-            flex: 1;
-            margin-left: 280px;
-            padding: 2rem;
-        }
-        
-        /* Page Header */
-        .page-header-owner {
-            display: flex;
-            justify-content: space-between;
-            align-items: flex-start;
-            margin-bottom: 2rem;
-            flex-wrap: wrap;
-            gap: 1rem;
-        }
-        
-        .page-title-section {
-            flex: 1;
-        }
-        
-        .page-subtitle {
-            font-size: 0.75rem;
-            font-weight: 700;
-            text-transform: uppercase;
-            letter-spacing: 0.05em;
-            color: var(--primary);
-            margin-bottom: 0.5rem;
-        }
-        
-        .page-title {
-            font-size: clamp(1.75rem, 4vw, 2.25rem);
-            font-weight: 800;
-            color: var(--gray-900);
-            margin-bottom: 0.5rem;
-        }
-        
-        .page-description {
-            color: var(--gray-600);
-            font-size: 1rem;
-        }
-        
-        .btn-add-lodge {
-            background: var(--accent);
-            color: var(--white);
-            border: none;
-            padding: 0.875rem 1.75rem;
-            border-radius: var(--radius-md);
-            font-weight: 700;
-            font-size: 0.938rem;
-            transition: all 0.2s ease;
-            text-decoration: none;
-            display: inline-flex;
-            align-items: center;
-            gap: 0.5rem;
-            box-shadow: var(--shadow-sm);
-        }
-        
-        .btn-add-lodge:hover {
-            background: var(--accent-dark);
-            transform: translateY(-2px);
-            box-shadow: var(--shadow-md);
-            color: var(--white);
-        }
-        
-        /* Stats Grid */
-        .stats-grid-owner {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
-            gap: 1.5rem;
-            margin-bottom: 2.5rem;
-        }
-        
-        .stat-card-owner {
-            background: var(--white);
-            border: 1px solid var(--gray-200);
-            border-radius: var(--radius-lg);
-            padding: 1.75rem;
-            box-shadow: var(--shadow-sm);
-            transition: all 0.2s ease;
-            position: relative;
-            overflow: hidden;
-        }
-        
-        .stat-card-owner::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            height: 4px;
-            background: linear-gradient(90deg, var(--primary), var(--primary-light));
-        }
-        
-        .stat-card-owner.success::before {
-            background: linear-gradient(90deg, var(--success), #34D399);
-        }
-        
-        .stat-card-owner.warning::before {
-            background: linear-gradient(90deg, var(--warning), #FBBF24);
-        }
-        
-        .stat-card-owner:hover {
-            box-shadow: var(--shadow-md);
-            transform: translateY(-2px);
-        }
-        
-        .stat-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: flex-start;
-            margin-bottom: 1.25rem;
-        }
-        
-        .stat-label {
-            font-size: 0.875rem;
-            font-weight: 600;
-            color: var(--gray-600);
-            text-transform: uppercase;
-            letter-spacing: 0.05em;
-        }
-        
-        .stat-icon {
-            width: 48px;
-            height: 48px;
-            border-radius: var(--radius-md);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 1.5rem;
-        }
-        
-        .stat-icon.primary { background: rgba(15, 76, 129, 0.1); color: var(--primary); }
-        .stat-icon.success { background: rgba(16, 185, 129, 0.1); color: var(--success); }
-        .stat-icon.warning { background: rgba(245, 158, 11, 0.1); color: var(--warning); }
-        
-        .stat-value {
-            font-family: 'Sora', sans-serif;
-            font-size: 2.5rem;
-            font-weight: 800;
-            color: var(--gray-900);
-            line-height: 1;
-        }
-        
-        .stat-change {
-            font-size: 0.875rem;
-            margin-top: 0.5rem;
-            display: flex;
-            align-items: center;
-            gap: 0.25rem;
-        }
-        
-        .stat-change.positive {
-            color: var(--success);
-        }
-        
-        .stat-change.negative {
-            color: var(--danger);
-        }
-        
-        /* Section Header */
-        .section-header-owner {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 1.5rem;
-        }
-        
-        .section-title-owner {
-            font-size: 1.375rem;
-            font-weight: 700;
-            color: var(--gray-900);
-        }
-        
-        .link-view-all {
-            color: var(--primary);
-            text-decoration: none;
-            font-weight: 600;
-            font-size: 0.938rem;
-            transition: color 0.2s ease;
-        }
-        
-        .link-view-all:hover {
-            color: var(--primary-dark);
-        }
-        
-        /* Lodges Table/Grid */
-        .lodges-table-wrapper {
-            background: var(--white);
-            border: 1px solid var(--gray-200);
-            border-radius: var(--radius-lg);
-            overflow: hidden;
-            box-shadow: var(--shadow-sm);
-        }
-        
-        .table-owner {
-            margin: 0;
-            width: 100%;
-        }
-        
-        .table-owner thead {
-            background: var(--gray-50);
-            border-bottom: 2px solid var(--gray-200);
-        }
-        
-        .table-owner th {
-            padding: 1rem 1.25rem;
-            font-size: 0.813rem;
-            font-weight: 700;
-            text-transform: uppercase;
-            letter-spacing: 0.05em;
-            color: var(--gray-700);
-            border: none;
-        }
-        
-        .table-owner td {
-            padding: 1.25rem;
-            border-top: 1px solid var(--gray-200);
-            vertical-align: middle;
-        }
-        
-        .table-owner tbody tr {
-            transition: background 0.15s ease;
-        }
-        
-        .table-owner tbody tr:hover {
-            background: var(--gray-50);
-        }
-        
-        .lodge-info {
-            display: flex;
-            align-items: center;
-            gap: 1rem;
-        }
-        
-        .lodge-thumbnail {
-            width: 80px;
-            height: 60px;
-            border-radius: var(--radius-sm);
-            object-fit: cover;
-            flex-shrink: 0;
-        }
-        
-        .lodge-details {
-            flex: 1;
-        }
-        
-        .lodge-name-table {
-            font-weight: 700;
-            color: var(--gray-900);
-            font-size: 0.938rem;
-            margin-bottom: 0.25rem;
-        }
-        
-        .lodge-meta-table {
-            font-size: 0.813rem;
-            color: var(--gray-600);
-        }
-        
-        .badge-status {
-            padding: 0.375rem 0.75rem;
-            border-radius: var(--radius-sm);
-            font-size: 0.75rem;
-            font-weight: 700;
-            text-transform: uppercase;
-            letter-spacing: 0.05em;
-        }
-        
-        .badge-approved {
-            background: rgba(16, 185, 129, 0.1);
-            color: var(--success);
-        }
-        
-        .badge-pending {
-            background: rgba(245, 158, 11, 0.1);
-            color: var(--warning);
-        }
-        
-        .btn-action {
-            padding: 0.5rem 0.875rem;
-            border-radius: var(--radius-sm);
-            font-size: 0.813rem;
-            font-weight: 600;
-            text-decoration: none;
-            transition: all 0.2s ease;
-            display: inline-flex;
-            align-items: center;
-            gap: 0.375rem;
-        }
-        
-        .btn-view {
-            background: var(--gray-100);
-            color: var(--gray-700);
-            border: 1px solid var(--gray-300);
-        }
-        
-        .btn-view:hover {
-            background: var(--primary);
-            color: var(--white);
-            border-color: var(--primary);
-        }
-        
-        .btn-edit {
-            background: rgba(15, 76, 129, 0.1);
-            color: var(--primary);
-            border: 1px solid rgba(15, 76, 129, 0.2);
-        }
-        
-        .btn-edit:hover {
-            background: var(--primary);
-            color: var(--white);
-            border-color: var(--primary);
-        }
-        
-        /* Empty State */
-        .empty-state {
-            text-align: center;
-            padding: 4rem 2rem;
-        }
-        
-        .empty-icon {
-            width: 120px;
-            height: 120px;
-            background: var(--gray-100);
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            margin: 0 auto 1.5rem;
-        }
-        
-        .empty-icon i {
-            font-size: 3rem;
-            color: var(--gray-400);
-        }
-        
-        .empty-title {
-            font-family: 'Sora', sans-serif;
-            font-size: 1.5rem;
-            font-weight: 700;
-            color: var(--gray-900);
-            margin-bottom: 0.75rem;
-        }
-        
-        .empty-text {
-            color: var(--gray-600);
-            font-size: 1rem;
-            line-height: 1.6;
-            max-width: 400px;
-            margin: 0 auto 2rem;
-        }
-        
-        /* Responsive */
-        @media (max-width: 992px) {
-            .mobile-header {
-                display: flex;
-                justify-content: space-between;
-                align-items: center;
-            }
-            
-            .sidebar-owner {
-                transform: translateX(-100%);
-            }
-            
-            .sidebar-owner.open {
-                transform: translateX(0);
-            }
-            
-            .sidebar-overlay.open {
-                display: block;
-            }
-            
-            .main-content-owner {
-                margin-left: 0;
-                padding: 1.5rem;
-            }
-            
-            .page-header-owner {
-                flex-direction: column;
-                align-items: flex-start;
-            }
-            
-            .lodges-table-wrapper {
-                overflow-x: auto;
-            }
-        }
-        
-        @media (max-width: 768px) {
-            .stats-grid-owner {
-                grid-template-columns: 1fr;
-            }
-        }
-    </style>
-</head>
-<body>
-    <!-- Mobile Header -->
-    <div class="mobile-header">
-        <div class="brand-owner">
-            <span class="brand-dot"></span>
-            LodgeFinder
-        </div>
-        <button class="mobile-toggle" id="toggleSidebar">
-            <i class="bi bi-list"></i>
-        </button>
-    </div>
-    
-    <!-- Sidebar Overlay -->
-    <div class="sidebar-overlay" id="sidebarOverlay"></div>
-    
-    <div class="dashboard-wrapper">
-        <!-- Sidebar -->
-        <aside class="sidebar-owner" id="sidebar">
-            <div class="sidebar-header">
-                <div class="brand-owner">
-                    <span class="brand-dot"></span>
-                    LodgeFinder
-                </div>
-            </div>
-            
-            <div class="user-profile">
-                <div class="user-avatar">
-                    {{ user.username|first|upper }}
-                </div>
-                <div class="user-name">{{ user.get_full_name|default:user.username }}</div>
-                <div class="user-role">Lodge Owner</div>
-            </div>
-            
-            <nav class="sidebar-nav">
-                <div class="nav-section-title">Main</div>
-                <a href="{% url 'owner_dashboard' %}" class="nav-link-owner active">
-                    <i class="bi bi-grid-1x2"></i>
-                    <span>Dashboard</span>
-                </a>
-                <a href="{% url 'my_lodges' %}" class="nav-link-owner">
-                    <i class="bi bi-building"></i>
-                    <span>My Lodges</span>
-                </a>
-                <a href="{% url 'add_lodge' %}" class="nav-link-owner">
-                    <i class="bi bi-plus-circle"></i>
-                    <span>Add New Lodge</span>
-                </a>
-                <a href="{% url 'inquiries' %}" class="nav-link-owner">
-                    <i class="bi bi-chat-dots"></i>
-                    <span>Inquiries</span>
-                </a>
-                
-                <div class="nav-section-title">Account</div>
-                <a href="{% url 'owner_profile' %}" class="nav-link-owner">
-                    <i class="bi bi-person-circle"></i>
-                    <span>Profile</span>
-                </a>
-                <a href="#" class="nav-link-owner">
-                    <i class="bi bi-gear"></i>
-                    <span>Settings</span>
-                </a>
-                <a href="{% url 'logout' %}" class="nav-link-owner">
-                    <i class="bi bi-box-arrow-left"></i>
-                    <span>Logout</span>
-                </a>
-            </nav>
-        </aside>
-        
-        <!-- Main Content -->
-        <main class="main-content-owner">
-            {% if messages %}
-            <div id="messages-container">
-                {% for message in messages %}
-                <div class="alert {% if message.tags == 'error' %}alert-danger{% else %}alert-success{% endif %} mb-4" 
-                     style="border-radius: var(--radius-md); font-weight: 600; font-size: 0.95rem; border: none; box-shadow: var(--shadow-md); display: flex; align-items: center; gap: 0.75rem; background-color: {% if message.tags == 'error' %}#FEE2E2{% else %}#D1FAE5{% endif %}; color: {% if message.tags == 'error' %}#991B1B{% else %}#065F46{% endif %}; padding: 1rem 1.25rem;">
-                    <i class="bi {% if message.tags == 'error' %}bi-exclamation-triangle-fill{% else %}bi-check-circle-fill{% endif %}" style="font-size: 1.1rem;"></i>
-                    {{ message }}
-                </div>
-                {% endfor %}
-            </div>
-            <script>
-                setTimeout(function() {
-                    const container = document.getElementById('messages-container');
-                    if (container) {
-                        container.style.transition = 'all 0.6s cubic-bezier(0.16, 1, 0.3, 1)';
-                        container.style.opacity = '0';
-                        container.style.transform = 'translateY(-20px)';
-                        setTimeout(() => container.remove(), 600);
-                    }
-                }, 4000);
-            </script>
-            {% endif %}
+{% extends 'lodge/base.html' %}
+{% load static %}
+{% block title %}Owner Dashboard - LodgeFinder{% endblock %}
 
-            <!-- Page Header -->
-            <div class="page-header-owner">
-                <div class="page-title-section">
-                    <div class="page-subtitle">Owner Dashboard</div>
-                    <h1 class="page-title">Welcome back, {{ user.get_full_name|default:user.username }}!</h1>
-                    <p class="page-description">Manage your lodges and track performance</p>
-                </div>
-                <a href="{% url 'add_lodge' %}" class="btn-add-lodge">
-                    <i class="bi bi-plus-lg"></i>
-                    Add New Lodge
-                </a>
-            </div>
-            
-            <!-- Stats Grid -->
-            <div class="stats-grid-owner">
-                <div class="stat-card-owner">
-                    <div class="stat-header">
-                        <div>
-                            <div class="stat-label">Total Lodges</div>
-                        </div>
-                        <div class="stat-icon primary">
-                            <i class="bi bi-building"></i>
-                        </div>
-                    </div>
-                    <div class="stat-value">{{ total_lodges }}</div>
-                </div>
-                
-                <div class="stat-card-owner success">
-                    <div class="stat-header">
-                        <div>
-                            <div class="stat-label">Approved</div>
-                        </div>
-                        <div class="stat-icon success">
-                            <i class="bi bi-check-circle-fill"></i>
-                        </div>
-                    </div>
-                    <div class="stat-value">{{ approved }}</div>
-                </div>
-                
-                <div class="stat-card-owner warning">
-                    <div class="stat-header">
-                        <div>
-                            <div class="stat-label">Pending Review</div>
-                        </div>
-                        <div class="stat-icon warning">
-                            <i class="bi bi-clock-fill"></i>
-                        </div>
-                    </div>
-                    <div class="stat-value">{{ pending }}</div>
+{% block content %}
+<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+    <!-- Page Header -->
+    <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-8">
+        <div>
+            <span class="inline-block px-3 py-1 bg-amber-100 text-amber-800 text-xs font-bold uppercase tracking-wider rounded-full mb-2">Owner Dashboard</span>
+            <h1 class="text-3xl sm:text-4xl font-extrabold text-slate-900 tracking-tight">Welcome back, {{ user.get_full_name|default:user.username }}!</h1>
+            <p class="text-slate-600 text-sm sm:text-base mt-1">Manage your lodges and track performance</p>
+        </div>
+        <a href="{% url 'add_lodge' %}" class="inline-flex items-center gap-2 px-6 py-3.5 bg-amber-500 hover:bg-amber-600 text-white font-extrabold rounded-2xl shadow-lg shadow-amber-500/25 transition-all text-sm self-start sm:self-auto">
+            <i class="bi bi-plus-lg"></i>
+            <span>Add New Lodge</span>
+        </a>
+    </div>
+
+    <!-- Stats Grid -->
+    <div class="grid grid-cols-1 sm:grid-cols-3 gap-6 mb-10">
+        <div class="bg-white rounded-3xl p-6 border border-slate-200 shadow-sm hover:shadow-md transition-all">
+            <div class="flex items-center justify-between mb-4">
+                <span class="text-xs font-extrabold uppercase tracking-wider text-slate-500">Total Lodges</span>
+                <div class="w-12 h-12 rounded-2xl bg-blue-50 text-blue-900 flex items-center justify-center text-xl">
+                    <i class="bi bi-building"></i>
                 </div>
             </div>
-            
-            <!-- My Lodges Section -->
-            <div class="section-header-owner">
-                <h2 class="section-title-owner">Your Lodges</h2>
-                <a href="{% url 'my_lodges' %}" class="link-view-all">
-                    View All <i class="bi bi-arrow-right ms-1"></i>
-                </a>
+            <div class="text-3xl font-extrabold text-slate-900">{{ total_lodges }}</div>
+        </div>
+
+        <div class="bg-white rounded-3xl p-6 border border-slate-200 shadow-sm hover:shadow-md transition-all">
+            <div class="flex items-center justify-between mb-4">
+                <span class="text-xs font-extrabold uppercase tracking-wider text-slate-500">Approved</span>
+                <div class="w-12 h-12 rounded-2xl bg-emerald-50 text-emerald-600 flex items-center justify-center text-xl">
+                    <i class="bi bi-check-circle-fill"></i>
+                </div>
             </div>
-            
-            {% if my_lodges %}
-            <div class="lodges-table-wrapper">
-                <table class="table table-owner">
-                    <thead>
-                        <tr>
-                            <th>Lodge</th>
-                            <th>Location</th>
-                            <th>Price/Year</th>
-                            <th>Room Type</th>
-                            <th>Status</th>
-                            <th>Actions</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {% for lodge in my_lodges %}
-                        <tr>
-                            <td>
-                                <div class="lodge-info">
-                                    {% if lodge.images.all %}
-                                        <img src="{{ lodge.images.first.image.url }}" 
-                                             alt="{{ lodge.name }}" 
-                                             class="lodge-thumbnail"
-                                             loading="lazy">
-                                    {% else %}
-                                        <img src="https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=160&h=120&q=80&auto=format&fit=crop" 
-                                             alt="{{ lodge.name }}" 
-                                             class="lodge-thumbnail"
-                                             loading="lazy">
-                                    {% endif %}
-                                    <div class="lodge-details">
-                                        <div class="lodge-name-table">{{ lodge.name }}</div>
-                                        <div class="lodge-meta-table">
-                                            {% if lodge.amenities.all %}
-                                                {{ lodge.amenities.count }} amenities
-                                            {% else %}
-                                                No amenities listed
-                                            {% endif %}
-                                        </div>
+            <div class="text-3xl font-extrabold text-slate-900">{{ approved }}</div>
+        </div>
+
+        <div class="bg-white rounded-3xl p-6 border border-slate-200 shadow-sm hover:shadow-md transition-all">
+            <div class="flex items-center justify-between mb-4">
+                <span class="text-xs font-extrabold uppercase tracking-wider text-slate-500">Pending Review</span>
+                <div class="w-12 h-12 rounded-2xl bg-amber-50 text-amber-600 flex items-center justify-center text-xl">
+                    <i class="bi bi-clock-fill"></i>
+                </div>
+            </div>
+            <div class="text-3xl font-extrabold text-slate-900">{{ pending }}</div>
+        </div>
+    </div>
+
+    <!-- Lodges Section Header -->
+    <div class="flex items-center justify-between mb-6">
+        <h2 class="text-2xl font-extrabold text-slate-900">Your Lodges</h2>
+        <a href="{% url 'my_lodges' %}" class="text-blue-900 hover:text-blue-700 font-bold text-sm flex items-center gap-1.5">
+            <span>View All</span>
+            <i class="bi bi-arrow-right"></i>
+        </a>
+    </div>
+
+    {% if my_lodges %}
+    <div class="bg-white rounded-3xl border border-slate-200 shadow-sm overflow-hidden">
+        <div class="overflow-x-auto">
+            <table class="w-full text-left border-collapse">
+                <thead>
+                    <tr class="bg-slate-50 border-b border-slate-200 text-xs font-extrabold uppercase tracking-wider text-slate-500">
+                        <th class="py-4 px-6">Lodge</th>
+                        <th class="py-4 px-6">Location</th>
+                        <th class="py-4 px-6">Price/Year</th>
+                        <th class="py-4 px-6">Room Type</th>
+                        <th class="py-4 px-6">Status</th>
+                        <th class="py-4 px-6">Actions</th>
+                    </tr>
+                </thead>
+                <tbody class="divide-y divide-slate-100 text-sm font-medium text-slate-700">
+                    {% for lodge in my_lodges %}
+                    <tr class="hover:bg-slate-50/80 transition-colors">
+                        <td class="py-4 px-6">
+                            <div class="flex items-center gap-3">
+                                {% if lodge.images.all %}
+                                    <img src="{{ lodge.images.first.image.url }}" alt="{{ lodge.name }}" loading="lazy" class="w-14 h-11 object-cover rounded-xl border border-slate-200">
+                                {% else %}
+                                    <img src="https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=160&h=120&q=80&auto=format&fit=crop" alt="{{ lodge.name }}" loading="lazy" class="w-14 h-11 object-cover rounded-xl border border-slate-200">
+                                {% endif %}
+                                <div>
+                                    <div class="font-bold text-slate-900">{{ lodge.name }}</div>
+                                    <div class="text-xs text-slate-500">
+                                        {% if lodge.amenities.all %}{{ lodge.amenities.count }} amenities{% else %}No amenities{% endif %}
                                     </div>
                                 </div>
-                            </td>
-                            <td>
-                                <i class="bi bi-geo-alt me-1" style="color: var(--primary);"></i>
-                                {{ lodge.location }}
-                            </td>
-                            <td>
-                                <strong style="color: var(--primary);">₦{{ lodge.price_per_year|floatformat:0 }}</strong>
-                            </td>
-                            <td>{{ lodge.get_room_type_display }}</td>
-                            <td>
-                                {% if lodge.is_approved %}
-                                    <span class="badge-status badge-approved">
-                                        <i class="bi bi-check-circle me-1"></i>Approved
-                                    </span>
-                                {% else %}
-                                    <span class="badge-status badge-pending">
-                                        <i class="bi bi-clock me-1"></i>Pending
-                                    </span>
-                                {% endif %}
-                            </td>
-                            <td>
-                                <div class="d-flex gap-2">
-                                    <a href="{% url 'lodge_detail' lodge.id %}" class="btn-action btn-view">
-                                        <i class="bi bi-eye"></i>
-                                        View
-                                    </a>
-                                    <a href="#" class="btn-action btn-edit">
-                                        <i class="bi bi-pencil"></i>
-                                        Edit
-                                    </a>
-                                </div>
-                            </td>
-                        </tr>
-                        {% endfor %}
-                    </tbody>
-                </table>
-            </div>
-            {% else %}
-            <div class="lodges-table-wrapper">
-                <div class="empty-state">
-                    <div class="empty-icon">
-                        <i class="bi bi-building"></i>
-                    </div>
-                    <h3 class="empty-title">No Lodges Yet</h3>
-                    <p class="empty-text">
-                        You haven't listed any lodges yet. Start by adding your first property to reach students looking for accommodation.
-                    </p>
-                    <a href="{% url 'add_lodge' %}" class="btn-add-lodge">
-                        <i class="bi bi-plus-lg"></i>
-                        Add Your First Lodge
-                    </a>
-                </div>
-            </div>
-            {% endif %}
-        </main>
+                            </div>
+                        </td>
+                        <td class="py-4 px-6">
+                            <i class="bi bi-geo-alt text-amber-500 mr-1"></i>
+                            {{ lodge.location }}
+                        </td>
+                        <td class="py-4 px-6 font-extrabold text-blue-900">
+                            ₦{{ lodge.price_per_year|floatformat:0 }}
+                        </td>
+                        <td class="py-4 px-6">{{ lodge.get_room_type_display }}</td>
+                        <td class="py-4 px-6">
+                            {% if lodge.is_approved %}
+                                <span class="inline-flex items-center gap-1.5 px-3 py-1 bg-emerald-50 text-emerald-700 text-xs font-bold rounded-full border border-emerald-200">
+                                    <i class="bi bi-check-circle-fill"></i> Approved
+                                </span>
+                            {% else %}
+                                <span class="inline-flex items-center gap-1.5 px-3 py-1 bg-amber-50 text-amber-700 text-xs font-bold rounded-full border border-amber-200">
+                                    <i class="bi bi-clock-fill"></i> Pending
+                                </span>
+                            {% endif %}
+                        </td>
+                        <td class="py-4 px-6">
+                            <div class="flex items-center gap-2">
+                                <a href="{% url 'lodge_detail' lodge.id %}" class="px-3 py-1.5 bg-blue-50 text-blue-900 hover:bg-blue-100 font-bold text-xs rounded-lg transition-all flex items-center gap-1">
+                                    <i class="bi bi-eye"></i> View
+                                </a>
+                            </div>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
     </div>
-    
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" defer></script>
-    <script>
-    // Sidebar toggle
-    (function() {
-        const sidebar = document.getElementById('sidebar');
-        const overlay = document.getElementById('sidebarOverlay');
-        const toggle = document.getElementById('toggleSidebar');
-        
-        function openSidebar() {
-            sidebar.classList.add('open');
-            overlay.classList.add('open');
-            document.body.style.overflow = 'hidden';
-        }
-        
-        function closeSidebar() {
-            sidebar.classList.remove('open');
-            overlay.classList.remove('open');
-            document.body.style.overflow = '';
-        }
-        
-        toggle?.addEventListener('click', openSidebar);
-        overlay?.addEventListener('click', closeSidebar);
-        
-        document.addEventListener('keydown', (e) => {
-            if (e.key === 'Escape' && sidebar.classList.contains('open')) {
-                closeSidebar();
-            }
-        });
-    })();
-    
-    // Lazy load images
-    document.addEventListener('DOMContentLoaded', function() {
-        const images = document.querySelectorAll('img[loading="lazy"]');
-        images.forEach(img => {
-            img.style.opacity = '0';
-            img.style.transition = 'opacity 0.4s ease';
-            img.addEventListener('load', () => img.style.opacity = '1');
-            if (img.complete) img.style.opacity = '1';
-        });
-    });
-    </script>
-</body>
-</html>
+    {% else %}
+    <div class="bg-white rounded-3xl border border-slate-200 p-12 text-center shadow-sm">
+        <div class="w-20 h-20 bg-slate-100 rounded-full flex items-center justify-center mx-auto mb-4 text-slate-400 text-3xl">
+            <i class="bi bi-building"></i>
+        </div>
+        <h3 class="text-xl font-bold text-slate-900 mb-2">No Lodges Yet</h3>
+        <p class="text-slate-500 text-sm max-w-md mx-auto mb-6">
+            You haven't listed any lodges yet. Start by adding your first property to reach AE-FUNAI students looking for accommodation.
+        </p>
+        <a href="{% url 'add_lodge' %}" class="inline-flex items-center gap-2 px-6 py-3 bg-amber-500 hover:bg-amber-600 text-white font-extrabold rounded-xl shadow-md text-sm transition-all">
+            <i class="bi bi-plus-lg"></i>
+            <span>Add Your First Lodge</span>
+        </a>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}
