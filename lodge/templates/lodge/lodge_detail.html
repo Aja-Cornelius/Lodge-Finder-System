@@ -2,8 +2,6 @@
 {% block title %}{{ lodge.name }} - LodgeFinder{% endblock %}
 
 {% block extra_css %}
-<!-- Leaflet CSS -->
-<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin=""/>
 <style>
     /* Hero Gallery Section */
     .lodge-gallery-hero {
@@ -597,8 +595,16 @@
                         <strong>{{ lodge.location }}</strong>, Afikpo, Ebonyi State
                     </p>
                     {% if lodge.latitude and lodge.longitude %}
-                    <div id="map"
-                        style="width: 100%; height: 350px; border-radius: var(--radius-md); border: 1px solid var(--gray-200); margin-bottom: 1rem;">
+                    <div style="width: 100%; height: 380px; border-radius: var(--radius-md); overflow: hidden; border: 1px solid var(--gray-200); margin-bottom: 1rem;">
+                        <iframe 
+                            title="Google Map Location"
+                            width="100%" 
+                            height="100%" 
+                            style="border:0;" 
+                            loading="lazy" 
+                            allowfullscreen 
+                            src="https://maps.google.com/maps?q={{ lodge.latitude }},{{ lodge.longitude }}&hl=en&z=16&output=embed">
+                        </iframe>
                     </div>
                     {% else %}
                     <div class="map-placeholder">
@@ -701,62 +707,8 @@
 {% endblock %}
 
 {% block extra_js %}
-<!-- Leaflet JS -->
-<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
 <script>
     document.addEventListener("DOMContentLoaded", function () {
-        {% if lodge.latitude and lodge.longitude %}
-        const lat = {{ lodge.latitude }};
-        const lng = {{ lodge.longitude }};
-
-        // Initialize the map and set its view to the lodge coordinates
-        const map = L.map('map', { maxZoom: 19 }).setView([lat, lng], 16);
-
-        // Satellite imagery layer (Esri - maxNativeZoom: 17 keeps images sharp when zooming in further)
-        const satellite = L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', {
-            maxZoom: 19,
-            maxNativeZoom: 17,
-            attribution: '&copy; Esri, Maxar, Earthstar Geographics'
-        });
-
-        // Labels overlay for satellite view
-        const labels = L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/Reference/World_Boundaries_and_Places/MapServer/tile/{z}/{y}/{x}', {
-            maxZoom: 19,
-            maxNativeZoom: 17,
-            attribution: ''
-        });
-
-        // Ultra-clean CARTO Voyager Street Map
-        const cartoVoyager = L.tileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png', {
-            maxZoom: 19,
-            subdomains: 'abcd',
-            attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> &copy; <a href="https://carto.com/attributions">CARTO</a>'
-        });
-
-        // Standard OpenStreetMap
-        const streets = L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
-            maxZoom: 19,
-            maxNativeZoom: 18,
-            attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
-        });
-
-        // Default: CARTO Voyager (ultra-clean, highly detailed)
-        cartoVoyager.addTo(map);
-
-        // Layer switcher control (top-right corner)
-        L.control.layers({
-            '🗺️ Clear Street Map': cartoVoyager,
-            '🛰️ Satellite View': L.layerGroup([satellite, labels]),
-            '📍 Basic OpenStreetMap': streets
-        }, {}, { position: 'topright', collapsed: false }).addTo(map);
-
-        // Add a marker at the lodge location
-        const marker = L.marker([lat, lng]).addTo(map);
-        
-        // Add a popup window to the marker
-        marker.bindPopup("<b>{{ lodge.name }}</b><br>{{ lodge.location }}").openPopup();
-        {% endif %}
-
         // Gallery thumbnail navigation
         const thumbnails = document.querySelectorAll('.thumbnail-item');
         const mainImage = document.getElementById('mainImage');
