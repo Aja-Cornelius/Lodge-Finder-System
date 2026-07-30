@@ -710,13 +710,35 @@
         const lng = {{ lodge.longitude }};
 
         // Initialize the map and set its view to the lodge coordinates
-        const map = L.map('map').setView([lat, lng], 16);
+        const map = L.map('map').setView([lat, lng], 17);
 
-        // Load and display OpenStreetMap tile layer
-        L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        // Satellite imagery layer (Esri - free, shows buildings and terrain)
+        const satellite = L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', {
+            maxZoom: 19,
+            attribution: '&copy; Esri, Maxar, Earthstar Geographics'
+        });
+
+        // Street map layer (OpenStreetMap - shows road names and labels)
+        const streets = L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
             maxZoom: 19,
             attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
-        }).addTo(map);
+        });
+
+        // Labels overlay for satellite view (so you can read road names on satellite)
+        const labels = L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/Reference/World_Boundaries_and_Places/MapServer/tile/{z}/{y}/{x}', {
+            maxZoom: 19,
+            attribution: ''
+        });
+
+        // Set satellite + labels as the default view
+        satellite.addTo(map);
+        labels.addTo(map);
+
+        // Layer switcher control (top-right corner)
+        L.control.layers({
+            '🛰️ Satellite': L.layerGroup([satellite, labels]),
+            '🗺️ Street Map': streets
+        }, {}, { position: 'topright', collapsed: false }).addTo(map);
 
         // Add a marker at the lodge location
         const marker = L.marker([lat, lng]).addTo(map);
