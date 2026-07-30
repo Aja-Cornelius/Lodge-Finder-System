@@ -2,6 +2,8 @@
 {% block title %}{{ lodge.name }} - LodgeFinder{% endblock %}
 
 {% block extra_css %}
+<!-- Leaflet CSS -->
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin=""/>
 <style>
     /* Hero Gallery Section */
     .lodge-gallery-hero {
@@ -699,40 +701,31 @@
 {% endblock %}
 
 {% block extra_js %}
-<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAVTrfze8oKWs8Qg-gq9Cnbq7RxrpVUbtE&callback=initMap" async
-    defer></script>
+<!-- Leaflet JS -->
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
 <script>
-    function initMap() {
+    document.addEventListener("DOMContentLoaded", function () {
         {% if lodge.latitude and lodge.longitude %}
-        const lodgeLocation = { lat: {{ lodge.latitude }
-    }, lng: { { lodge.longitude } } };
-    const map = new google.maps.Map(document.getElementById("map"), {
-        zoom: 16,
-        center: lodgeLocation,
-        mapTypeControl: false,
-        streetViewControl: false,
-        fullscreenControl: true,
-    });
-    const marker = new google.maps.Marker({
-        position: lodgeLocation,
-        map: map,
-        title: "{{ lodge.name }}",
-        animation: google.maps.Animation.DROP
-    });
+        const lat = {{ lodge.latitude }};
+        const lng = {{ lodge.longitude }};
 
-    // Add info window
-    const infowindow = new google.maps.InfoWindow({
-        content: '<div style="padding: 10px;"><strong>{{ lodge.name }}</strong><br>{{ lodge.location }}</div>'
-    });
+        // Initialize the map and set its view to the lodge coordinates
+        const map = L.map('map').setView([lat, lng], 16);
 
-    marker.addListener("click", () => {
-        infowindow.open(map, marker);
-    });
-    {% endif %}
-}
+        // Load and display OpenStreetMap tile layer
+        L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            maxZoom: 19,
+            attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
+        }).addTo(map);
 
-    // Gallery thumbnail navigation
-    document.addEventListener('DOMContentLoaded', function () {
+        // Add a marker at the lodge location
+        const marker = L.marker([lat, lng]).addTo(map);
+        
+        // Add a popup window to the marker
+        marker.bindPopup("<b>{{ lodge.name }}</b><br>{{ lodge.location }}").openPopup();
+        {% endif %}
+
+        // Gallery thumbnail navigation
         const thumbnails = document.querySelectorAll('.thumbnail-item');
         const mainImage = document.getElementById('mainImage');
 
