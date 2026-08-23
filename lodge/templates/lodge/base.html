@@ -73,6 +73,7 @@
             <div id="navbarContent" class="hidden md:flex md:items-center md:gap-8 text-sm font-medium text-slate-700">
                 <a href="{% url 'home' %}" class="hover:text-blue-600 transition-colors py-1">Home</a>
                 <a href="{% url 'search_results' %}" class="hover:text-blue-600 transition-colors py-1">Find Lodges</a>
+                <a href="{% url 'roommate_list' %}" class="hover:text-blue-600 transition-colors py-1 flex items-center gap-1"><i class="bi bi-people-fill text-amber-500"></i> Find Roommate</a>
                 {% if user.is_authenticated %}
                     {% if user.user_type == 'student' %}
                         <a href="{% url 'student_dashboard' %}" class="hover:text-blue-600 transition-colors py-1">Dashboard</a>

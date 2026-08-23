@@ -8,12 +8,17 @@ from django.http import Http404, JsonResponse
 from django.db.models import Q
 from django.forms import formset_factory
 
-from .forms import StudentSignUpForm, OwnerSignUpForm, LodgeForm, LodgeImageForm, RoomForm, RoomImageForm, ReviewForm
-from .models import Lodge, Amenity, LodgeImage, Room, RoomImage, Review, Favorite
+from .forms import (
+    StudentSignUpForm, OwnerSignUpForm, LodgeForm, LodgeImageForm,
+    RoomForm, RoomImageForm, ReviewForm, RoommatePostForm, AlertSubscriptionForm
+)
+from .models import (
+    Lodge, Amenity, LodgeImage, Room, RoomImage, Review, Favorite,
+    RoommatePost, AlertSubscription
+)
 
 
 def home(request):
-    # Fetch the 9 most recent approved lodges for the landing page
     recent_lodges = Lodge.objects.filter(is_approved=True)\
                          .prefetch_related('images', 'amenities', 'reviews')\
                          .select_related('owner')\
@@ -23,9 +28,12 @@ def home(request):
     if request.user.is_authenticated and request.user.user_type == 'student':
         favorited_lodge_ids = set(Favorite.objects.filter(user=request.user).values_list('lodge_id', flat=True))
 
+    recent_roommates = RoommatePost.objects.filter(is_active=True).select_related('user', 'lodge')[:3]
+
     return render(request, 'lodge/landing.html', {
         'recent_lodges': recent_lodges,
         'favorited_lodge_ids': favorited_lodge_ids,
+        'recent_roommates': recent_roommates,
     })
 
 def student_signup(request):
@@ -98,21 +106,24 @@ def student_dashboard(request):
     total_locations = approved_lodges.values('location').distinct().count()
     total_room_types = approved_lodges.values('room_type').distinct().count()
 
-    # Fetch 9 recommended approved lodges
     recommended_lodges = approved_lodges\
                               .prefetch_related('images', 'amenities', 'reviews')\
                               .select_related('owner')\
                               .order_by('-created_at')[:9]
 
-    # Saved lodges (Wishlist)
     saved_favorites = Favorite.objects.filter(user=request.user).select_related('lodge').prefetch_related('lodge__images', 'lodge__reviews')
     saved_lodges = [fav.lodge for fav in saved_favorites]
     favorited_lodge_ids = set(fav.lodge_id for fav in saved_favorites)
+
+    user_roommate_posts = RoommatePost.objects.filter(user=request.user).order_by('-created_at')
+    user_alert_subscriptions = AlertSubscription.objects.filter(user=request.user)
 
     return render(request, 'lodge/student_dashboard.html', {
         'recommended_lodges': recommended_lodges,
         'saved_lodges': saved_lodges,
         'favorited_lodge_ids': favorited_lodge_ids,
+        'user_roommate_posts': user_roommate_posts,
+        'user_alert_subscriptions': user_alert_subscriptions,
         'total_lodges': total_lodges,
         'total_locations': total_locations,
         'total_room_types': total_room_types,
@@ -146,7 +157,7 @@ def add_lodge(request):
         messages.error(request, 'Only lodge owners can add lodges.')
         return redirect('home')
 
-    ImageFormSet = formset_factory(LodgeImageForm, extra=9)  # Up to 9 photos
+    ImageFormSet = formset_factory(LodgeImageForm, extra=9)
 
     if request.method == 'POST':
         form = LodgeForm(request.POST)
@@ -200,7 +211,7 @@ def search_results(request):
             pass
 
     total_results = lodges.count()
-    paginator = Paginator(lodges, 9) # 9 lodges per page
+    paginator = Paginator(lodges, 9)
     page_number = request.GET.get('page')
     page_obj = paginator.get_page(page_number)
 
@@ -231,7 +242,6 @@ def lodge_detail(request, lodge_id):
 
     review_form = ReviewForm()
 
-    # Similar lodges in location
     related_lodges = Lodge.objects.filter(is_approved=True, location=lodge.location)\
                                   .exclude(id=lodge.id)\
                                   .prefetch_related('images', 'reviews')[:3]
@@ -280,6 +290,66 @@ def toggle_favorite(request, lodge_id):
     messages.success(request, msg)
     next_url = request.META.get('HTTP_REFERER')
     return redirect(next_url if next_url else 'lodge_detail', lodge_id=lodge.id)
+
+def roommate_list(request):
+    posts = RoommatePost.objects.filter(is_active=True).select_related('user', 'lodge').order_by('-created_at')
+    
+    location = request.GET.get('location')
+    gender = request.GET.get('gender')
+    max_budget = request.GET.get('max_budget')
+
+    if location:
+        posts = posts.filter(Q(location_preference__icontains=location) | Q(title__icontains=location))
+    if gender:
+        posts = posts.filter(gender_preference=gender)
+    if max_budget:
+        try:
+            posts = posts.filter(budget_per_year__lte=float(max_budget))
+        except (ValueError, TypeError):
+            pass
+
+    return render(request, 'lodge/roommate_list.html', {
+        'posts': posts,
+        'filters': request.GET,
+    })
+
+@login_required
+def add_roommate_post(request):
+    if request.user.user_type != 'student':
+        messages.error(request, 'Only students can post roommate requests.')
+        return redirect('roommate_list')
+
+    if request.method == 'POST':
+        form = RoommatePostForm(request.POST)
+        if form.is_valid():
+            post = form.save(commit=False)
+            post.user = request.user
+            lodge_id = request.GET.get('lodge_id')
+            if lodge_id:
+                try:
+                    post.lodge = Lodge.objects.get(id=lodge_id)
+                except Lodge.DoesNotExist:
+                    pass
+            post.save()
+            messages.success(request, 'Roommate request posted successfully!')
+            return redirect('roommate_list')
+    else:
+        form = RoommatePostForm()
+
+    return render(request, 'lodge/add_roommate.html', {'form': form})
+
+@login_required
+def subscribe_alerts(request):
+    if request.method == 'POST':
+        form = AlertSubscriptionForm(request.POST)
+        if form.is_valid():
+            subscription = form.save(commit=False)
+            subscription.user = request.user
+            subscription.save()
+            messages.success(request, 'Alert subscription saved! You will receive notifications when matching lodges are listed.')
+        else:
+            messages.error(request, 'Invalid alert preferences.')
+    return redirect('student_dashboard')
 
 def logout_view(request):
     logout(request)

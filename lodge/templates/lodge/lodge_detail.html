@@ -74,6 +74,12 @@
                         <span>{{ lodge.distance_to_campus }}</span>
                     </div>
                     {% endif %}
+                    {% if lodge.keke_fare %}
+                    <div class="inline-flex items-center gap-1.5 bg-blue-50 text-blue-900 px-3 py-1 rounded-xl text-xs font-extrabold border border-blue-200 shadow-xs">
+                        <i class="bi bi-scooter text-blue-600"></i>
+                        <span>{{ lodge.keke_fare }}</span>
+                    </div>
+                    {% endif %}
                     <div class="flex items-center gap-1.5 font-semibold">
                         <i class="bi bi-house-door-fill text-blue-600"></i>
                         <span>{{ lodge.get_room_type_display }}</span>
@@ -92,6 +98,30 @@
                     {% endif %}
                 </div>
             </div>
+
+            <!-- Physical Inspection & Verification Scorecard -->
+            {% if lodge.is_physically_inspected %}
+            <div class="bg-gradient-to-r from-amber-50 via-amber-100/60 to-yellow-50 border-2 border-amber-300 rounded-3xl p-6 sm:p-8 shadow-sm mb-6">
+                <div class="flex flex-wrap items-center justify-between gap-4 mb-4">
+                    <div class="flex items-center gap-3">
+                        <div class="w-12 h-12 rounded-2xl bg-amber-500 text-white flex items-center justify-center text-2xl shadow-md">
+                            <i class="bi bi-shield-lock-fill"></i>
+                        </div>
+                        <div>
+                            <span class="inline-block px-2.5 py-0.5 bg-amber-500 text-white text-[10px] font-black uppercase tracking-widest rounded-md">Official Verification</span>
+                            <h3 class="text-lg font-black text-amber-950">100% Physically Inspected Scorecard</h3>
+                        </div>
+                    </div>
+                    <div class="bg-white px-4 py-2 rounded-2xl border border-amber-300 shadow-sm text-center">
+                        <div class="text-2xl font-black text-amber-600">{{ lodge.inspection_score }}/100</div>
+                        <div class="text-[10px] font-bold text-amber-900 uppercase">Inspection Score</div>
+                    </div>
+                </div>
+                <p class="text-amber-950 text-xs sm:text-sm leading-relaxed font-medium">
+                    {{ lodge.inspection_report_notes }}
+                </p>
+            </div>
+            {% endif %}
 
             <!-- Key Highlight Tags -->
             {% if lodge.highlight_tag_list %}
@@ -411,7 +441,7 @@
                 <div class="text-xs font-semibold text-slate-500 mb-6">per year</div>
 
                 <!-- Room Availability Section -->
-                <div class="bg-slate-50 border border-dashed border-slate-300 rounded-2xl p-4 mb-6">
+                <div class="bg-slate-50 border border-dashed border-slate-300 rounded-2xl p-4 mb-5">
                     <div class="flex justify-between items-center mb-2">
                         <span class="font-bold text-slate-900 text-xs">Room Availability</span>
                         <span class="px-2.5 py-0.5 bg-emerald-100 text-emerald-800 text-xs font-extrabold rounded-md">{{ lodge.rooms_available }} left</span>
@@ -422,6 +452,36 @@
                     <div class="flex justify-between text-xs text-slate-500 font-medium">
                         <span>{{ lodge.total_rooms }} rooms total</span>
                         <span class="text-emerald-700 font-semibold">{{ lodge.rooms_available }} available</span>
+                    </div>
+                </div>
+
+                <!-- Upfront Total Cost Calculator Breakdown -->
+                <div class="bg-blue-50/70 border border-blue-200 rounded-2xl p-4 mb-6 space-y-2.5">
+                    <div class="flex items-center justify-between text-xs font-extrabold uppercase tracking-wider text-blue-950 pb-2 border-b border-blue-200/80">
+                        <span>💰 Upfront Cost Calculator</span>
+                        <span class="text-[10px] font-bold text-blue-700">No Hidden Fees</span>
+                    </div>
+                    <div class="space-y-1.5 text-xs text-slate-700 font-medium">
+                        <div class="flex justify-between">
+                            <span>Base Rent (Annual)</span>
+                            <span class="font-bold text-slate-900">₦{{ lodge.price_per_year|floatformat:0 }}</span>
+                        </div>
+                        <div class="flex justify-between">
+                            <span>Agreement & Legal Fee</span>
+                            <span class="font-bold text-slate-900">₦{{ lodge.agreement_fee|floatformat:0 }}</span>
+                        </div>
+                        <div class="flex justify-between">
+                            <span>Caution Deposit</span>
+                            <span class="font-bold text-slate-900">₦{{ lodge.caution_fee|floatformat:0 }}</span>
+                        </div>
+                        <div class="flex justify-between">
+                            <span>Service Charge</span>
+                            <span class="font-bold text-slate-900">₦{{ lodge.service_charge|floatformat:0 }}</span>
+                        </div>
+                    </div>
+                    <div class="flex justify-between items-center pt-2.5 border-t border-blue-200 text-slate-900">
+                        <span class="text-xs font-extrabold uppercase">Total Upfront Payment:</span>
+                        <span class="text-lg font-black text-blue-900">₦{{ lodge.total_upfront_cost|floatformat:0 }}</span>
                     </div>
                 </div>
 

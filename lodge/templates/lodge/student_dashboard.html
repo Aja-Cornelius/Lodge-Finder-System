@@ -207,5 +207,38 @@
         </div>
         {% endfor %}
     </div>
+
+    <!-- Alert Subscription Widget -->
+    <div class="mt-14 bg-gradient-to-r from-blue-900 via-slate-900 to-blue-950 rounded-3xl p-6 sm:p-10 text-white shadow-xl">
+        <div class="max-w-3xl">
+            <span class="inline-block px-3 py-1 bg-white/10 backdrop-blur-md text-amber-400 text-xs font-extrabold uppercase tracking-widest rounded-full mb-3">🔔 Never Miss a Lodge</span>
+            <h2 class="text-2xl sm:text-3xl font-extrabold mb-2">Subscribe for Instant Property Alerts</h2>
+            <p class="text-slate-200 text-xs sm:text-sm mb-6">Receive real-time notifications whenever a lodge matching your budget and location preference gets approved.</p>
+
+            <form action="{% url 'subscribe_alerts' %}" method="post" class="grid grid-cols-1 sm:grid-cols-12 gap-3 items-center">
+                {% csrf_token %}
+                <div class="sm:col-span-4">
+                    <input type="text" name="location" placeholder="Area (e.g. Backgate)" class="w-full p-3 bg-white/10 backdrop-blur-md border border-white/20 rounded-xl text-xs text-white placeholder:text-slate-300 focus:outline-none focus:border-amber-400">
+                </div>
+                <div class="sm:col-span-3">
+                    <select name="room_type" class="w-full p-3 bg-slate-800 border border-white/20 rounded-xl text-xs text-white focus:outline-none">
+                        <option value="">Any Room Style</option>
+                        <option value="single">Single Room</option>
+                        <option value="self_contain">Self-Contain</option>
+                        <option value="flat">Full Flat</option>
+                    </select>
+                </div>
+                <div class="sm:col-span-3">
+                    <input type="number" name="max_price" placeholder="Max Budget (₦)" class="w-full p-3 bg-white/10 backdrop-blur-md border border-white/20 rounded-xl text-xs text-white placeholder:text-slate-300 focus:outline-none focus:border-amber-400">
+                </div>
+                <div class="sm:col-span-2">
+                    <button type="submit" class="w-full py-3 px-4 bg-amber-500 hover:bg-amber-600 text-white font-extrabold text-xs rounded-xl shadow-md transition-all flex items-center justify-center gap-1.5">
+                        <i class="bi bi-bell-fill"></i>
+                        <span>Subscribe</span>
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
 </div>
 {% endblock %}

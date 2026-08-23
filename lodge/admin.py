@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Lodge, Amenity, LodgeImage, Room, RoomImage, Review, Favorite
+from .models import Lodge, Amenity, LodgeImage, Room, RoomImage, Review, Favorite, RoommatePost, AlertSubscription
 
 class LodgeImageInline(admin.TabularInline):
     model = LodgeImage
@@ -20,16 +20,21 @@ class RoomInline(admin.StackedInline):
 
 @admin.register(Lodge)
 class LodgeAdmin(admin.ModelAdmin):
-    list_display = ('name', 'location', 'distance_to_campus', 'owner', 'price_per_year', 'room_type', 'is_approved', 'created_at')
-    list_filter = ('is_approved', 'room_type', 'location')
+    list_display = ('name', 'location', 'distance_to_campus', 'price_per_year', 'is_physically_inspected', 'inspection_score', 'owner', 'is_approved', 'created_at')
+    list_filter = ('is_approved', 'is_physically_inspected', 'room_type', 'location')
     search_fields = ('name', 'location', 'owner__username', 'owner__email', 'distance_to_campus')
-    list_editable = ('is_approved',)
+    list_editable = ('is_approved', 'is_physically_inspected')
     readonly_fields = ('created_at',)
 
-    # Better organized form with clear sections
     fieldsets = (
         ('Lodge Information', {
-            'fields': ('owner', 'name', 'location', 'distance_to_campus', 'highlight_tags', 'room_type', 'price_per_year', 'description', 'amenities')
+            'fields': ('owner', 'name', 'location', 'distance_to_campus', 'keke_fare', 'highlight_tags', 'room_type', 'description', 'amenities')
+        }),
+        ('Upfront Fees Breakdown', {
+            'fields': ('price_per_year', 'agreement_fee', 'caution_fee', 'service_charge')
+        }),
+        ('Physical Verification & Scorecard', {
+            'fields': ('is_physically_inspected', 'inspection_score', 'inspection_report_notes')
         }),
         ('Verification - Exact Location', {
             'fields': ('latitude', 'longitude'),
@@ -37,8 +42,7 @@ class LodgeAdmin(admin.ModelAdmin):
                            '1. Open Google Maps<br>'
                            '2. Right-click on the exact location of the lodge<br>'
                            '3. Copy the coordinates (first number = Latitude, second = Longitude)<br>'
-                           '4. Paste them below.<br><br>'
-                           '<em>This will show the precise pin on the map for students.</em>',
+                           '4. Paste them below.',
             'classes': ('wide',),
         }),
         ('Approval Status', {
@@ -48,7 +52,6 @@ class LodgeAdmin(admin.ModelAdmin):
 
     inlines = [LodgeImageInline, RoomInline]
 
-    # Custom actions
     actions = ['approve_lodges', 'reject_lodges']
 
     def approve_lodges(self, request, queryset):
@@ -80,6 +83,19 @@ class ReviewAdmin(admin.ModelAdmin):
 class FavoriteAdmin(admin.ModelAdmin):
     list_display = ('user', 'lodge', 'created_at')
     search_fields = ('user__username', 'lodge__name')
+
+@admin.register(RoommatePost)
+class RoommatePostAdmin(admin.ModelAdmin):
+    list_display = ('title', 'user', 'location_preference', 'budget_per_year', 'gender_preference', 'is_active', 'created_at')
+    list_filter = ('gender_preference', 'is_active', 'location_preference')
+    search_fields = ('title', 'user__username', 'location_preference', 'department_level')
+    list_editable = ('is_active',)
+
+@admin.register(AlertSubscription)
+class AlertSubscriptionAdmin(admin.ModelAdmin):
+    list_display = ('user', 'location', 'room_type', 'max_price', 'created_at')
+    list_filter = ('room_type',)
+    search_fields = ('user__username', 'location')
 
 
 admin.site.register(Amenity)

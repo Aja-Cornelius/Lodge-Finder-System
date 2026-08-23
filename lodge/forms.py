@@ -2,7 +2,7 @@
 from django import forms
 from django.contrib.auth.forms import UserCreationForm
 from .models import User
-from .models import Lodge, Amenity, LodgeImage, Room, RoomImage, Review, Favorite
+from .models import Lodge, Amenity, LodgeImage, Room, RoomImage, Review, Favorite, RoommatePost, AlertSubscription
 
 class StudentSignUpForm(UserCreationForm):
     class Meta:
@@ -31,7 +31,11 @@ class OwnerSignUpForm(UserCreationForm):
 class LodgeForm(forms.ModelForm):
     class Meta:
         model = Lodge
-        fields = ['name', 'location', 'distance_to_campus', 'highlight_tags', 'price_per_year', 'room_type', 'description', 'amenities', 'total_rooms', 'rooms_available']
+        fields = [
+            'name', 'location', 'distance_to_campus', 'keke_fare', 'highlight_tags',
+            'price_per_year', 'agreement_fee', 'caution_fee', 'service_charge',
+            'room_type', 'description', 'amenities', 'total_rooms', 'rooms_available'
+        ]
         widgets = {
             'amenities': forms.CheckboxSelectMultiple(),
         }
@@ -71,3 +75,16 @@ class ReviewForm(forms.ModelForm):
         widgets = {
             'comment': forms.Textarea(attrs={'rows': 3, 'placeholder': 'Share your experience living at or inspecting this lodge...'}),
         }
+
+class RoommatePostForm(forms.ModelForm):
+    class Meta:
+        model = RoommatePost
+        fields = ['title', 'location_preference', 'budget_per_year', 'gender_preference', 'department_level', 'contact_phone', 'notes']
+        widgets = {
+            'notes': forms.Textarea(attrs={'rows': 3, 'placeholder': 'Mention study habits, lifestyle, cooking preferences, room splitting terms...'}),
+        }
+
+class AlertSubscriptionForm(forms.ModelForm):
+    class Meta:
+        model = AlertSubscription
+        fields = ['location', 'room_type', 'max_price']

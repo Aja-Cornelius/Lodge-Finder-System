@@ -27,14 +27,27 @@ class Lodge(models.Model):
     # Distance to FUNAI campus gate
     distance_to_campus = models.CharField(max_length=150, blank=True, default="5 mins walk from Backgate", help_text="e.g. 7 mins walk from Backgate, 5 mins drive from Main Gate")
     
+    # Transport & Commute Estimator
+    keke_fare = models.CharField(max_length=150, blank=True, default="₦100 Keke fare to Main Gate", help_text="e.g. ₦100 Keke fare to Main Gate or 🚶 5 mins walk")
+
     # Key Highlight Tags (comma separated)
     highlight_tags = models.CharField(max_length=255, blank=True, default="⚡ 24/7 Power, 💧 Borehole Water, 🛡️ Fenced Compound", help_text="Comma-separated highlight tags (e.g. ⚡ 24/7 Power, 💧 Borehole Water, 🛡️ Fenced Compound)")
+
+    # Upfront Fees Breakdown
+    price_per_year = models.DecimalField(max_digits=10, decimal_places=2, help_text="Base rent per year")
+    agreement_fee = models.DecimalField(max_digits=10, decimal_places=2, default=15000, help_text="Agreement & Legal commission fee")
+    caution_fee = models.DecimalField(max_digits=10, decimal_places=2, default=10000, help_text="Refundable caution deposit")
+    service_charge = models.DecimalField(max_digits=10, decimal_places=2, default=5000, help_text="Annual service charge (cleaning, waste)")
+
+    # Physical Inspection & Verification Scorecard
+    is_physically_inspected = models.BooleanField(default=True, help_text="Physically inspected by LodgeFinder team")
+    inspection_score = models.PositiveSmallIntegerField(default=95, help_text="Overall inspection score (0 to 100)")
+    inspection_report_notes = models.TextField(blank=True, default="Inspected by LodgeFinder Agents. Verified road access, functioning borehole, secure compound gate, and good light transformer supply.", help_text="Official inspection summary notes")
 
     # Optional for owner, will be filled by verification agents
     latitude = models.FloatField(null=True, blank=True, help_text="Latitude (filled by verification team)")
     longitude = models.FloatField(null=True, blank=True, help_text="Longitude (filled by verification team)")
 
-    price_per_year = models.DecimalField(max_digits=10, decimal_places=2)
     room_type = models.CharField(max_length=50, choices=[
         ('single', 'Single Room'),
         ('self_contain', 'Self-Contain'),
@@ -48,6 +61,10 @@ class Lodge(models.Model):
     rooms_available = models.PositiveIntegerField(default=1, help_text="Number of rooms currently available")
 
     created_at = models.DateTimeField(auto_now_add=True)
+
+    @property
+    def total_upfront_cost(self):
+        return self.price_per_year + self.agreement_fee + self.caution_fee + self.service_charge
 
     @property
     def available_percentage(self):
@@ -162,3 +179,35 @@ class Favorite(models.Model):
 
     def __str__(self):
         return f"{self.user.username} favorited {self.lodge.name}"
+
+class RoommatePost(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='roommate_posts')
+    title = models.CharField(max_length=200, help_text="e.g. Looking for 200L Male Roommate at Backgate")
+    lodge = models.ForeignKey(Lodge, on_delete=models.SET_NULL, null=True, blank=True, related_name='roommate_requests', help_text="Optional link to specific lodge")
+    location_preference = models.CharField(max_length=150, help_text="e.g. Backgate, Ozizza, Frontgate")
+    budget_per_year = models.DecimalField(max_digits=10, decimal_places=2, help_text="Budget contribution (e.g. 100000)")
+    gender_preference = models.CharField(max_length=20, choices=[('male', 'Male Only'), ('female', 'Female Only'), ('any', 'Any Gender')], default='any')
+    department_level = models.CharField(max_length=100, help_text="e.g. Computer Science, 300 Level")
+    contact_phone = models.CharField(max_length=15, help_text="Phone/WhatsApp number for interested roommates")
+    notes = models.TextField(blank=True, help_text="Habits, rules, study preferences, etc.")
+    is_active = models.BooleanField(default=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        ordering = ['-created_at']
+
+    def __str__(self):
+        return f"{self.title} ({self.user.username})"
+
+class AlertSubscription(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='alert_subscriptions')
+    location = models.CharField(max_length=100, blank=True, help_text="Location keyword (e.g. Backgate)")
+    room_type = models.CharField(max_length=50, blank=True, choices=[('', 'Any Room Type'), ('single', 'Single Room'), ('self_contain', 'Self-Contain'), ('flat', 'Flat')])
+    max_price = models.DecimalField(max_digits=10, decimal_places=2, null=True, blank=True, help_text="Maximum budget")
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        ordering = ['-created_at']
+
+    def __str__(self):
+        return f"Alert for {self.user.username} - {self.location or 'All Areas'}"

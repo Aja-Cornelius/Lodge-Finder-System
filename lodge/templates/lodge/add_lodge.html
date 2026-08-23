@@ -46,20 +46,43 @@
                                 {{ form.distance_to_campus|add_class:"w-full px-4 py-3 bg-slate-50 border border-slate-300 rounded-xl text-sm text-slate-900 focus:outline-none focus:border-amber-500 focus:bg-white transition-all"|attr:"placeholder:e.g. 7 mins walk from Backgate" }}
                             </div>
                             <div>
-                                <label class="block font-bold text-xs uppercase tracking-wider text-slate-600 mb-2">Key Highlight Tags</label>
-                                {{ form.highlight_tags|add_class:"w-full px-4 py-3 bg-slate-50 border border-slate-300 rounded-xl text-sm text-slate-900 focus:outline-none focus:border-amber-500 focus:bg-white transition-all"|attr:"placeholder:⚡ 24/7 Power, 💧 Borehole Water, 🛡️ Fenced Compound" }}
+                                <label class="block font-bold text-xs uppercase tracking-wider text-slate-600 mb-2">Keke / Transport Fare Estimate</label>
+                                {{ form.keke_fare|add_class:"w-full px-4 py-3 bg-slate-50 border border-slate-300 rounded-xl text-sm text-slate-900 focus:outline-none focus:border-amber-500 focus:bg-white transition-all"|attr:"placeholder:e.g. ₦100 Keke to Main Gate" }}
                             </div>
                         </div>
+                        <div>
+                            <label class="block font-bold text-xs uppercase tracking-wider text-slate-600 mb-2">Key Highlight Tags</label>
+                            {{ form.highlight_tags|add_class:"w-full px-4 py-3 bg-slate-50 border border-slate-300 rounded-xl text-sm text-slate-900 focus:outline-none focus:border-amber-500 focus:bg-white transition-all"|attr:"placeholder:⚡ 24/7 Power, 💧 Borehole Water, 🛡️ Fenced Compound" }}
+                        </div>
+
+                        <!-- Upfront Fees Breakdown Section -->
+                        <div class="p-4 bg-slate-50 border border-slate-200 rounded-2xl space-y-4">
+                            <h3 class="font-bold text-xs uppercase text-blue-900 tracking-wider">Upfront Rent & Fee Breakdown (₦)</h3>
+                            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                                <div>
+                                    <label class="block font-bold text-[11px] uppercase tracking-wider text-slate-600 mb-1">Base Rent / Year (₦)</label>
+                                    {{ form.price_per_year|add_class:"w-full px-4 py-3 bg-white border border-slate-300 rounded-xl text-sm text-slate-900 focus:outline-none focus:border-amber-500 transition-all"|attr:"placeholder:e.g. 200000" }}
+                                </div>
+                                <div>
+                                    <label class="block font-bold text-[11px] uppercase tracking-wider text-slate-600 mb-1">Agreement & Legal Fee (₦)</label>
+                                    {{ form.agreement_fee|add_class:"w-full px-4 py-3 bg-white border border-slate-300 rounded-xl text-sm text-slate-900 focus:outline-none focus:border-amber-500 transition-all"|attr:"placeholder:e.g. 15000" }}
+                                </div>
+                                <div>
+                                    <label class="block font-bold text-[11px] uppercase tracking-wider text-slate-600 mb-1">Caution Deposit (₦)</label>
+                                    {{ form.caution_fee|add_class:"w-full px-4 py-3 bg-white border border-slate-300 rounded-xl text-sm text-slate-900 focus:outline-none focus:border-amber-500 transition-all"|attr:"placeholder:e.g. 10000" }}
+                                </div>
+                                <div>
+                                    <label class="block font-bold text-[11px] uppercase tracking-wider text-slate-600 mb-1">Annual Service Charge (₦)</label>
+                                    {{ form.service_charge|add_class:"w-full px-4 py-3 bg-white border border-slate-300 rounded-xl text-sm text-slate-900 focus:outline-none focus:border-amber-500 transition-all"|attr:"placeholder:e.g. 5000" }}
+                                </div>
+                            </div>
+                        </div>
+
                         <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                             <div>
-                                <label class="block font-bold text-xs uppercase tracking-wider text-slate-600 mb-2">Price per Year (₦)</label>
-                                {{ form.price_per_year|add_class:"w-full px-4 py-3 bg-slate-50 border border-slate-300 rounded-xl text-sm text-slate-900 focus:outline-none focus:border-amber-500 focus:bg-white transition-all"|attr:"placeholder:e.g. 250000" }}
-                            </div>
-                            <div>
-                                <label class="block font-bold text-xs uppercase tracking-wider text-slate-600 mb-2">Room Type</label>
+                                <label class="block font-bold text-xs uppercase tracking-wider text-slate-600 mb-2">Room Style</label>
                                 {{ form.room_type|add_class:"w-full px-4 py-3 bg-slate-50 border border-slate-300 rounded-xl text-sm text-slate-900 focus:outline-none focus:border-amber-500 focus:bg-white transition-all cursor-pointer" }}
                             </div>
-                        </div>
                         <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                             <div>
                                 <label class="block font-bold text-xs uppercase tracking-wider text-slate-600 mb-2">Total Rooms</label>
