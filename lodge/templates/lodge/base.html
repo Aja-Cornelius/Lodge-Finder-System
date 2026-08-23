@@ -147,6 +147,8 @@
             <div class="flex flex-col gap-2 font-medium text-slate-700 text-sm">
                 <a href="{% url 'home' %}" class="px-3 py-2 rounded-lg hover:bg-slate-100 hover:text-blue-600">Home</a>
                 <a href="{% url 'search_results' %}" class="px-3 py-2 rounded-lg hover:bg-slate-100 hover:text-blue-600">Find Lodges</a>
+                <a href="{% url 'community_feed' %}" class="px-3 py-2 rounded-lg hover:bg-slate-100 hover:text-blue-600 flex items-center gap-2"><i class="bi bi-chat-quote-fill text-blue-600"></i> Social Feed</a>
+                <a href="{% url 'roommate_list' %}" class="px-3 py-2 rounded-lg hover:bg-slate-100 hover:text-blue-600 flex items-center gap-2"><i class="bi bi-people-fill text-amber-500"></i> Find Roommate</a>
                 {% if user.is_authenticated %}
                     {% if user.user_type == 'student' %}
                         <a href="{% url 'student_dashboard' %}" class="px-3 py-2 rounded-lg hover:bg-slate-100 hover:text-blue-600">Student Dashboard</a>
@@ -188,7 +190,7 @@
 {% endif %}
 
 <!-- Main Content -->
-<main class="flex-grow">
+<main class="flex-grow pb-16 md:pb-0">
     {% block content %}{% endblock %}
 </main>
 
@@ -251,6 +253,46 @@
         </div>
     </div>
 </footer>
+
+<!-- Sticky Mobile Bottom Navigation Bar -->
+<div class="md:hidden fixed bottom-0 left-0 right-0 z-50 bg-white/95 backdrop-blur-md border-t border-slate-200 shadow-2xl py-2 px-3">
+    <div class="grid grid-cols-5 gap-1 text-center">
+        <a href="{% url 'home' %}" class="flex flex-col items-center py-1 text-slate-600 hover:text-blue-900 font-bold text-[10px]">
+            <i class="bi bi-house-door-fill text-lg mb-0.5"></i>
+            <span>Home</span>
+        </a>
+        <a href="{% url 'search_results' %}" class="flex flex-col items-center py-1 text-slate-600 hover:text-blue-900 font-bold text-[10px]">
+            <i class="bi bi-search text-lg mb-0.5"></i>
+            <span>Lodges</span>
+        </a>
+        <a href="{% url 'community_feed' %}" class="flex flex-col items-center py-1 text-blue-900 font-bold text-[10px]">
+            <i class="bi bi-chat-quote-fill text-lg mb-0.5 text-blue-600"></i>
+            <span>Feed</span>
+        </a>
+        <a href="{% url 'roommate_list' %}" class="flex flex-col items-center py-1 text-slate-600 hover:text-blue-900 font-bold text-[10px]">
+            <i class="bi bi-people-fill text-lg mb-0.5 text-amber-500"></i>
+            <span>Roommates</span>
+        </a>
+        {% if user.is_authenticated %}
+            {% if user.user_type == 'student' %}
+            <a href="{% url 'student_dashboard' %}" class="flex flex-col items-center py-1 text-slate-600 hover:text-blue-900 font-bold text-[10px]">
+                <i class="bi bi-person-circle text-lg mb-0.5"></i>
+                <span>Account</span>
+            </a>
+            {% else %}
+            <a href="{% url 'owner_dashboard' %}" class="flex flex-col items-center py-1 text-slate-600 hover:text-blue-900 font-bold text-[10px]">
+                <i class="bi bi-speedometer2 text-lg mb-0.5"></i>
+                <span>Dashboard</span>
+            </a>
+            {% endif %}
+        {% else %}
+        <a href="{% url 'student_login' %}" class="flex flex-col items-center py-1 text-slate-600 hover:text-blue-900 font-bold text-[10px]">
+            <i class="bi bi-box-arrow-in-right text-lg mb-0.5"></i>
+            <span>Sign In</span>
+        </a>
+        {% endif %}
+    </div>
+</div>
 
 <!-- Interactive UI JS -->
 <script>
