@@ -99,6 +99,97 @@
             </div>
             {% endif %}
 
+            <!-- Rooms Gallery Section -->
+            <div class="bg-white rounded-3xl p-6 sm:p-8 border border-slate-200 shadow-sm mb-6">
+                <div class="flex items-center justify-between mb-5">
+                    <h2 class="text-xl font-bold text-slate-900 flex items-center gap-2">
+                        <i class="bi bi-door-open text-blue-900"></i>
+                        Rooms
+                        {% if rooms %}
+                        <span class="ml-1 px-2.5 py-0.5 bg-blue-100 text-blue-800 text-xs font-extrabold rounded-lg">{{ rooms|length }}</span>
+                        {% endif %}
+                    </h2>
+                    {% if user.is_authenticated and user == lodge.owner %}
+                    <a href="{% url 'add_room' lodge.id %}" class="inline-flex items-center gap-1.5 px-4 py-2 bg-amber-500 hover:bg-amber-600 text-white font-bold text-xs rounded-xl shadow-sm transition-all">
+                        <i class="bi bi-plus-lg"></i>
+                        Add Room
+                    </a>
+                    {% endif %}
+                </div>
+
+                {% if rooms %}
+                <div class="space-y-6">
+                    {% for room in rooms %}
+                    <div class="border border-slate-200 rounded-2xl overflow-hidden hover:border-slate-300 transition-colors">
+                        <!-- Room Header -->
+                        <div class="p-4 sm:p-5 bg-slate-50 border-b border-slate-200 flex flex-wrap items-center justify-between gap-3">
+                            <div class="flex items-center gap-3">
+                                <div class="w-9 h-9 rounded-lg bg-blue-900 text-white flex items-center justify-center text-sm font-extrabold shadow-sm">
+                                    <i class="bi bi-door-open-fill"></i>
+                                </div>
+                                <div>
+                                    <h3 class="font-bold text-slate-900 text-base">{{ room.name }}</h3>
+                                    <p class="text-xs text-slate-500">{{ room.images.count }} photo{{ room.images.count|pluralize }}</p>
+                                </div>
+                            </div>
+                            {% if room.is_available %}
+                            <span class="inline-flex items-center gap-1.5 px-3 py-1 bg-emerald-50 text-emerald-700 text-xs font-bold rounded-lg border border-emerald-200">
+                                <span class="w-2 h-2 bg-emerald-500 rounded-full animate-pulse"></span>
+                                Available
+                            </span>
+                            {% else %}
+                            <span class="inline-flex items-center gap-1.5 px-3 py-1 bg-red-50 text-red-700 text-xs font-bold rounded-lg border border-red-200">
+                                <span class="w-2 h-2 bg-red-500 rounded-full"></span>
+                                Occupied
+                            </span>
+                            {% endif %}
+                        </div>
+
+                        <!-- Room Description -->
+                        {% if room.description %}
+                        <div class="px-4 sm:px-5 pt-4">
+                            <p class="text-slate-600 text-sm leading-relaxed">{{ room.description }}</p>
+                        </div>
+                        {% endif %}
+
+                        <!-- Room Image Gallery -->
+                        {% if room.images.all %}
+                        <div class="p-4 sm:p-5">
+                            <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3">
+                                {% for room_image in room.images.all %}
+                                <div class="relative group cursor-pointer rounded-xl overflow-hidden aspect-square border border-slate-200 shadow-sm hover:shadow-lg transition-all duration-300"
+                                     onclick="openRoomLightbox('{{ room_image.image.url }}', '{{ room.name }} — Photo {{ forloop.counter }}')">
+                                    <img src="{{ room_image.image.url }}" alt="{{ room.name }} — Photo {{ forloop.counter }}" loading="lazy"
+                                         class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500">
+                                    <!-- Hover overlay -->
+                                    <div class="absolute inset-0 bg-black/0 group-hover:bg-black/30 transition-all duration-300 flex items-center justify-center">
+                                        <div class="opacity-0 group-hover:opacity-100 transition-opacity duration-300 bg-white/90 backdrop-blur-sm w-10 h-10 rounded-full flex items-center justify-center shadow-lg">
+                                            <i class="bi bi-arrows-fullscreen text-slate-900 text-sm"></i>
+                                        </div>
+                                    </div>
+                                </div>
+                                {% endfor %}
+                            </div>
+                        </div>
+                        {% endif %}
+                    </div>
+                    {% endfor %}
+                </div>
+                {% else %}
+                <div class="text-center py-12 border-2 border-dashed border-slate-200 rounded-2xl">
+                    <i class="bi bi-door-open text-5xl text-slate-300 mb-3 block"></i>
+                    <p class="text-sm font-semibold text-slate-500 mb-1">No rooms added yet</p>
+                    <p class="text-xs text-slate-400">Room photos will appear here once the owner adds them</p>
+                    {% if user.is_authenticated and user == lodge.owner %}
+                    <a href="{% url 'add_room' lodge.id %}" class="inline-flex items-center gap-1.5 mt-4 px-5 py-2.5 bg-amber-500 hover:bg-amber-600 text-white font-bold text-sm rounded-xl shadow-sm transition-all">
+                        <i class="bi bi-plus-lg"></i>
+                        Add Your First Room
+                    </a>
+                    {% endif %}
+                </div>
+                {% endif %}
+            </div>
+
             <!-- Location Map -->
             <div class="bg-white rounded-3xl p-6 sm:p-8 border border-slate-200 shadow-sm mb-6">
                 <h2 class="text-xl font-bold text-slate-900 mb-4 flex items-center gap-2">
@@ -212,11 +303,24 @@
     </div>
 </section>
 {% endif %}
+
+<!-- Room Image Lightbox Modal -->
+<div id="roomLightbox" class="fixed inset-0 z-[100] hidden items-center justify-center bg-black/80 backdrop-blur-md p-4" onclick="closeRoomLightbox(event)">
+    <button onclick="closeRoomLightbox(event, true)" class="absolute top-5 right-5 w-11 h-11 bg-white/10 hover:bg-white/25 backdrop-blur-md text-white rounded-full flex items-center justify-center transition-all z-10">
+        <i class="bi bi-x-lg text-xl"></i>
+    </button>
+    <div class="relative max-w-5xl max-h-[90vh] w-full flex flex-col items-center" onclick="event.stopPropagation()">
+        <img id="lightboxImage" src="" alt="" class="max-w-full max-h-[80vh] rounded-2xl shadow-2xl object-contain">
+        <p id="lightboxCaption" class="mt-4 text-white/80 text-sm font-semibold text-center"></p>
+    </div>
+</div>
+
 {% endblock %}
 
 {% block extra_js %}
 <script>
     document.addEventListener("DOMContentLoaded", function () {
+        // Existing lodge gallery thumbnail logic
         const thumbnails = document.querySelectorAll('.thumbnail-item');
         const mainImage = document.getElementById('mainImage');
 
@@ -233,6 +337,37 @@
                 mainImage.src = imgSrc;
             });
         });
+    });
+
+    // Room Image Lightbox
+    function openRoomLightbox(src, caption) {
+        const lightbox = document.getElementById('roomLightbox');
+        const img = document.getElementById('lightboxImage');
+        const cap = document.getElementById('lightboxCaption');
+
+        img.src = src;
+        img.alt = caption;
+        cap.textContent = caption;
+
+        lightbox.classList.remove('hidden');
+        lightbox.classList.add('flex');
+        document.body.style.overflow = 'hidden';
+    }
+
+    function closeRoomLightbox(event, force) {
+        if (force || event.target.id === 'roomLightbox') {
+            const lightbox = document.getElementById('roomLightbox');
+            lightbox.classList.add('hidden');
+            lightbox.classList.remove('flex');
+            document.body.style.overflow = '';
+        }
+    }
+
+    // Close lightbox on Escape key
+    document.addEventListener('keydown', function (e) {
+        if (e.key === 'Escape') {
+            closeRoomLightbox(e, true);
+        }
     });
 </script>
 {% endblock %}

@@ -65,3 +65,24 @@ class LodgeImage(models.Model):
 
     def __str__(self):
         return self.image.name if self.image else "No image"
+
+class Room(models.Model):
+    lodge = models.ForeignKey(Lodge, on_delete=models.CASCADE, related_name='rooms')
+    name = models.CharField(max_length=100, help_text="e.g. Room 1, Room A, Self-Contain Unit 2")
+    description = models.TextField(blank=True, help_text="Describe what's inside the room")
+    is_available = models.BooleanField(default=True, help_text="Is this room currently available?")
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f"{self.name} — {self.lodge.name}"
+
+    class Meta:
+        ordering = ['created_at']
+
+class RoomImage(models.Model):
+    room = models.ForeignKey(Room, on_delete=models.CASCADE, related_name='images')
+    image = models.ImageField(upload_to='rooms/')
+    uploaded_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return self.image.name if self.image else "No image"

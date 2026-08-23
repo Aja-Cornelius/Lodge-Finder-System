@@ -2,7 +2,7 @@
 from django import forms
 from django.contrib.auth.forms import UserCreationForm
 from .models import User
-from .models import Lodge, Amenity, LodgeImage
+from .models import Lodge, Amenity, LodgeImage, Room, RoomImage
 
 class StudentSignUpForm(UserCreationForm):
     class Meta:
@@ -50,4 +50,17 @@ class LodgeForm(forms.ModelForm):
 class LodgeImageForm(forms.ModelForm):
     class Meta:
         model = LodgeImage
+        fields = ['image']
+
+class RoomForm(forms.ModelForm):
+    class Meta:
+        model = Room
+        fields = ['name', 'description', 'is_available']
+        widgets = {
+            'description': forms.Textarea(attrs={'rows': 4}),
+        }
+
+class RoomImageForm(forms.ModelForm):
+    class Meta:
+        model = RoomImage
         fields = ['image']

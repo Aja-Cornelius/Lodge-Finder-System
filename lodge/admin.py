@@ -1,10 +1,21 @@
 from django.contrib import admin
-from .models import Lodge, Amenity, LodgeImage
+from .models import Lodge, Amenity, LodgeImage, Room, RoomImage
 
 class LodgeImageInline(admin.TabularInline):
     model = LodgeImage
     extra = 3
     max_num = 5
+
+class RoomImageInline(admin.TabularInline):
+    model = RoomImage
+    extra = 3
+    max_num = 4
+
+class RoomInline(admin.StackedInline):
+    model = Room
+    extra = 0
+    show_change_link = True
+    fields = ('name', 'description', 'is_available')
 
 
 @admin.register(Lodge)
@@ -35,7 +46,7 @@ class LodgeAdmin(admin.ModelAdmin):
         }),
     )
 
-    inlines = [LodgeImageInline]
+    inlines = [LodgeImageInline, RoomInline]
 
     # Custom actions
     actions = ['approve_lodges', 'reject_lodges']
@@ -51,5 +62,15 @@ class LodgeAdmin(admin.ModelAdmin):
     reject_lodges.short_description = "❌ Reject selected lodges"
 
 
+@admin.register(Room)
+class RoomAdmin(admin.ModelAdmin):
+    list_display = ('name', 'lodge', 'is_available', 'created_at')
+    list_filter = ('is_available', 'lodge')
+    search_fields = ('name', 'lodge__name')
+    list_editable = ('is_available',)
+    inlines = [RoomImageInline]
+
+
 admin.site.register(Amenity)
 admin.site.register(LodgeImage)
+admin.site.register(RoomImage)

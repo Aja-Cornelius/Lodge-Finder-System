@@ -6,9 +6,9 @@ from django.core.paginator import Paginator
 
 from django.contrib.auth.decorators import login_required
 from .forms import StudentSignUpForm, OwnerSignUpForm
-from .forms import LodgeForm, LodgeImageForm
+from .forms import LodgeForm, LodgeImageForm, RoomForm, RoomImageForm
 from django.forms import formset_factory
-from .models import Lodge, Amenity, LodgeImage 
+from .models import Lodge, Amenity, LodgeImage, Room, RoomImage
 from django.shortcuts import get_object_or_404
 from django.contrib.auth import logout
 from django.shortcuts import redirect
@@ -225,10 +225,12 @@ def lodge_detail(request, lodge_id):
         raise Http404("This lodge is not yet approved.")
 
     images = lodge.images.all()
+    rooms = lodge.rooms.prefetch_related('images').all()
 
     return render(request, 'lodge/lodge_detail.html', {
         'lodge': lodge,
         'images': images,
+        'rooms': rooms,
     })
 
 
@@ -272,3 +274,49 @@ def inquiries(request):
 
     # Later: fetch real inquiries
     return render(request, 'lodge/inquiries.html', {})
+
+@login_required
+def add_room(request, lodge_id):
+    lodge = get_object_or_404(Lodge, id=lodge_id)
+
+    # Only the lodge owner can add rooms
+    if request.user != lodge.owner:
+        messages.error(request, 'You can only add rooms to your own lodges.')
+        return redirect('lodge_detail', lodge_id=lodge.id)
+
+    ImageFormSet = formset_factory(RoomImageForm, extra=4)  # 4 upload slots
+
+    if request.method == 'POST':
+        form = RoomForm(request.POST)
+        image_formset = ImageFormSet(request.POST, request.FILES)
+
+        if form.is_valid() and image_formset.is_valid():
+            # Count how many images were actually uploaded
+            uploaded_images = [
+                f for f in image_formset if f.cleaned_data.get('image')
+            ]
+
+            if len(uploaded_images) < 3:
+                messages.error(request, 'Please upload at least 3 photos of the room.')
+            else:
+                room = form.save(commit=False)
+                room.lodge = lodge
+                room.save()
+
+                for image_form in uploaded_images:
+                    RoomImage.objects.create(
+                        room=room,
+                        image=image_form.cleaned_data['image']
+                    )
+
+                messages.success(request, f'Room "{room.name}" added successfully with {len(uploaded_images)} photos!')
+                return redirect('lodge_detail', lodge_id=lodge.id)
+    else:
+        form = RoomForm()
+        image_formset = ImageFormSet()
+
+    return render(request, 'lodge/add_room.html', {
+        'lodge': lodge,
+        'form': form,
+        'image_formset': image_formset,
+    })
