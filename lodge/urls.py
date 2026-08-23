@@ -17,6 +17,7 @@ urlpatterns = [
     path('lodge/<int:lodge_id>/review/', views.add_review, name='add_review'),
     path('roommates/', views.roommate_list, name='roommate_list'),
     path('roommates/add/', views.add_roommate_post, name='add_roommate_post'),
+    path('alerts/subscribe/', views.subscribe_alerts, name='subscribe_alerts'),
     path('community/', views.community_feed, name='community_feed'),
     path('community/post/create/', views.create_post, name='create_post'),
     path('community/post/<int:post_id>/like/', views.toggle_post_like, name='toggle_post_like'),
