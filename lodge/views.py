@@ -10,11 +10,12 @@ from django.forms import formset_factory
 
 from .forms import (
     StudentSignUpForm, OwnerSignUpForm, LodgeForm, LodgeImageForm,
-    RoomForm, RoomImageForm, ReviewForm, RoommatePostForm, AlertSubscriptionForm
+    RoomForm, RoomImageForm, ReviewForm, RoommatePostForm, AlertSubscriptionForm,
+    PostForm, PostCommentForm
 )
 from .models import (
     Lodge, Amenity, LodgeImage, Room, RoomImage, Review, Favorite,
-    RoommatePost, AlertSubscription
+    RoommatePost, AlertSubscription, Post, PostLike, PostComment
 )
 
 
