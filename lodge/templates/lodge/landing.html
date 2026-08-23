@@ -89,30 +89,67 @@
         
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
             {% for lodge in recent_lodges %}
-            <div class="bg-white rounded-3xl overflow-hidden border border-slate-200 hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-2 flex flex-col group">
+            <div class="bg-white rounded-3xl overflow-hidden border border-slate-200 hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-2 flex flex-col group relative">
                 <div class="h-64 relative overflow-hidden bg-slate-100">
                     {% if lodge.images.all %}
                         <img src="{{ lodge.images.first.image.url }}" alt="{{ lodge.name }}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700">
                     {% else %}
                         <img src="https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?w=800&auto=format&fit=crop" alt="Lodge" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700">
                     {% endif %}
+
+                    <!-- Favorite Heart Toggle -->
+                    {% if user.is_authenticated and user.user_type == 'student' %}
+                    <a href="{% url 'toggle_favorite' lodge.id %}" class="absolute top-4 left-4 w-10 h-10 bg-white/90 backdrop-blur-md rounded-full flex items-center justify-center text-slate-400 hover:text-red-500 shadow-md transition-all z-10">
+                        {% if lodge.id in favorited_lodge_ids %}
+                        <i class="bi bi-heart-fill text-red-500 text-lg"></i>
+                        {% else %}
+                        <i class="bi bi-heart text-lg"></i>
+                        {% endif %}
+                    </a>
+                    {% endif %}
+
                     <div class="absolute top-4 right-4 bg-white/95 backdrop-blur-md px-3.5 py-1.5 rounded-xl text-sm font-extrabold text-blue-900 shadow-md">
                         ₦{{ lodge.price_per_year|floatformat:0 }}<span class="text-xs text-slate-500 font-normal">/yr</span>
                     </div>
+
+                    {% if lodge.distance_to_campus %}
+                    <div class="absolute bottom-4 left-4 bg-slate-900/80 backdrop-blur-md px-3 py-1 rounded-lg text-xs font-extrabold text-amber-400 shadow-md flex items-center gap-1.5 border border-white/20">
+                        <i class="bi bi-geo-alt-fill text-amber-400"></i>
+                        <span>{{ lodge.distance_to_campus }}</span>
+                    </div>
+                    {% endif %}
                 </div>
                 
                 <div class="p-6 flex-grow flex flex-col">
-                    <div class="flex items-center justify-between mb-3">
+                    <div class="flex items-center justify-between mb-2">
                         <span class="px-3 py-1 bg-blue-50 text-blue-900 text-xs font-bold rounded-lg">{{ lodge.get_room_type_display }}</span>
-                        <span class="text-amber-500 text-xs font-bold flex items-center gap-1">
-                            <i class="bi bi-star-fill"></i> New
+                        {% if lodge.rating_count > 0 %}
+                        <span class="text-amber-500 text-xs font-bold flex items-center gap-1 bg-amber-50 px-2.5 py-1 rounded-md border border-amber-200">
+                            <i class="bi bi-star-fill text-amber-400"></i> {{ lodge.avg_rating }} ({{ lodge.rating_count }})
                         </span>
+                        {% else %}
+                        <span class="text-slate-400 text-xs font-medium flex items-center gap-1">
+                            <i class="bi bi-star text-slate-300"></i> New
+                        </span>
+                        {% endif %}
                     </div>
-                    <h3 class="text-xl font-bold text-slate-900 mb-2 group-hover:text-blue-600 transition-colors">{{ lodge.name }}</h3>
-                    <p class="text-slate-500 text-sm mb-4 flex items-center gap-1.5">
+
+                    <h3 class="text-xl font-bold text-slate-900 mb-1 group-hover:text-blue-600 transition-colors">{{ lodge.name }}</h3>
+                    <p class="text-slate-500 text-sm mb-3 flex items-center gap-1.5 font-medium">
                         <i class="bi bi-geo-alt text-amber-500"></i> {{ lodge.location }}
                     </p>
                     
+                    <!-- Highlight Tags Pill Section -->
+                    {% if lodge.highlight_tag_list %}
+                    <div class="flex flex-wrap gap-1.5 mb-4">
+                        {% for tag in lodge.highlight_tag_list %}
+                        <span class="px-2.5 py-0.5 bg-emerald-50 text-emerald-800 border border-emerald-200 text-xs font-bold rounded-lg flex items-center gap-1">
+                            {{ tag }}
+                        </span>
+                        {% endfor %}
+                    </div>
+                    {% endif %}
+
                     <!-- Availability Progress -->
                     <div class="mb-5 mt-auto">
                         <div class="w-full bg-slate-100 rounded-full h-2 overflow-hidden mb-1.5">
@@ -122,15 +159,6 @@
                             <span>{{ lodge.total_rooms }} total rooms</span>
                             <span class="text-emerald-600">{{ lodge.rooms_available }} available</span>
                         </div>
-                    </div>
-                    
-                    <!-- Amenities Badges -->
-                    <div class="flex flex-wrap gap-2 mb-6">
-                        {% for amenity in lodge.amenities.all|slice:":3" %}
-                        <span class="px-2.5 py-1 bg-slate-100 text-slate-700 text-xs font-medium rounded-md flex items-center gap-1">
-                            <i class="bi bi-check2 text-emerald-600"></i> {{ amenity.name }}
-                        </span>
-                        {% endfor %}
                     </div>
                     
                     <a href="{% url 'lodge_detail' lodge.id %}" class="w-full py-2.5 px-4 border-2 border-blue-900 text-blue-900 hover:bg-blue-900 hover:text-white font-bold rounded-xl text-sm transition-all text-center flex items-center justify-center gap-2">

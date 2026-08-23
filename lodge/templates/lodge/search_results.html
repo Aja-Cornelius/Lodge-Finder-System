@@ -74,43 +74,66 @@
         <!-- Lodges Cards Grid -->
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-12">
             {% for lodge in page_obj %}
-            <article class="bg-white rounded-3xl border border-slate-200 overflow-hidden shadow-sm hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1.5 flex flex-col group">
+            <article class="bg-white rounded-3xl border border-slate-200 overflow-hidden shadow-sm hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1.5 flex flex-col group relative">
                 <div class="h-56 relative overflow-hidden bg-slate-100">
                     {% if lodge.images.all %}
                         <img src="{{ lodge.images.first.image.url }}" alt="{{ lodge.name }}" loading="lazy" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
                     {% else %}
                         <img src="https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=400&h=300&q=80&auto=format&fit=crop" alt="{{ lodge.name }}" loading="lazy" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
                     {% endif %}
-                    
-                    <div class="absolute top-3 left-3 bg-emerald-600 text-white text-xs font-bold px-3 py-1 rounded-lg flex items-center gap-1 shadow-md">
-                        <i class="bi bi-patch-check-fill"></i>
-                        <span>Verified</span>
-                    </div>
+
+                    {% if user.is_authenticated and user.user_type == 'student' %}
+                    <a href="{% url 'toggle_favorite' lodge.id %}" class="absolute top-3 left-3 w-9 h-9 bg-white/90 backdrop-blur-md rounded-full flex items-center justify-center text-slate-400 hover:text-red-500 shadow-md transition-all z-10">
+                        {% if lodge.id in favorited_lodge_ids %}
+                        <i class="bi bi-heart-fill text-red-500 text-base"></i>
+                        {% else %}
+                        <i class="bi bi-heart text-base"></i>
+                        {% endif %}
+                    </a>
+                    {% endif %}
                     
                     <div class="absolute top-3 right-3 bg-white/95 backdrop-blur-md px-3.5 py-1 rounded-xl text-sm font-extrabold text-blue-900 shadow-md">
                         ₦{{ lodge.price_per_year|floatformat:0 }}<span class="text-xs text-slate-500 font-normal">/yr</span>
                     </div>
+
+                    {% if lodge.distance_to_campus %}
+                    <div class="absolute bottom-3 left-3 bg-slate-900/80 backdrop-blur-md px-2.5 py-1 rounded-lg text-xs font-extrabold text-amber-400 shadow-md flex items-center gap-1">
+                        <i class="bi bi-geo-alt-fill text-amber-400"></i>
+                        <span>{{ lodge.distance_to_campus }}</span>
+                    </div>
+                    {% endif %}
                 </div>
                 
                 <div class="p-6 flex-grow flex flex-col">
-                    <h3 class="text-lg font-bold text-slate-900 mb-3 group-hover:text-blue-600 transition-colors">{{ lodge.name }}</h3>
+                    <div class="flex items-center justify-between mb-2">
+                        <span class="px-3 py-0.5 bg-blue-50 text-blue-900 text-xs font-bold rounded-md">{{ lodge.get_room_type_display }}</span>
+                        {% if lodge.rating_count > 0 %}
+                        <span class="text-amber-500 text-xs font-bold flex items-center gap-1">
+                            <i class="bi bi-star-fill text-amber-400"></i> {{ lodge.avg_rating }} ({{ lodge.rating_count }})
+                        </span>
+                        {% else %}
+                        <span class="text-slate-400 text-xs font-medium">New</span>
+                        {% endif %}
+                    </div>
+
+                    <h3 class="text-lg font-bold text-slate-900 mb-2 group-hover:text-blue-600 transition-colors">{{ lodge.name }}</h3>
                     
-                    <div class="space-y-1.5 text-xs text-slate-600 mb-4">
+                    <div class="space-y-1 text-xs text-slate-600 mb-3">
                         <div class="flex items-center gap-2">
                             <i class="bi bi-geo-alt-fill text-amber-500"></i>
                             <span>{{ lodge.location }}</span>
                         </div>
-                        <div class="flex items-center gap-2">
-                            <i class="bi bi-house-door-fill text-blue-600"></i>
-                            <span>{{ lodge.get_room_type_display }}</span>
-                        </div>
-                        {% if lodge.owner.phone_number %}
-                        <div class="flex items-center gap-2">
-                            <i class="bi bi-telephone-fill text-emerald-600"></i>
-                            <span>{{ lodge.owner.phone_number }}</span>
-                        </div>
-                        {% endif %}
                     </div>
+
+                    {% if lodge.highlight_tag_list %}
+                    <div class="flex flex-wrap gap-1.5 mb-4">
+                        {% for tag in lodge.highlight_tag_list %}
+                        <span class="px-2 py-0.5 bg-emerald-50 text-emerald-800 border border-emerald-200 text-[11px] font-bold rounded-md">
+                            {{ tag }}
+                        </span>
+                        {% endfor %}
+                    </div>
+                    {% endif %}
                     
                     <!-- Availability Progress -->
                     <div class="mb-4 mt-auto">

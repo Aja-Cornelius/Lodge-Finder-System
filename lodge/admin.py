@@ -1,15 +1,15 @@
 from django.contrib import admin
-from .models import Lodge, Amenity, LodgeImage, Room, RoomImage
+from .models import Lodge, Amenity, LodgeImage, Room, RoomImage, Review, Favorite
 
 class LodgeImageInline(admin.TabularInline):
     model = LodgeImage
     extra = 3
-    max_num = 5
+    max_num = 9
 
 class RoomImageInline(admin.TabularInline):
     model = RoomImage
     extra = 3
-    max_num = 4
+    max_num = 6
 
 class RoomInline(admin.StackedInline):
     model = Room
@@ -20,16 +20,16 @@ class RoomInline(admin.StackedInline):
 
 @admin.register(Lodge)
 class LodgeAdmin(admin.ModelAdmin):
-    list_display = ('name', 'location', 'owner', 'price_per_year', 'room_type', 'is_approved', 'created_at')
+    list_display = ('name', 'location', 'distance_to_campus', 'owner', 'price_per_year', 'room_type', 'is_approved', 'created_at')
     list_filter = ('is_approved', 'room_type', 'location')
-    search_fields = ('name', 'location', 'owner__username', 'owner__email')
+    search_fields = ('name', 'location', 'owner__username', 'owner__email', 'distance_to_campus')
     list_editable = ('is_approved',)
     readonly_fields = ('created_at',)
 
     # Better organized form with clear sections
     fieldsets = (
         ('Lodge Information', {
-            'fields': ('owner', 'name', 'location', 'room_type', 'price_per_year', 'description', 'amenities')
+            'fields': ('owner', 'name', 'location', 'distance_to_campus', 'highlight_tags', 'room_type', 'price_per_year', 'description', 'amenities')
         }),
         ('Verification - Exact Location', {
             'fields': ('latitude', 'longitude'),
@@ -69,6 +69,17 @@ class RoomAdmin(admin.ModelAdmin):
     search_fields = ('name', 'lodge__name')
     list_editable = ('is_available',)
     inlines = [RoomImageInline]
+
+@admin.register(Review)
+class ReviewAdmin(admin.ModelAdmin):
+    list_display = ('lodge', 'user', 'overall_rating', 'security_rating', 'water_rating', 'light_rating', 'created_at')
+    list_filter = ('security_rating', 'water_rating', 'light_rating')
+    search_fields = ('lodge__name', 'user__username', 'comment')
+
+@admin.register(Favorite)
+class FavoriteAdmin(admin.ModelAdmin):
+    list_display = ('user', 'lodge', 'created_at')
+    search_fields = ('user__username', 'lodge__name')
 
 
 admin.site.register(Amenity)

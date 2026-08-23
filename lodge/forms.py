@@ -2,7 +2,7 @@
 from django import forms
 from django.contrib.auth.forms import UserCreationForm
 from .models import User
-from .models import Lodge, Amenity, LodgeImage, Room, RoomImage
+from .models import Lodge, Amenity, LodgeImage, Room, RoomImage, Review, Favorite
 
 class StudentSignUpForm(UserCreationForm):
     class Meta:
@@ -31,8 +31,7 @@ class OwnerSignUpForm(UserCreationForm):
 class LodgeForm(forms.ModelForm):
     class Meta:
         model = Lodge
-        fields = ['name', 'location', 'price_per_year', 'room_type', 'description', 'amenities', 'total_rooms', 'rooms_available']
-        # Note: latitude and longitude are NOT included → owner cannot see them
+        fields = ['name', 'location', 'distance_to_campus', 'highlight_tags', 'price_per_year', 'room_type', 'description', 'amenities', 'total_rooms', 'rooms_available']
         widgets = {
             'amenities': forms.CheckboxSelectMultiple(),
         }
@@ -64,3 +63,11 @@ class RoomImageForm(forms.ModelForm):
     class Meta:
         model = RoomImage
         fields = ['image']
+
+class ReviewForm(forms.ModelForm):
+    class Meta:
+        model = Review
+        fields = ['security_rating', 'water_rating', 'light_rating', 'comment']
+        widgets = {
+            'comment': forms.Textarea(attrs={'rows': 3, 'placeholder': 'Share your experience living at or inspecting this lodge...'}),
+        }
