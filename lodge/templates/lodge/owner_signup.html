@@ -62,9 +62,18 @@
                 </div>
 
                 <div>
-                    <label class="block font-bold text-xs uppercase tracking-wider text-slate-600 mb-2">Business / Lodge Name (Optional)</label>
-                    <input type="text" name="business_name" placeholder="e.g. Okoro Heights Lodge"
-                           class="w-full px-4 py-3 bg-slate-50 border-2 border-slate-100 rounded-xl text-sm text-slate-900 focus:outline-none focus:border-amber-500 focus:bg-white focus:ring-4 focus:ring-amber-500/10 transition-all">
+                    <label class="block font-bold text-xs uppercase tracking-wider text-slate-600 mb-2">Full Name</label>
+                    {{ form.full_name|add_class:"w-full px-4 py-3 bg-slate-50 border-2 border-slate-100 rounded-xl text-sm text-slate-900 focus:outline-none focus:border-amber-500 focus:bg-white focus:ring-4 focus:ring-amber-500/10 transition-all"|attr:"placeholder:e.g. Cornelius Okoro" }}
+                </div>
+
+                <div>
+                    <label class="block font-bold text-xs uppercase tracking-wider text-slate-600 mb-2">Account Role</label>
+                    {{ form.user_type|add_class:"w-full px-4 py-3 bg-slate-50 border-2 border-slate-100 rounded-xl text-sm font-bold text-slate-900 focus:outline-none focus:border-amber-500 focus:bg-white transition-all cursor-pointer" }}
+                </div>
+
+                <div>
+                    <label class="block font-bold text-xs uppercase tracking-wider text-slate-600 mb-2">Agency Name (For Verified House Agents)</label>
+                    {{ form.agency_name|add_class:"w-full px-4 py-3 bg-slate-50 border-2 border-slate-100 rounded-xl text-sm text-slate-900 focus:outline-none focus:border-amber-500 focus:bg-white focus:ring-4 focus:ring-amber-500/10 transition-all"|attr:"placeholder:e.g. Afikpo Prime Housing Agency" }}
                 </div>
 
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4">

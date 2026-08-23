@@ -7,15 +7,17 @@ class User(AbstractUser):
     USER_TYPE_CHOICES = (
         ('student', 'Student'),
         ('owner', 'Lodge Owner'),
+        ('agent', 'Verified House Agent'),
     )
     user_type = models.CharField(max_length=10, choices=USER_TYPE_CHOICES, default='student')
     phone_number = models.CharField(max_length=15, blank=True, null=True)
-    
-    # NEW FIELD:
     full_name = models.CharField(max_length=150, blank=True, help_text="Full name (e.g., Cornelius Okoro)")
+    agency_name = models.CharField(max_length=150, blank=True, null=True, help_text="Agency Name for Verified Agents (e.g. Afikpo Prime Housing)")
 
     def __str__(self):
-        return self.username
+        if self.user_type == 'agent' and self.agency_name:
+            return f"{self.full_name or self.username} ({self.agency_name})"
+        return self.full_name or self.username
 
 User = get_user_model()
 

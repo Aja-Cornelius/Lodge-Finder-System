@@ -6,10 +6,10 @@
 <section class="relative h-[420px] sm:h-[500px] bg-slate-900 overflow-hidden">
     <div class="w-full h-full flex items-center justify-center" id="galleryMain">
         {% if images %}
-        <img src="{{ images.0.image.url }}" alt="{{ lodge.name }}" id="mainImage" class="w-full h-full object-cover">
+        <img src="{{ images.0.image.url }}" alt="{{ lodge.name }}" id="mainImage" loading="lazy" decoding="async" class="w-full h-full object-cover">
         {% else %}
         <img src="https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=1920&q=80&auto=format&fit=crop"
-            alt="{{ lodge.name }}" id="mainImage" class="w-full h-full object-cover">
+            alt="{{ lodge.name }}" id="mainImage" loading="lazy" decoding="async" class="w-full h-full object-cover">
         {% endif %}
     </div>
 
@@ -17,7 +17,7 @@
     <div class="absolute bottom-6 left-6 right-6 flex gap-3 overflow-x-auto p-2 bg-black/50 backdrop-blur-md rounded-2xl border border-white/20">
         {% for image in images %}
         <div class="thumbnail-item w-24 h-16 rounded-xl overflow-hidden cursor-pointer border-2 {% if forloop.first %}border-amber-500{% else %}border-transparent{% endif %} hover:border-white transition-all flex-shrink-0" data-index="{{ forloop.counter0 }}">
-            <img src="{{ image.image.url }}" alt="{{ lodge.name }}" class="w-full h-full object-cover">
+            <img src="{{ image.image.url }}" alt="{{ lodge.name }}" loading="lazy" decoding="async" class="w-full h-full object-cover">
         </div>
         {% endfor %}
     </div>
@@ -96,6 +96,25 @@
                         <span>Verified Property</span>
                     </div>
                     {% endif %}
+                    {% if lodge.owner.user_type == 'agent' %}
+                    <div class="inline-flex items-center gap-1.5 bg-purple-50 text-purple-900 px-3 py-1 rounded-lg text-xs font-black border border-purple-200 shadow-xs">
+                        <i class="bi bi-building-check text-purple-600"></i>
+                        <span>🏢 Verified House Agent{% if lodge.owner.agency_name %} ({{ lodge.owner.agency_name }}){% endif %}</span>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+
+            <!-- Anti-Scam Protection Warning Banner -->
+            <div class="bg-red-50 border-2 border-red-200 rounded-3xl p-5 sm:p-6 mb-6 text-red-950 flex items-start gap-4 shadow-sm">
+                <div class="w-10 h-10 rounded-2xl bg-red-600 text-white flex-shrink-0 flex items-center justify-center text-xl font-bold shadow-md">
+                    <i class="bi bi-shield-exclamation"></i>
+                </div>
+                <div>
+                    <h3 class="font-extrabold text-sm text-red-900 mb-1">🛡️ Anti-Scam Student Protection Warning</h3>
+                    <p class="text-xs text-red-800 leading-relaxed font-medium">
+                        <strong>DO NOT transfer any rent, caution fee, or agent payment online before physically visiting and inspecting this lodge in person!</strong> Always meet the verified owner/agent directly at the lodge before making payments.
+                    </p>
                 </div>
             </div>
 

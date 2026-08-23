@@ -20,13 +20,25 @@ class StudentSignUpForm(UserCreationForm):
         return user
 
 class OwnerSignUpForm(UserCreationForm):
+    user_type = forms.ChoiceField(
+        choices=[('owner', 'Private Lodge Owner'), ('agent', 'Verified House Agent')],
+        initial='owner',
+        widget=forms.Select(attrs={'class': 'w-full px-4 py-3 bg-slate-50 border border-slate-300 rounded-xl text-sm font-semibold text-slate-800'})
+    )
+    agency_name = forms.CharField(
+        required=False,
+        widget=forms.TextInput(attrs={'placeholder': 'Agency Name (If registered house agent, e.g. Afikpo Housing)'})
+    )
+
     class Meta:
         model = User
-        fields = ['username', 'full_name', 'email', 'phone_number', 'password1', 'password2']
+        fields = ['username', 'full_name', 'email', 'phone_number', 'user_type', 'agency_name', 'password1', 'password2']
 
     def save(self, commit=True):
         user = super().save(commit=False)
-        user.user_type = 'owner'
+        selected_type = self.cleaned_data.get('user_type', 'owner')
+        user.user_type = selected_type
+        user.agency_name = self.cleaned_data.get('agency_name')
         if commit:
             user.save()
         return user

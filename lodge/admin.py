@@ -1,8 +1,19 @@
 from django.contrib import admin
+from django.contrib.auth.admin import UserAdmin as BaseUserAdmin
 from .models import (
-    Lodge, Amenity, LodgeImage, Room, RoomImage, Review, Favorite,
+    User, Lodge, Amenity, LodgeImage, Room, RoomImage, Review, Favorite,
     RoommatePost, AlertSubscription, Post, PostLike, PostComment
 )
+
+@admin.register(User)
+class UserAdmin(BaseUserAdmin):
+    list_display = ('username', 'full_name', 'email', 'user_type', 'agency_name', 'phone_number', 'is_staff')
+    list_filter = ('user_type', 'is_staff', 'is_superuser')
+    fieldsets = BaseUserAdmin.fieldsets + (
+        ('Custom Profile Information', {
+            'fields': ('user_type', 'full_name', 'agency_name', 'phone_number'),
+        }),
+    )
 
 class LodgeImageInline(admin.TabularInline):
     model = LodgeImage
