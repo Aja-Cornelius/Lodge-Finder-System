@@ -1,5 +1,8 @@
 from django.contrib import admin
-from .models import Lodge, Amenity, LodgeImage, Room, RoomImage, Review, Favorite, RoommatePost, AlertSubscription
+from .models import (
+    Lodge, Amenity, LodgeImage, Room, RoomImage, Review, Favorite,
+    RoommatePost, AlertSubscription, Post, PostLike, PostComment
+)
 
 class LodgeImageInline(admin.TabularInline):
     model = LodgeImage
@@ -97,7 +100,17 @@ class AlertSubscriptionAdmin(admin.ModelAdmin):
     list_filter = ('room_type',)
     search_fields = ('user__username', 'location')
 
+@admin.register(Post)
+class PostAdmin(admin.ModelAdmin):
+    list_display = ('user', 'area_tag', 'content_snippet', 'created_at')
+    list_filter = ('area_tag',)
+    search_fields = ('user__username', 'content')
+
+    def content_snippet(self, obj):
+        return obj.content[:50]
 
 admin.site.register(Amenity)
 admin.site.register(LodgeImage)
 admin.site.register(RoomImage)
+admin.site.register(PostLike)
+admin.site.register(PostComment)

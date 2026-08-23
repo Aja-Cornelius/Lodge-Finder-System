@@ -351,6 +351,75 @@ def subscribe_alerts(request):
             messages.error(request, 'Invalid alert preferences.')
     return redirect('student_dashboard')
 
+def community_feed(request):
+    posts = Post.objects.select_related('user', 'lodge')\
+                        .prefetch_related('likes', 'comments', 'comments__user')\
+                        .order_by('-created_at')
+
+    area = request.GET.get('area')
+    if area and area != 'all':
+        posts = posts.filter(area_tag=area)
+
+    post_form = PostForm()
+    comment_form = PostCommentForm()
+
+    liked_post_ids = set()
+    if request.user.is_authenticated:
+        liked_post_ids = set(PostLike.objects.filter(user=request.user).values_list('post_id', flat=True))
+
+    lodges = Lodge.objects.filter(is_approved=True)
+
+    return render(request, 'lodge/community_feed.html', {
+        'posts': posts,
+        'post_form': post_form,
+        'comment_form': comment_form,
+        'liked_post_ids': liked_post_ids,
+        'selected_area': area or 'all',
+        'lodges': lodges,
+    })
+
+@login_required
+def create_post(request):
+    if request.method == 'POST':
+        form = PostForm(request.POST, request.FILES)
+        if form.is_valid():
+            post = form.save(commit=False)
+            post.user = request.user
+            post.save()
+            messages.success(request, 'Post published to Student Community Feed!')
+        else:
+            messages.error(request, 'Error publishing post. Please check text or image.')
+    return redirect('community_feed')
+
+@login_required
+def toggle_post_like(request, post_id):
+    post = get_object_or_404(Post, id=post_id)
+    like, created = PostLike.objects.get_or_create(user=request.user, post=post)
+    if not created:
+        like.delete()
+        is_liked = False
+    else:
+        is_liked = True
+
+    if request.headers.get('x-requested-with') == 'XMLHttpRequest':
+        return JsonResponse({'is_liked': is_liked, 'like_count': post.like_count})
+
+    next_url = request.META.get('HTTP_REFERER')
+    return redirect(next_url if next_url else 'community_feed')
+
+@login_required
+def add_post_comment(request, post_id):
+    post = get_object_or_404(Post, id=post_id)
+    if request.method == 'POST':
+        form = PostCommentForm(request.POST)
+        if form.is_valid():
+            comment = form.save(commit=False)
+            comment.user = request.user
+            comment.post = post
+            comment.save()
+            messages.success(request, 'Comment added!')
+    return redirect('community_feed')
+
 def logout_view(request):
     logout(request)
     return redirect('home')

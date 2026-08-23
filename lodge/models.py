@@ -211,3 +211,55 @@ class AlertSubscription(models.Model):
 
     def __str__(self):
         return f"Alert for {self.user.username} - {self.location or 'All Areas'}"
+
+class Post(models.Model):
+    AREA_CHOICES = (
+        ('all', 'General Community'),
+        ('backgate', 'Backgate Zone'),
+        ('frontgate', 'Frontgate Zone'),
+        ('ozizza', 'Ozizza Zone'),
+        ('akanu', 'Akanu Zone'),
+    )
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='posts')
+    lodge = models.ForeignKey(Lodge, on_delete=models.SET_NULL, null=True, blank=True, related_name='social_posts', help_text="Tag a lodge optional")
+    content = models.TextField(help_text="What's happening around campus/lodges?")
+    image = models.ImageField(upload_to='social_posts/', null=True, blank=True)
+    area_tag = models.CharField(max_length=50, choices=AREA_CHOICES, default='all')
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        ordering = ['-created_at']
+
+    @property
+    def like_count(self):
+        return self.likes.count()
+
+    @property
+    def comment_count(self):
+        return self.comments.count()
+
+    def __str__(self):
+        return f"Post by {self.user.username} - {self.content[:30]}..."
+
+class PostLike(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='post_likes')
+    post = models.ForeignKey(Post, on_delete=models.CASCADE, related_name='likes')
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        unique_together = ('user', 'post')
+
+    def __str__(self):
+        return f"{self.user.username} liked post {self.post.id}"
+
+class PostComment(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='post_comments')
+    post = models.ForeignKey(Post, on_delete=models.CASCADE, related_name='comments')
+    comment = models.TextField()
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        ordering = ['created_at']
+
+    def __str__(self):
+        return f"Comment by {self.user.username} on post {self.post.id}"

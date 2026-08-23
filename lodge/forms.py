@@ -2,7 +2,10 @@
 from django import forms
 from django.contrib.auth.forms import UserCreationForm
 from .models import User
-from .models import Lodge, Amenity, LodgeImage, Room, RoomImage, Review, Favorite, RoommatePost, AlertSubscription
+from .models import (
+    Lodge, Amenity, LodgeImage, Room, RoomImage, Review, Favorite,
+    RoommatePost, AlertSubscription, Post, PostLike, PostComment
+)
 
 class StudentSignUpForm(UserCreationForm):
     class Meta:
@@ -88,3 +91,19 @@ class AlertSubscriptionForm(forms.ModelForm):
     class Meta:
         model = AlertSubscription
         fields = ['location', 'room_type', 'max_price']
+
+class PostForm(forms.ModelForm):
+    class Meta:
+        model = Post
+        fields = ['content', 'image', 'area_tag', 'lodge']
+        widgets = {
+            'content': forms.Textarea(attrs={'rows': 3, 'placeholder': 'Share lodge updates, room tours, light availability, or campus news...'}),
+        }
+
+class PostCommentForm(forms.ModelForm):
+    class Meta:
+        model = PostComment
+        fields = ['comment']
+        widgets = {
+            'comment': forms.TextInput(attrs={'placeholder': 'Write a comment...'}),
+        }
